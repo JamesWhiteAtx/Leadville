@@ -1,0 +1,106 @@
+﻿@model CST.Prdn.ViewModels.ProductLookupModel
+
+@{
+    ViewContext.FormContext = new FormContext();
+}
+
+    @if (Model.NotNullAny(m => m.ProdTypeList))
+    {
+        <div class="display-label">
+            @Html.LabelFor(model => model.ProdTypeCD)
+        </div>
+        <div class="display-field">
+            @Html.DropDownListFor(m => m.ProdTypeCD, new SelectList(Model.ProdTypeList, "Code", "CodeDashName", Model.ProdTypeCD), "-- Select Type --")    
+        </div>
+    } else {
+        @Html.HiddenFor(model => model.ProdTypeCD)
+    }
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.ProdCD, Model.ProdCdDisplay)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.ProdCD)
+        @Html.ValidationMessageFor(model => model.ProdCD)
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdTypeDescr)
+    </div>
+    <div class="display-field">
+        @Html.SpanAndHiddenFor(model => model.ProdTypeDescr)
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdDescr)
+    </div>
+    <div class="display-field">
+        @Html.SpanAndHiddenFor(model => model.ProdDescr) <span id="prod-image-set"></span>
+    </div>
+
+    <div class="display-label">
+        @Html.Label(LocalStr.ProductDefinition)
+    </div>
+    <div id="prod-options-container" class="display-field">
+    </div>
+
+    @Html.Partial("ProdLookupDetail", Model)
+
+@Html.Partial("ProdCdLookup")
+
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var plkSettings;
+
+    function loadProdInfo(prodLookup) {
+        var prodTypeCD, prodTypeDescr, prodDescr, prodCost, optHtml, imgHtml;
+        if (prodLookup) {
+            prodTypeCD = prodLookup.@Html.IdFor(m => m.ProdTypeCD);
+            prodTypeDescr = prodLookup.@Html.IdFor(m => m.ProdTypeDescr);
+            prodDescr = prodLookup.@Html.IdFor(m => m.ProdDescr);
+            optsHtml = prodLookup.@Html.IdFor(m => m.OptsPartial);
+            imgHtml = prodLookup.@Html.IdFor(m => m.ImgSetPartial);
+            prodCost = prodLookup.@Html.IdFor(m => m.Cost);
+        } else {
+            prodTypeCD = "";
+            prodTypeDescr = "";
+            prodDescr = "";
+            optsHtml = "";
+            imgHtml = "";
+            prodCost = "";
+        };
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.ProdDescr), prodDescr);
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.ProdTypeDescr), prodTypeCD+" "+prodTypeDescr);
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.Cost), prodCost);
+        $("#prod-options-container").html(optsHtml);
+        $("#prod-image-set").html(imgHtml);
+
+        if (typeof plkSettings.callback == "function") { 
+            plkSettings.callback(prodLookup);
+        };
+    };
+
+    function wireProductLookup(options) {
+        plkSettings = $.extend({}, {loadOnWire: true}, options);
+        if (options) {
+            delete options.callback;
+            delete options.loadOnWire;
+        };
+        if (typeof wireProdCdLookup == "function") { 
+            wireProdCdLookup($.extend({}, {lookup: loadProdInfo}, options));
+
+            $( document ).delegate("#@Html.IdFor(m => m.ProdTypeCD)", "change", function(e) {
+                if (typeof forceProdCdLookup == "function") { 
+                    forceProdCdLookup();
+                };
+            });
+        };
+        if (plkSettings.loadOnWire) {
+            var curProdCD = $("#@Html.IdFor(m => m.ProdCD)").val();
+            if (curProdCD) {
+                forceProdCdLookup();
+            };
+        };
+    };
+</text>);}

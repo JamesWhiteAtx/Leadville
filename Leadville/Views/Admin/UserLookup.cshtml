@@ -1,0 +1,194 @@
+﻿@model CST.Prdn.ViewModels.UserLookupViewModel
+
+@{string prfx = "lookup";}
+
+<fieldset>
+    <legend>Lookup User</legend>
+    <table>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.Login)
+            </th>
+            <td class="editor-field">
+                @Html.TextBox(@Html.PrefixIdFor(m => m.Login, prfx).ToString())
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.FirstName)
+            </th>
+            <td class="editor-field">
+                @Html.TextBox(@Html.PrefixIdFor(m => m.FirstName, prfx).ToString())
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.LastName)
+            </th>
+            <td class="editor-field">
+                @Html.TextBox(@Html.PrefixIdFor(m => m.LastName, prfx).ToString())
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.EMail)
+            </th>
+            <td class="editor-field">
+                @Html.TextBox(@Html.PrefixIdFor(m => m.EMail, prfx).ToString())
+            </td>
+        </tr>
+    </table>
+</fieldset>
+<div>   
+    @Html.ValidationSummary(false)
+</div>
+
+<fieldset id="userToInsert" style="display: none">
+    <legend>Selected User</legend>
+    <table>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.ID)
+            </th>
+            <td class="editor-field">
+                <strong>@Html.SpanAndHiddenFor(m => m.ID)</strong>
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.Login)
+            </th>
+            <td class="editor-field">
+                <strong>@Html.SpanAndHiddenFor(m => m.Login)</strong>
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.FirstName)
+            </th>
+            <td class="editor-field">
+                <strong>@Html.SpanAndHiddenFor(m => m.FirstName)</strong>
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.LastName)
+            </th>
+            <td class="editor-field">
+                <strong>@Html.SpanAndHiddenFor(m => m.LastName)</strong>
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.EMail)
+            </th>
+            <td class="editor-field">
+                <strong>@Html.SpanAndHiddenFor(m => m.EMail)</strong>
+            </td>
+        </tr>
+    </table>
+        
+</fieldset>
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery-ui-1.8.11.js"))
+.OnDocumentReady(@<text>
+    
+    $(document).on("keypress", "#@Html.PrefixIdFor(m => m.Login, prfx)", function(event) {
+        keyPressUpper(event, this);
+    });
+
+    var selectrToHideShow = null;
+
+    function wireUserLookups(lookupUrl, getData, hideShowSlctr) {
+        
+        $("#userToInsert").hide();
+        if (hideShowSlctr) {
+            selectrToHideShow = hideShowSlctr;
+            selectrToHideShow.hide();
+        };
+        
+        $("#@Html.PrefixIdFor(m => m.Login, prfx), #@Html.PrefixIdFor(m => m.FirstName, prfx), #@Html.PrefixIdFor(m => m.LastName, prfx), #@Html.PrefixIdFor(m => m.EMail, prfx)")
+        .autocomplete({
+            source: function (request, response) {
+                
+                var elem = $(this.element);
+                var propId = elem.attr('id').replace("@prfx", "");
+                var trimTerm = $.trim(request.term);
+                var parm;
+                if (getData) {
+                    parm = getData(trimTerm, propId);
+                } else {
+                    parm = { term: trimTerm, property: propId };
+                };
+                $.ajax({
+                    url: lookupUrl,
+                    dataType: "json",
+                    data: parm,
+                    success: function (data) {
+                        if (!data) { data = []; };
+                        response ( $.map(data, function (item) { 
+                            return userLookupItem(item); 
+                        }));
+                    }
+
+                });
+            }
+            , autoFocus: true
+            , minLength: 2
+            , select: function (event, ui) {
+                userLookupPicked(ui.item, this);
+            }
+            @*, change: function (event, ui) {userLookupPicked(ui.item);}*@
+        });
+    };
+
+    function userLookupItem(item) {
+        return {
+            label: item.LookupLabel
+            , value: item.LookupValue
+            , id: item.ID
+            , login: item.Login
+            , lastName: item.LastName
+            , firstName: item.FirstName
+            , email: item.EMail
+        };
+    };
+
+    function userLookupPicked(userObj, elem) {
+        if (userObj) {
+            $("#userToInsert").show("fast");
+            if (selectrToHideShow) {
+                selectrToHideShow.show("fast");
+            };
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.ID), userObj.id);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.Login), userObj.login);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.FirstName), userObj.firstName);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.LastName), userObj.lastName);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.EMail), userObj.email);
+
+            var elemId = $(elem).attr("id");
+
+            var loginId = "@Html.PrefixIdFor(m => m.Login, prfx)";
+            var fNameId = "@Html.PrefixIdFor(m => m.FirstName, prfx)";
+            var lNameId = "@Html.PrefixIdFor(m => m.LastName, prfx)";
+            var eMmailId = "@Html.PrefixIdFor(m => m.EMail, prfx)";
+
+            if (loginId != elemId) {
+                $("#"+loginId).val("");
+            };
+            if (fNameId != elemId) {
+                $("#"+fNameId).val("");
+            };
+            if (lNameId != elemId) {
+                $("#"+lNameId).val("");
+            };
+            if (eMmailId != elemId) {
+                $("#"+eMmailId).val("");
+            };
+
+        } else {
+        };
+    };
+
+</text>);}

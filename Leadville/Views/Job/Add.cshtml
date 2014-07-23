@@ -1,0 +1,10 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+           
+@{ ViewBag.Title = @Model.ViewCaption; }
+
+@Html.Partial("JobEdit", Model)
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"));
+}
+    

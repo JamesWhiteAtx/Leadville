@@ -1,0 +1,62 @@
+﻿@model CST.Prdn.ViewModels.PrdnOrdLookupModel
+           
+@Html.TextBoxFor(m => m.LookupTerm)
+
+@Html.HiddenFor(m => m.LookupPrdnOrdNo)
+@Html.HiddenFor(m => m.LookupShipDt)
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    function picked(event, ui) {
+        var poNoInput = $("#@Html.IdFor(m => m.LookupPrdnOrdNo)");
+        var shipDtInput = $("#@Html.IdFor(m => m.LookupShipDt)");
+
+        var oldPoNo = poNoInput.val();
+
+        if (ui.item) {
+            poNoInput.val(ui.item.PrdnOrdNo);
+            shipDtInput.val(ui.item.ShipDay);
+        } else {
+            poNoInput.val('');
+            shipDtInput.val('');
+        }
+        var newPoNo = poNoInput.val();
+
+        if ((newPoNo) && (newPoNo !== "")) {
+            if ((newPoNo !== oldPoNo) && (typeof runPrdnOrdPickedFunc == 'function')) {
+                runPrdnOrdPickedFunc(oldPoNo, ui.item);
+            }
+        } 
+
+    };
+
+    $("#@Html.IdFor(m => m.LookupTerm)").autocomplete({
+        source: function (request, response) {
+            var trimTerm = $.trim(request.term);
+            var poTerm = $.trim(trimTerm.substr(0,4));
+
+            $.ajax({
+                url: '@Url.Action("_PrdnOrdLookup", "Schedule")',
+                dataType: "json",
+                data: { poTerm: poTerm },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { 
+                            label: item.LookupLabel 
+                            ,value: item.PrdnOrdNo 
+                            ,PrdnOrdNo: item.PrdnOrdNo 
+                            ,shipDay: item.ShipDay
+                        }
+                    }));
+                }
+            });
+        }
+        , autoFocus: true
+        , minLength: 3
+        , select: function (event, ui) {
+            picked(event, ui);
+        }
+        //, change: function (event, ui) { picked(event, ui); }
+    });
+</text>);}

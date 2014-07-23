@@ -1,0 +1,115 @@
+﻿@model CST.Prdn.ViewModels.IEditWorksheetOwner
+@using CST.Prdn.ViewModels           
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    function wsModified() {
+        $("#@Html.IdFor(m => m.EditWorksheet.Modified)").val(true);
+    };
+
+    $(document).on("change", "input.ws-opt-descr", function (e) {
+        wsModified();
+    });
+
+    $(document).on("focus", ".ws-opt-lookup", function (e) {
+        
+        if ( !$(this).hasClass("ui-autocomplete-input") )  {
+
+            $(this).autocomplete({
+                source: function (request, response) {
+                    var item = $(this.element);
+                    var optType = item.data("opt-type");
+                    var optTypeCD = item.data("opt-type-cd");
+                    var trimTerm = $.trim(request.term);
+
+                    $.ajax({
+                        url: '@Url.Action("OptionLookup", "Worksheet")',
+                        dataType: "json",
+                        data: { optType: optType, optTypeCD: optTypeCD, term: trimTerm },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { 
+                                    label: item.LookupLabel 
+                                    ,value: item.LookupValue
+                                    ,code2: item.OptionCode2 
+                                    ,code3: item.OptionCode3
+                                    ,descr: item.OptionDescr
+                                    ,userDefn: item.UserDefined
+                                }
+                            }));
+                        }
+                    });
+                }
+                , autoFocus: true
+                , selectFirst: true
+                , minLength: 0
+                , select: function (event, ui) { wsOptPicked(this, event, ui); }
+                , change: function (event, ui) { wsOptPicked(this, event, ui); }
+                , open: function(event, ui) { $(this).data('isOpen', true); }
+                , close: function(event, ui) { $(this).data('isOpen', false); }
+            });
+        };   // not(".ui-autocomplete-input")
+
+        if ( $(this).hasClass("ui-autocomplete-input") )  {
+            if ( ($(this).data('isOpen') !== true) && ($(this).val().length == 0) ) {
+                $(this).autocomplete("search", $(this).val());
+            }
+        };
+    });
+
+    function wsOptPicked(input, event, ui) {
+        wsModified();
+        var tr = $(input).closest("tr");
+        if (tr.length > 0) {
+            var spnCd3 = tr.find("span.ws-opt-code3");
+            var iptCd3 = tr.find("input.ws-opt-code3");
+            var spnDesc = tr.find("span.ws-opt-descr");
+            var iptDesc = tr.find("input.ws-opt-descr");
+            var iptUdf = tr.find("input.ws-opt-udf");
+
+            if (ui.item) {
+                cd3 = ui.item.code3;
+                dsc = ui.item.descr;
+                
+                if (cd3) {
+                    spnCd3.text(cd3);
+                    iptCd3.val(cd3);
+                };
+                spnDesc.text(dsc);
+                iptDesc.val(dsc);
+
+                iptUdf.val(ui.item.userDefn);
+                if (ui.item.userDefn) {
+                    spnDesc.hide();
+                    iptDesc.show();
+                } else {
+                    spnDesc.show();
+                    iptDesc.hide();
+                }
+            } else {
+                $(input).val("");
+                spnDesc.text("");
+                iptDesc.val("");
+                spnCd3.text("");
+                iptCd3.val("");
+                iptUdf.val(false);
+                spnDesc.show();
+                iptDesc.hide();
+            }
+            if (iptDesc.length > 0) {
+                $(iptDesc).valid(); // trigger unobtrusive validation on possibly hidden descr input
+            }
+        };  // if (tr)
+    }
+ 
+    $(document).on("click", "button.deleteWSRow", function () {
+        var groupID = $(this).data("group-id");
+        if (groupID) {
+            $('tr.' + groupID).remove();
+            wsModified();
+        }
+        return false;
+    });
+
+</text>);}

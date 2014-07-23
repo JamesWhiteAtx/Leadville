@@ -1,0 +1,25 @@
+﻿@model CST.Prdn.ViewModels.PrdnOrdListModel
+           
+@{
+    ViewBag.Title = LocalStr.Lookup + " " + LocalStr.ProductionOrder;
+}
+
+@Html.Partial("PrdnOrdLookup")
+
+
+<div class="horiz-form">
+    <div id="findPrdOrdButtons" class="buttonBox"  style="display: none">
+        @Html.TIconLinkVal(tIconClass: "t-go-next", caption: LocalStr.Run + "s", actionName: "Runs", routeTokens: new { id = @Html.IdFor(m => m.PrdnOrdNo) },
+            htmlAttributes: new { title = LocalStr.Run + "s" })
+    </div>
+</div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    if (typeof wirePrdnOrdLookup == "function") { 
+        wirePrdnOrdLookup({ 
+            select: function(item) {$("#findPrdOrdButtons").show("fast");} 
+        });
+    };
+</text>);}
+

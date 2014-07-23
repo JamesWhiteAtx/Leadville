@@ -1,0 +1,84 @@
+﻿@using CST.Prdn.ViewModels
+
+@model CST.Prdn.ViewModels.PrdnOrdViewModel
+
+@{
+    ViewBag.Title = LocalStr.ProductionOrder;
+}
+
+@Html.HiddenFor(model => model.OrderNo)
+@Html.HiddenFor(model => model.ShipDtStr)
+
+<h3>@LocalStr.ProductionOrder</h3>
+
+<table class="layout">
+    <tr>
+        <td class="strengthened">
+            @Html.LabelFor(model => model.OrderNo): @Html.DisplayOrDashFor(model => model.OrderNo)
+            @Html.TIconButton(tIconClass: "t-search", 
+            caption: LocalStr.Select + " " + LocalStr.ProductionOrder,
+            id: "btnSelectOrd",
+            htmlAttributes: new { title = LocalStr.Change + " " + LocalStr.ProductionOrder })
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.ShipDtStr): @Html.DisplayFor(model => model.ShipDtStr)
+        </td>
+    </tr>
+</table>
+
+@if (Model.IsNotNull(m => m.OrderNo))
+{
+    <div class="no-space strengthened">
+        @(LocalStr.Run)s
+    </div>
+    
+    Html.Telerik().Grid<PrdnRunViewModel>()
+    .Name("Grid")
+    .DataKeys(dataKeys => dataKeys.Add(r => r.ID))
+    .DataBinding(dataBinding => { dataBinding.Ajax().Select("_SelectRun", "Lookup", new { prdnNo = Model.OrderNo }); })
+    .Columns(columns =>
+    {
+        columns.Bound(r => r.ID).Width(80).ReadOnly();
+        columns.Bound(r => r.PrdnOrderNo).ReadOnly();
+        columns.Bound(r => r.PrdnTypeCdDescr).ReadOnly();
+        columns.Bound(r => r.ProdTypeCdDescr).ReadOnly();
+        columns.Bound(r => r.Description).ReadOnly();
+        columns.Bound(r => r.HasJobs).Width(90).ReadOnly().ClientTemplate("<input type='checkbox' disabled='disabled' name='HasJobs' <#= HasJobs? checked='checked' : '' #> />");
+        columns.Bound(r => r.ID)
+            .ClientTemplate(
+                @Html.ActionLink(linkText: @LocalStr.Job + "s", actionName: "Jobs",
+                    routeValues: new { id = "<#= ID #>" },
+                    htmlAttributes: new { @class = "t-button schedule-link" }).ToString()
+            )
+            .Title("").Width(80).ReadOnly();
+    })
+    .Pageable()
+    .Render();
+}
+
+@Html.Partial("PrdnOrdDialog")
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    function selectOrd() {
+        openPrdnOrdDialog(
+            function (item) {
+                linkUrl("@Html.Raw(Url.Action(ViewContext.RouteData.Values["Action"].ToString(), new { id = "_parm_" }))", item.PrdnOrdNo);
+            }
+        );
+    };
+
+    if (typeof openPrdnOrdDialog == "function") { 
+        $('#btnSelectOrd').click(function(e) {
+            e.preventDefault();
+           selectOrd();
+        });
+    };
+
+    var poNo =  $("#@Html.IdFor(m => m.OrderNo)").val();
+    if (!poNo) {
+        selectOrd();
+    }
+</text>);}

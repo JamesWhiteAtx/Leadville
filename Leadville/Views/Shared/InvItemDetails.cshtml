@@ -1,0 +1,36 @@
+﻿@model CST.Prdn.ViewModels.InvItemViewModel
+           
+    @Html.HiddenFor(model => model.InvItemID)
+    @Html.HiddenFor(model => model.ParentProdCD)
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdType)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProdTypeCD) @Html.DisplayFor(model => model.ProdType)
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdCD)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProdCD)
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.Description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ItemOptions)
+    </div>
+    <div id="item-options-container" class="display-field">
+        @if (Model.NotNullAny(m => m.ItemOptions))
+        {
+            @Html.Partial("CharCompOpts", Model.ItemOptions, new ViewDataDictionary())    
+        }
+    </div>
+

@@ -1,0 +1,10 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    <div class="div-border">
+        <div class="display-label strengthened larger">
+            @Html.LabelFor(model => model.EditStatus)
+        </div>
+        <div class="display-field strengthened larger">
+            @Html.CheckDisplay(Model.Status)
+        </div>
+    </div>

@@ -1,0 +1,131 @@
+﻿@{
+    const string NewRunOrderNoID = "new-runOrderNo";
+    const string NewRunShipDtID = "new-runShipDt";
+    const string NewRunPrdnTypeID = "new-runPrdnTypeID";
+    const string NewRunNoteID = "new-runNote";
+}
+    <div id="newRunDlgElem" class="horiz-form wide-input" title="@LocalStr.Create @LocalStr.NewRun" style="display: none">
+        <div class="display-label">
+            @Html.Label(@NewRunOrderNoID, @LocalStr.OrderNo)
+        </div>
+        <div class="display-field">
+            @Html.SpanOrDashAndHidden(@NewRunOrderNoID)
+        </div>
+        <div class="display-label">
+            @Html.Label(@NewRunShipDtID, @LocalStr.ShipDate)
+        </div>
+        <div class="display-field">
+            @Html.SpanOrDashAndHidden(@NewRunShipDtID)
+        </div>
+        <div class="editor-label">
+            @Html.Label(@NewRunPrdnTypeID, @LocalStr.Type)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList(@NewRunPrdnTypeID, new SelectList(Enumerable.Empty<SelectListItem>()))
+        </div>
+        <div class="display-label">
+            @Html.Label(@NewRunNoteID, @LocalStr.Note)
+        </div>
+        <div class="display-field">
+            @Html.TextBox(@NewRunNoteID)
+        </div>
+    </div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+     
+    $("#@NewRunPrdnTypeID").change(function () {
+        var str = "";
+        $("#@NewRunPrdnTypeID option:selected").each(function () {
+            str += $(this).text() + " ";
+        });
+        $("#@NewRunNoteID").val(str);
+    })
+    .change();
+
+    var newRunDlg = undefined;
+    var newRunDlgSettings;
+    
+    function defNewRunDlg() {
+        newRunDlg = $("#newRunDlgElem");
+
+        newRunDlg.dialog({
+            autoOpen: false,
+		    resizable: true,
+		    height:230,
+            width:500,
+		    modal: true,
+		    buttons: {
+			    @LocalStr.Create: function() { 
+                    if (typeof newRunDlgSettings.callback == "function") {
+                        var selOpt = $("#@NewRunPrdnTypeID option:selected");
+                        newRunDlgSettings.callback({
+                            poNo: $("#@NewRunOrderNoID").val(),
+                            shipDtStr: $("#@NewRunShipDtID").val(),
+                            typeID: $("#@NewRunPrdnTypeID").val(),
+                            typeDescr: selOpt.text(),
+                            note: $("#@NewRunNoteID").val(),
+                            typeCD: selOpt.data("typeCD"),
+                            prodTypeCD: selOpt.data("prodTypeCD")
+                        });
+                    };
+                    $( this ).dialog( "close" ); 
+                },
+			    @LocalStr.Cancel: function() { 
+                    $( this ).dialog( "close" ); 
+                }
+		    },
+            open: function (event, ui) {
+                $("#@NewRunPrdnTypeID").focus();
+            },
+            close: function (event, ui) {
+            }
+	    });
+
+    };
+
+    function loadUnusedRunTypes(settings) {
+        var prodTypeCD = evalString(settings.prodTypeEval)
+        $.getJSON('@Url.Action("_UnusedTypes", "Lookup")', { prdnOrdNo: settings.poNo, prodTypeCD: prodTypeCD }, function(result) {
+            var ddl = $("#@NewRunPrdnTypeID");
+            ddl.empty();
+            var items = 0;
+            var selId = null;
+            var selDescr = null;
+            @*var typeMatch = $.trim(type).toUpperCase();*@
+            $(result).each(function() {
+                ddl.append(
+                    $('<option/>', {
+                        value: this.Id
+                    }).html(this.Name).data("typeCD", this.Code).data("prodTypeCD", this.ProdTypeCD)
+                );
+                items ++;
+                if (selId == null) {
+                    selId = this.Id;
+                    selDescr = this.Name;
+                }
+            });
+            if (items !== 0) {
+                if (selId !== null) {
+                    ddl.val(selId);
+                     $("#@NewRunNoteID").val(selDescr);
+                };
+            } else {
+                alert('Sorry - all the  @(LocalStr.ProductionType)s for  @LocalStr.OrderNo' + poNo + ' have already been made.');
+            };
+        });
+    };
+
+    function openNewRunDialog(options)
+    {
+        newRunDlgSettings = evalObject(options);
+        if ($.type(newRunDlg) === "undefined") {
+             defNewRunDlg()
+        };
+        inputAndSpanValue(@Html.IdSpanId(NewRunOrderNoID), newRunDlgSettings.poNo);
+        inputAndSpanValue(@Html.IdSpanId(NewRunShipDtID), newRunDlgSettings.shipDtStr);
+        loadUnusedRunTypes(newRunDlgSettings);
+        newRunDlg.dialog( "open" );
+    }
+
+</text>);}

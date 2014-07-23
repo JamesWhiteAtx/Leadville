@@ -1,0 +1,90 @@
+﻿    <div id="poDlgDiv" title="@LocalStr.Lookup"  style="display: none">
+        @Html.Partial("PrdnOrdLookup", new CST.Prdn.ViewModels.PrdnOrdListModel())
+    </div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    var poDlgTitle = "@LocalStr.Lookup";
+    var divPoDlgVar = null;
+    var btnPoDlgOkBtnId = "dlgLkUpPOSelect";
+    var btnPoDlgOkBtnSlctr = "#" + btnPoDlgOkBtnId;
+    var poDlgCallback = null;
+
+    function getDivPoDialogInner() {
+        return $("div#poDlgDiv");
+    }
+
+    function createPrdnPoDialog() {
+        divPoDlgVar = getDivPoDialogInner();
+
+        divPoDlgVar.dialog({ 
+            autoOpen: false,
+		    resizable: true,
+		    height:400,
+            width:400,
+		    modal: true,
+            buttons :  { 
+                "select" : {
+                    text: "@LocalStr.OK",
+                    id: btnPoDlgOkBtnId,
+                    click: function(){ 
+                        if ((typeof getOrdItem == 'function') && (typeof poDlgCallback == 'function')) {
+                            var p = getOrdItem();
+                            poDlgCallback(p);
+                        };
+                        $( this ).dialog( "close" );
+                    }   
+                },
+                "cancel" : {
+                    text: "@LocalStr.Cancel",
+                    id: "dlgLkUpPOCancel",
+                    click: function() { $( this ).dialog( "close" ); }
+                } 
+            },
+            open: function (event, ui) {
+                if (typeof clearOrdLookup == 'function') {
+                    clearOrdLookup();
+                };
+                var okBtn = $(btnPoDlgOkBtnSlctr); 
+                okBtn.hide(); 
+            }
+
+        });
+    };
+
+    function openPrdnOrdDialog(callback, dlgTitle) {
+        if (divPoDlgVar == null) {
+            createPrdnPoDialog();
+        };
+
+        poDlgCallback = callback;
+
+        if (dlgTitle) {
+            poDlgTitle = dlgTitle;
+            $("span#ui-dialog-title-poDlgDiv").text(poDlgTitle);
+        }
+
+        divPoDlgVar.dialog( "open" );
+    };
+
+    @*createPrdnPoDialog();*@
+
+    function getOrdItem()
+    {
+        if (typeof getPrdnOrdItem == "function") { 
+            return getPrdnOrdItem();
+        };
+    }
+
+    function prdnOrdSelected(item) {
+        $(btnPoDlgOkBtnSlctr).show("fast").focus();
+    };
+    
+    if (typeof wirePrdnOrdLookup == 'function') { 
+        wirePrdnOrdLookup({
+           select: prdnOrdSelected
+        });
+    };
+
+</text>);}

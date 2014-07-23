@@ -1,0 +1,46 @@
+﻿@model CST.Prdn.ViewModels.PatternLookupModel
+
+@{
+    ViewBag.Title = LocalStr.Pattern;
+}
+
+<h2>@LocalStr.Pattern</h2>
+
+<div class="horiz-form">
+    @Html.Partial("ProductLookup")
+</div>
+<div id="findPrtnRslts" style="display: none">
+</div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    
+    function loadPtrnInfo(prod) {
+        var prodInput = $("#@Html.IdFor(m => m.ProdCD)");
+        addLoadingClass(prodInput);
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("_PatternLeatherPartial")",
+            data: {prodCD: prod.ProdCD},
+            success: function (html) {
+                $("#findPrtnRslts").html(html);
+            },
+            complete: function () {
+                removeLoadingClass(prodInput);
+            }
+        });
+    };
+
+    if (typeof wireProductLookup == "function") { 
+        wireProductLookup({
+            callback: function(prod){
+                if (prod) {
+                    $("#findPrtnRslts").show("fast");
+                    loadPtrnInfo(prod);
+                } else {
+                    $("#findPrtnRslts").hide("fast");
+                };
+            }
+        });
+    };
+</text>);}

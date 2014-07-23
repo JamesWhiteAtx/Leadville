@@ -1,0 +1,83 @@
+﻿@model CST.Prdn.BulkSaleImpIModel
+@using CST.Prdn
+           
+@{
+    ViewBag.Title = "Edit Warehouse Transfer";
+}
+
+<div class='vert-space-bot'>
+    @Html.TIconActionLink(tIconClass: "t-go-back", linkText: "Back to Warehouse List", actionName: "TrnsfrWrhsList")
+</div>
+
+<fieldset class="horiz-form">
+    @*<legend>Whtransfter</legend>*@
+
+    <div class="display-label strengthened">
+        @Html.LabelFor(model => model.RunName)
+    </div>
+    <div class="display-field strengthened">
+        @Html.DispAndHiddenFor(model => model.RunName)
+    </div>
+
+</fieldset>
+
+@(
+ Html.Telerik().Grid<BulkSaleImpInfo>()
+    .Name("Grid")
+    .DataKeys(dataKeys => dataKeys.Add(r => r.ItemKey))
+    .ToolBar(commands =>
+    {
+        commands.Insert().ButtonType(GridButtonType.ImageAndText).ImageHtmlAttributes(new { style = "margin-left:0" });
+        //commands.Custom()
+        //    .HtmlAttributes(new { id = "export", @class = "tgrid-excel-export" })
+        //    .Text("Export to Excel")
+        //    .Action("ExportWHEdit", "Util", new { id = Model.RunName, columns = "~", orderBy = "~", filter = "~" })
+        //    ;
+    })
+    .DataBinding(dataBinding =>
+    {
+        dataBinding.Ajax()
+            .Select("_SelectWhtrans", "Util", new { ID = Model.RunName })
+            .Insert("_InsertWhtrans", "Util")
+            .Update("_SaveWhtrans", "Util")
+            .Delete("_DeleteWhtrans", "Util");
+    })
+    .Columns(columns =>
+    {
+        columns.Bound(r => r.RunName).Visible(false);
+        columns.Bound(r => r.ItemKey).Visible(false);
+        columns.Bound(r => r.SerialNum).Width(120).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.CustPO).Width(100).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.RWProdCD).Width(100).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.ProdDescr).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.HV).Width(80).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.VendorID).Width(100).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.DeptID).Width(80).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.Status).Width(100).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.Cost).Width(80).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Command(commands =>
+        {
+            commands.Edit().ButtonType(GridButtonType.ImageAndText);
+            commands.Delete().ButtonType(GridButtonType.ImageAndText);
+        }).Width(220).Title("Commands");
+                               
+    })
+    .Editable(editing => editing.Mode(GridEditMode.InLine))
+    .Pageable(settings => settings.Position(GridPagerPosition.Both).PageSize(1000))
+    .Scrollable(s => s.Enabled(true).Height("auto"))
+    .Sortable()
+    .Filterable()
+    .Resizable(resizing => resizing.Columns(true))
+    .ClientEvents(events => events.OnSave("onGridSave").OnDataBound("onDataBound"))
+)
+
+@{Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text>
+    function onGridSave(e) {
+        var run = $("#@Html.IdFor(m => m.RunName)").val();
+        var values = e.values;
+        values.RunName = run;
+    };
+    function onDataBound(e) {
+        tGridAddExpExcel(e, '@Url.Action("ExportWHEdit", routeValues: new { id = Model.RunName })');
+    }
+</text>);}

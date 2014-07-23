@@ -1,0 +1,22 @@
+﻿@model CST.Prdn.ViewModels.IEditWorksheetOwner
+
+@if (this.ViewContext.FormContext == null)
+{
+    this.ViewContext.FormContext = new FormContext();
+} 
+        @Html.LabelFor(m => m.EditWorksheet.Editable) @Html.EditorFor(m => m.EditWorksheet.Editable)
+
+        @Html.HiddenFor(m => m.EditWorksheet.WorksheetID)
+        @Html.HiddenFor(m => m.EditWorksheet.Modified)
+        @Html.HiddenFor(m => m.EditWorksheet.ProdCD)
+        @Html.HiddenFor(m => m.EditWorksheet.ProdSetid)
+        @Html.HiddenFor(m => m.EditWorksheet.MetaType)
+        @Html.HiddenFor(m => m.EditWorksheet.ActionTypeCD)
+        @Html.HiddenFor(m => m.EditWorksheet.ActionTypeDescr)
+        @Html.HiddenFor(m => m.EditWorksheet.ActionOptCD2)
+        @Html.HiddenFor(m => m.EditWorksheet.ActionOptDescr)
+        @Html.HiddenFor(m => m.EditWorksheet.ActionOptUDF)
+        <div id="worksheet-rows-partial" class="no-space">
+            @Html.Partial("WorksheetRows", Model)    
+        </div>
+

@@ -1,0 +1,18 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+
+    <div class="editor-label cstRequest">
+        @Html.LabelFor(model => model.CstRequestID)
+    </div>
+    <div class="editor-field cstRequest">
+        @if (!String.IsNullOrWhiteSpace( Model.IfNotNull(m => m.CstRequestID) ))
+        {
+            @Html.ActionLink(Html.DisplayFor(model => model.CstRequestID).ToString(), "Edit", "Request", new { id = Model.CstRequestID }, null)
+            @Html.HiddenFor(model => model.CstRequestID)
+        }
+        else
+        {
+            @Html.SpanOrDashAndHiddenFor(model => model.CstRequestID)
+        }
+    </div>
+

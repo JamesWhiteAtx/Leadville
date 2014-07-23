@@ -1,0 +1,138 @@
+﻿@using CST.Prdn.ViewModels
+
+@model CST.Prdn.ViewModels.PrdnOrdViewModel
+
+@{
+    ViewBag.Title = LocalStr.Production+" "+LocalStr.Run+"s";
+}
+
+<h3>@LocalStr.Production @(LocalStr.Run)s</h3>
+
+@Html.HiddenFor(m => m.OrderNo)
+@Html.HiddenFor(m => m.TypeCount)
+
+<div>
+    <span class="strengthened">
+    @Html.LabelFor(model => model.OrderNo): @Html.SpanOrDashAndHiddenFor(model => model.OrderNo)
+    </span>
+    @Html.LabelFor(model => model.ShipDtStr): @Html.DispAndHiddenFor(model => model.ShipDtStr) 
+    @Html.TIconButton(tIconClass: "t-search", caption: LocalStr.Select + " " + LocalStr.ProductionOrder,
+        id: "btnSelectOrd", htmlAttributes: new { title = LocalStr.Change + " " + LocalStr.ProductionOrder })
+</div>
+
+@if (Model.IsNotNull(m => m.OrderNo))
+{
+    <div class="no-space strengthened">
+        @(LocalStr.Run)s
+    </div>
+    
+    Html.Telerik().Grid<PrdnRunViewModel>()
+    .Name("Grid")
+    .DataKeys(dataKeys => dataKeys.Add(r => r.ID))
+    .ToolBar(toolBar =>
+    {
+        toolBar.Template( Html.TIconButton(tIconClass: "t-add", caption: LocalStr.Create+" "+LocalStr.Run,
+                htmlAttributes: new { @class = "t-grid-retpage", id = "create-run-button", title = LocalStr.Create + " " + LocalStr.NewRun, style = "display: none" }).ToString()
+        );
+    })
+    .DataBinding(dataBinding =>
+    {
+        dataBinding.Ajax()
+            .Select("_SelectRun", "Lookup", new { prdnNo = Model.OrderNo })
+            .Update("_SaveRun", "Schedule")
+            .Delete("_DeleteRun", "Schedule");
+    })
+    .Columns(columns =>
+    {
+        columns.Bound(r => r.ID).ReadOnly();
+        columns.Bound(r => r.PrdnOrderNo).ReadOnly();
+        columns.Bound(r => r.PrdnTypeCdDescr).ReadOnly();
+        columns.Bound(r => r.ProdTypeCdDescr).ReadOnly();
+        columns.Bound(r => r.Description);
+        columns.Bound(r => r.HasJobs).ReadOnly()
+            .ClientTemplate("<input type='checkbox' disabled='disabled' name='HasJobs' <#= HasJobs? checked='checked' : '' #> />");
+        columns.Bound(r => r.ID)
+            .ClientTemplate(
+                Html.TIconActionLink(tIconClass: "t-update", linkText: LocalStr.Job + "s",
+                    actionName: "Jobs", controllerName: "Schedule",
+                    routeValues: new { id = "<#= ID #>" },
+                    htmlAttributes: new { title = "Schedule Jobs" }
+                ).ToString()
+            )
+            .Title("").ReadOnly();
+        columns.Command(commands =>
+        {
+            commands.Edit().ButtonType(GridButtonType.ImageAndText);
+        }).Width(60);
+        columns.Command(commands =>
+        {
+            commands.Delete().ButtonType(GridButtonType.ImageAndText).HtmlAttributes(new { @class = "delRunCtrl" });
+        }).Width(60).HtmlAttributes(new { name = "delCommand" });
+    })
+    .EnableCustomBinding(true)
+    .Editable(editing => editing.Mode(GridEditMode.InLine))
+    .Pageable()
+        //.Scrollable()
+        //.Sortable()
+    .ClientEvents(clientEvents => clientEvents.OnRowDataBound("onRowDataBound").OnDataBound("onDataBound"))
+    .Render();
+}
+
+@Html.Partial("PrdnOrdDialog")
+@Html.Partial("NewRunDialog")
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    function onRowDataBound(e) {
+        if (e.dataItem.HasJobs) {
+            $(e.row).find(".delRunCtrl").remove();
+            //e.row.cells[8].style["visibility"] = "hidden";
+        }
+    };
+
+    function onDataBound(e) {
+        if (typeof openNewRunDialog == "function") { 
+            var runCount = $(e.target).data('tGrid').data.length;
+            var typeCount = $("#@Html.IdFor(m => m.TypeCount)").val() / 1;
+            if (typeCount > runCount) {
+                $('#create-run-button').show();
+            } else {
+                $('#create-run-button').hide();
+            }
+        };
+    };
+
+    function selectOrd() {
+        openPrdnOrdDialog(
+            function (item) {
+                linkUrl("@Html.Raw(Url.Action(ViewContext.RouteData.Values["Action"].ToString(), new { id = "_parm_" }))", item.PrdnOrdNo);
+            }
+        );
+    };
+
+    if (typeof openPrdnOrdDialog == "function") { 
+        $('#btnSelectOrd').click(function(e) {
+            e.preventDefault();
+            selectOrd();
+        });
+
+        var poNo =  $("#@Html.IdFor(m => m.OrderNo)").val();
+        if (!poNo) {
+            selectOrd();
+        }
+    };
+
+    if (typeof openNewRunDialog == "function") { 
+        $('#create-run-button').click(function(e) {
+            e.preventDefault();
+            openNewRunDialog({
+                poNo: $("#@Html.IdFor(m => m.OrderNo)").val(), 
+                shipDtStr: $("#@Html.IdFor(m => m.ShipDtStr)").val(),
+                callback: function (newRun) {
+                    linkUrl("@Html.Raw(Url.Action("ScheduleRunNewRun", new { orderNo = "_parm_", typeID = "_parm_", note = "_parm_" }))", newRun.poNo, newRun.typeID, newRun.note);
+                }
+            });
+        });
+    };
+
+</text>);}

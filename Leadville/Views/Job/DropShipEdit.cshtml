@@ -1,0 +1,220 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.DropShip)
+    </div>
+    <div class="editor-field small-input">
+        @Html.RadioButtonFor(model => model.DropShip, true, new { id = "dropShipY" }) @LocalStr.Yes
+        @Html.RadioButtonFor(model => model.DropShip, false, new { id = "dropShipN" }) @LocalStr.No
+        @Html.ValidationMessageFor(model => model.DropShip)
+    </div>
+        
+    <div id="drop-ship" class="div-border" style="display: none">
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DropShipCustID)
+        </div>
+        <div class="editor-field small-input">
+            @Html.EditorFor(model => model.DropShipCustID)
+            @Html.ValidationMessageFor(model => model.DropShipCustID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DropShipCustName)
+        </div>
+        <div class="editor-field xtra-wide-input">
+            @Html.EditorFor(model => model.DropShipCustName)
+            @Html.ValidationMessageFor(model => model.DropShipCustName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipAddr1)
+        </div>
+        <div class="editor-field xtra-wide-input">
+            @Html.EditorFor(model => model.ShipAddr1)
+            @Html.ValidationMessageFor(model => model.ShipAddr1)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipAddr2)
+        </div>
+        <div class="editor-field xtra-wide-input">
+            @Html.EditorFor(model => model.ShipAddr2)
+            @Html.ValidationMessageFor(model => model.ShipAddr2)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipAddr3)
+        </div>
+        <div class="editor-field xtra-wide-input">
+            @Html.EditorFor(model => model.ShipAddr3)
+            @Html.ValidationMessageFor(model => model.ShipAddr3)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipAddr4)
+        </div>
+        <div class="editor-field xtra-wide-input">
+            @Html.EditorFor(model => model.ShipAddr4)
+            @Html.ValidationMessageFor(model => model.ShipAddr4)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipCity)
+        </div>
+        <div class="editor-field wide-input">
+            @Html.EditorFor(model => model.ShipCity)
+            @Html.ValidationMessageFor(model => model.ShipCity)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipState)
+        </div>
+        <div class="editor-field medium-input">
+            @Html.EditorFor(model => model.ShipState)
+            @Html.ValidationMessageFor(model => model.ShipState)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipPostal)
+        </div>
+        <div class="editor-field medium-input">
+            @Html.EditorFor(model => model.ShipPostal)
+            @Html.ValidationMessageFor(model => model.ShipPostal)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipCountry)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShipCountry)
+            @Html.ValidationMessageFor(model => model.ShipCountry)
+        </div>
+
+    </div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    function showDropShip(showIt) {
+        if (showIt) {
+            $("#drop-ship").show("fast");
+        } else {
+            $("#drop-ship").hide("fast");
+        }
+    };
+
+    showDropShip($("#dropShipY").is(":checked"));
+
+    $("#dropShipY").click(function () {
+        showDropShip($("#dropShipY").is(":checked"));
+    });
+
+    $("#dropShipN").click(function () {
+        showDropShip(!$("#dropShipN").is(":checked"));
+    });
+
+    $("#@Html.IdFor(m => m.DropShipCustID)").autocomplete({
+        source: function (request, response) {
+            var custIdTerm = $.trim(request.term);
+            $.ajax({
+                url: '@Url.Action("_CustShipAddrLookup", "Isis")',
+                dataType: "json",
+                data: { isisCustID: custIdTerm },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return custLookupItem(item);
+                    }));
+                }
+            });
+        }
+        , autoFocus: true
+        , minLength: 4
+        , select: function (event, ui) {
+            dropCustPicked(ui.item);
+        }
+        , change: function (event, ui) { 
+            dropCustPicked(ui.item); 
+        }
+    });
+
+    function custLookupItem(item) {
+        return { 
+            label: item.LookupLabel 
+            ,value: item.LookupValue
+            ,custID: item.CustID
+            ,custName: item.CustName
+            ,addr1: item.Addr1
+            ,addr2: item.Addr2
+            ,addr3: item.Addr3
+            ,addr4: item.Addr4
+            ,city: item.City
+            ,state: item.State
+            ,postal: item.Postal
+            ,country: item.Country
+        };
+    };
+
+    var lastDropCust = $("#@Html.IdFor(m => m.DropShipCustID)").val();
+
+    function dropCustPicked(custObj) {
+        clearErrorValidation("@Html.IdFor(m => m.DropShipCustID)");
+        var dropCustInput = $("#@Html.IdFor(m => m.DropShipCustID)");
+        if (custObj) {
+            assignDropShip(custObj);
+        } else {
+            curCustID = dropCustInput.val();
+            if ((curCustID) && (curCustID !== '') ) {
+                if (curCustID != lastDropCust) {
+                    addLoadingClass(dropCustInput);
+                    $.getJSON('@Url.Action("_CustIDShipAddrLookup", "Isis")', { isisCustID: curCustID }, function(result) {
+                        if (result) {
+                            assignDropShip( custLookupItem(result) );
+                        } else {
+                            assignDropShip(null);
+                            setErrorValidation("@Html.IdFor(m => m.DropShipCustID)", "Sorry - "+curCustID+ " is not a valid @Html.DisplayNameFor(m => m.DropShipCustID)");
+                        };
+                        removeLoadingClass(dropCustInput);
+                    });
+                };
+            } else {
+                assignDropShip(null);
+            }
+        };
+        lastDropCust = dropCustInput.val();
+    };
+        
+    function assignDropShip(custObj) {
+        clearErrorValidation("@Html.IdFor(m => m.DropShipCustID)");
+        var nameInput = $("#@Html.IdFor(m => m.DropShipCustName)");
+        var addr1Input = $("#@Html.IdFor(m => m.ShipAddr1)");
+        var addr2Input = $("#@Html.IdFor(m => m.ShipAddr2)");
+        var addr3Input = $("#@Html.IdFor(m => m.ShipAddr3)");
+        var addr4Input = $("#@Html.IdFor(m => m.ShipAddr4)");
+        var cityInput = $("#@Html.IdFor(m => m.ShipCity)");
+        var stateInput = $("#@Html.IdFor(m => m.ShipState)");
+        var postalInput = $("#@Html.IdFor(m => m.ShipPostal)");
+        var countryInput = $("#@Html.IdFor(m => m.ShipCountry)");
+
+        if (custObj) {
+            nameInput.val(custObj.custName);
+            addr1Input.val(custObj.addr1);
+            addr2Input.val(custObj.addr2);
+            addr3Input.val(custObj.addr3);
+            addr4Input.val(custObj.addr4);
+            cityInput.val(custObj.city);
+            stateInput.val(custObj.state);
+            postalInput.val(custObj.postal);
+            countryInput.val(custObj.country);
+        } else {
+            nameInput.val('');
+            addr1Input.val('');
+            addr2Input.val('');
+            addr3Input.val('');
+            addr4Input.val('');
+            cityInput.val('');
+            stateInput.val('');
+            postalInput.val('');
+            countryInput.val('');
+        };
+    };
+        
+
+</text>);}

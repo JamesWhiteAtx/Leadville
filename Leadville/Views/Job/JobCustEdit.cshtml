@@ -1,0 +1,72 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+@using CST.Prdn.Data
+       
+       <div class="editor-label">
+            @Html.LabelFor(model => model.CustID)
+        </div>
+        <div class="editor-field">
+            @if (Model.CustListFunc != null)
+            {
+                @Html.DropDownListFor(model => model.CustID, Model.CustListFunc(), "-- Select " + @Html.DisplayNameFor(model => model.CustID) + " --")
+            }
+            else
+            {
+                @Html.SpanOrDashAndHiddenFor(model => model.CustDisplay)
+            }
+            @Html.ValidationMessageFor(model => model.CustID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CustLocation)
+        </div>
+        <div class="editor-field">
+            @if (Model.CustLocsFunc != null)
+            {
+                @Html.DropDownListFor(model => model.CustLocation, Model.CustLocsFunc(Model.CustID), "-- Select " + @Html.DisplayNameFor(model => model.CustLocation) + " --")
+            }
+            else
+            {
+                @Html.SpanOrDashAndHiddenFor(model => model.CustLocDisplay)
+            }
+            @Html.ValidationMessageFor(model => model.CustLocation)
+        </div>
+
+@{ Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    function loadOrdCustLocs(custId, passedLocId)
+    {
+        loadCustLocs(custId, passedLocId, "@Url.Action("_CustLocations", "Lookup")", "#@Html.IdFor(m => m.CustLocation)", "@Html.DisplayNameFor(model => model.CustLocation)");
+    };
+
+    function enableCustFeatures(custId)
+    {
+        if (custId == @PrdnDataHelper.PrdnCustIDCST) {
+            $("#@Html.IdFor(m => m.OrderNo)").autocomplete( "option", "disabled", false ); 
+            $("#@Html.IdFor(m => m.DropShipCustID)").autocomplete( "option", "disabled", false ); 
+            $(".cstRequest").show(); 
+            $(".jobPurchOrd").hide();
+        } else {
+            $("#@Html.IdFor(m => m.OrderNo)").autocomplete( "option", "disabled", true );  
+            $("#@Html.IdFor(m => m.DropShipCustID)").autocomplete( "option", "disabled", true ); 
+            $(".cstRequest").hide();
+            $(".jobPurchOrd").show();
+        }
+    }
+
+    var custDDL = $("#@Html.IdFor(m => m.CustID)");
+
+    if (custDDL) {
+        var custId = custDDL.attr('value');
+        if (!custId) {
+            loadOrdCustLocs(custId);
+        };
+        custDDL.change(function() 
+        {
+            var custId = $(this).attr('value');
+            loadOrdCustLocs(custId);
+            enableCustFeatures(custId);
+        });
+    }
+
+</text>); }

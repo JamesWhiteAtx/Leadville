@@ -1,0 +1,43 @@
+﻿@model CST.Prdn.ViewModels.SchedulePrdnJobViewModel
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.SpecialWSDescr)
+    </div>
+    <div class="display-field">
+        <em><strong>
+            @Html.SpanAndHiddenFor(model => model.SpecialWSDescr)
+        </strong></em>
+    </div>
+    
+    @Html.HiddenFor(model => model.WorksheetID)
+
+    @if (Model.IsNotNull(m => m.EditWorksheet))
+    {
+        <div class="display-label">
+            @Html.LabelFor(model => model.EditWorksheet)
+        </div>
+        <div class="display-field worksheet-editor">
+            @Html.Partial("WorksheetDesign", Model)    
+        </div>
+    }
+
+    @Html.HiddenFor(model => model.HasAttachment)
+    @if (Model.IfNotNull(m => m.HasAttachment) == true)
+    {
+        <div class="display-label">
+            @Html.LabelFor(model => model.HasAttachment)
+        </div>      
+        <div class="display-field">  
+            @*<a href="@Url.Action("Attachment", "Request", new { id = Model.CstRequestID })" target="_blank" title="Attachment"  class="image-link-req"> <img src="@Url.Content("~/Content/Images/paperclipSmall.gif")" alt="Attachment"/></a>*@
+            @Html.ImageLink(imgSrc: Url.Content("~/Content/Images/paperclipSmall.gif"),
+                actionName: "Attachment",
+                controllerName: "Request",
+                routeValues: new { id = Model.CstRequestID },
+                linkHtmlAttributes: new { target = "_blank", @class = "image-link", 
+                    data_img_id = Model.CstRequestID, 
+                    data_img_title = LocalStr.Request+" "+Model.ID+" "+LocalStr.Attachment },
+                imgHtmlAttributes: new { alt = LocalStr.Attachment }
+            )
+        </div>
+    }
+

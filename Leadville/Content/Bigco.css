@@ -1,0 +1,495 @@
+﻿
+* {margin:0; padding:0;}
+
+body {
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    font: 12px/1.5em Arial, Helvetica, Verdana, sans-serif;
+    color: Black;
+}
+
+img 
+{
+   border:none;
+   vertical-align:top;
+}
+
+header,
+footer,
+nav,
+section {
+    display: block;
+}
+
+.page {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#rw_header {
+    background:#ffffff; 
+    height:75px;
+    display:block;
+}
+
+#rw_logo {width:562px; height:58px; float:left; margin:5px 0 0 10px;}
+#rw_logo a {display:block; width:562px; height:58px; background:transparent url("Images/Bigco/roadwire_cc.png") 0 0 no-repeat;}
+#rw_logo a h1 {display:none;}
+
+#rw_mainmenu 
+{
+    height:32px; 
+    border-bottom:0px solid #0b0c10; 
+    overflow:hidden;
+    background:#38668F; 
+    color:#fff; 
+    background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));    
+}
+
+#rw_breadcrumbs 
+{
+    font-size:12px; 
+    height:22px; 
+    line-height:22px; 
+    padding:0 40px; 
+    border-bottom:0px solid #0185C5; 
+    color:#fff;
+    background:#4688C0; 
+    background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));    
+}
+#rw_breadcrumbs .crumb {color:#fff; font-size:12px; line-height:44px;}
+
+#rw_navigation ul {font-size:13px; text-transform:uppercase; list-style:none; width:600px; margin:0 0 0 35px; float:left;}
+#rw_navigation ul li {display:inline; line-height:30px; background:transparent url("images/Bigco/main_menu_sep_cc.png") 100% 0px no-repeat; margin:0 10px 0 0; padding:0 20px 0 0; border-right:0px solid #cfcfcf;}
+#rw_navigation ul li a {color:#fff; text-decoration:none;}
+
+.clearfix::after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clearfix {
+    display: block;
+}
+
+#rw_breadcrumbs li
+{
+    display: inline;
+    list-style-type: none;
+    padding-right: 5px;
+}
+
+#rw_breadcrumbs li:after
+{
+    content:">";
+}
+
+#rw_breadcrumbs a
+{
+    color: #fff;
+    text-decoration:none;
+}
+
+#rw_breadcrumbs a:hover
+{
+    color: white;
+    text-decoration: none;
+}
+
+#main 
+{
+    padding: 0px 0px 0px 0px;
+    /*background-color: #F4F4F4;*/
+    min-height: 500px;
+}
+
+/*#main div { border-right: 1px solid #DEDEDE;}*/
+
+#sideBar 
+{
+    float: left;
+    width: 180px;
+    margin-top: 10px;
+    padding: 20px 15px 5px 15px;
+    text-align: center;
+    /*border-right: 1px solid #DEDEDE;*/
+}
+
+ul.selectedlist {
+    padding-left: 15px;
+    margin-left: 15px;
+}
+
+ul.selectedlist li {
+    list-style-type: none;
+    list-style-image: url(Images/Bigco/rw_leftmenu_active_bullet.gif);
+    list-style-position: outside;
+    text-transform: capitalize;
+    padding: 5px 0 5px 0;
+    color: #00304C;
+    border-bottom: 1px solid #CCC;
+}
+
+#contentArea 
+{
+    margin-left: 200px;
+    padding: 20px 5px 5px 15px;
+    border-left: 1px solid #CCC;
+}
+
+#sideBar h2 {
+    font-size: 16px;
+    padding: 0;
+    color: #38668F;
+    padding-top: 5px;
+    padding-right: 0;
+    padding-bottom: 5px; 
+    padding-left: 0px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+#sideBar img 
+{
+    border:5px solid #38668F;
+}
+
+footer, 
+#footer 
+{
+    /*background: #DEDEDE;*/
+    margin-top: 15px;
+    padding: 10px 20px;
+    color: #494B4D;
+    font-size: 10px;
+    text-align: left;
+    color:#fff;
+    background:#4688C0; 
+    background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));    
+
+    border-bottom: 10px solid #38668F;
+}
+
+.clear {
+    clear: both;
+}
+
+.error {
+    color: Red;
+}
+
+ul.mulit-col
+{
+  /*width:760px;*/
+  /*margin-bottom:20px;*/
+  overflow:hidden;
+  /*border-top:1px solid #ccc;*/
+}
+.mulit-col li{
+  /*line-height: 2em;*/
+  /*border-bottom:1px solid #ccc;*/
+  float:left;
+  display:inline;
+  list-style-type: none;
+}
+
+.mulit-col.double li  { width:50%;} /* 2 col */
+.mulit-col.triple li  { width:33.333%; } /* 3 col */
+.mulit-col.quad li    { width:25%; } /* 4 col */
+.mulit-col.six li     { width:16.666%; } /* 6 col */
+
+ul.selector-list
+{
+   margin-top: 10px;
+   padding: 0px 0px 0px 0px;
+   width: 700px;
+}
+
+.selector-list li{
+    line-height: 2em;
+    list-style-type: none;
+}
+
+.selector-list a {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.selector-list a:link, .selectedlist a:link {
+    color: #323232;
+    text-decoration: none;
+}
+
+.selector-list a:visited, .selectedlist a:visited {
+    color: #666;
+    text-decoration: none;
+}
+
+.selector-list a:hover, .selectedlist a:hover {
+    color: red;
+}
+
+.selector-list a.selectorMatch {
+    /*font-size: 17px;*/
+    /*font-style:italic;*/
+    font-weight: bold;
+    color: Blue;
+    text-shadow: black 0.05em 0.05em 0.1em;
+    /*text-decoration: underline;*/
+}
+
+.selector-list a.selectorMatch:hover {
+    color: red;
+}
+
+#cc_logo 
+{
+    margin:1px 0 0 700px; padding-top: 1px; padding-left: 100px;
+}
+#cc_logo a {display:block; width:250px; height:70px; background:transparent url("Images/Bigco/Bigco.png") 0 0 no-repeat;}
+#cc_logo a h1 {display:none;}
+
+div.cc-selector
+{
+    color: #335D83;
+    width: 900px;
+    min-height: 600px;
+}
+
+.cc-selector select 
+{
+    font-weight: bold;
+    min-width: 100px;
+    max-width: 300px;
+}
+
+.cc-selector select:focus, .cc-selector input:focus, .cc-selector a:focus
+{
+    outline-color: #4688C0;
+}
+
+.cc-selector span.status
+{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    text-indent: -3333px;
+    text-align: center;
+}
+
+.cc-selector div.sel-section 
+{
+    margin-bottom: 20px;
+}
+
+.cc-selector h2
+{
+    padding: 0;
+    border-bottom: 1px solid #CCC;
+    padding-top: 5px;
+    padding-right: 0;
+    padding-bottom: 5px; 
+    padding-left: 0px;
+    margin-bottom: 5px;
+}
+
+.cc-selector div.sel-items
+{
+    margin-left: 20px;
+}
+
+.cc-selector h2.sel-caption.finished 
+{
+    padding-left: 25px;
+    background:url('Images/Bigco/checkbox_cc.png') no-repeat left center;
+}
+
+.cc-selector div#sel-leather{
+    float: left;
+    width: 100%;
+}
+
+.cc-selector a:link, .cc-selector a:visited
+{
+    color: #335D83;
+    text-decoration: none;
+}
+
+.cc-selector div.leather-box
+{
+    /*width: 150px;*/
+    min-width: 130px;
+    min-height: 135px;
+    float: left;
+    
+    margin: 5px 5px 5px 5px;
+    padding: 5px 5px 5px 5px;
+    border:1px solid rgba(157, 180, 197, 0.56);
+
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+
+    background:#E8; 
+    background-color:rgb(245, 245, 245); 
+    background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));    
+}
+
+div.leather-box:hover
+{
+    background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+    background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+    background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));    
+}
+
+.cc-selector div.leather-box div
+{
+    text-align: center;
+}
+
+.cc-selector div.leather-box.highlight
+{
+    color:#0185C5; 
+    border:1px solid Black;
+    box-shadow: 3px 3px 5px 5px #38668F;
+}
+
+.cc-selector div.leather-box div.leather-descr
+{
+    font-weight: bold;
+}
+
+.cc-selector select.highlight
+{
+    font-weight: bold;
+    border-width: 2px;
+    border-color: #38668F;
+}
+
+/*.cc-selector div.leather-box.highlight div.leather-descr 
+{
+    padding-left: 20px;
+    padding-right: 20px;
+    background:url('Images/Bigco/checkmark_cc.png') no-repeat left center;
+}*/
+
+div.leather-box img
+{
+    border-right: 1px solid white;
+    border-bottom: 1px solid white;
+    border-left: 1px solid gray;
+    border-top: 1px solid gray;
+}
+
+.cc-selector div.sel-input
+{
+    font-size: 1.1em;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.cc-selector div.sel-input label:first-child
+{
+    display: inline-block;
+    width: 120px;
+    font-weight: bold;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.cc-selector div.sel-input input
+{
+    width: 220px;
+}
+
+.cc-selector select.loading + span.status
+{
+    background:url('Images/Bigco/loading.gif') no-repeat right center;
+}
+
+.cc-selector div.loading  
+{
+    padding-bottom: 40px;
+    background:url('Images/Bigco/loading-large.gif') no-repeat left bottom;
+}
+
+.cc-selector input[type="radio"] {
+    margin-top: 10px;
+    margin-left: 15px;
+    margin-right: 2px;
+}
+
+.cc-selector input[type="radio"]+label  
+{
+    font-size: 1.5em;
+    font-weight: bold; 
+} 
+
+.cc-selector input[type="button"], input[type="submit"], input[type="reset"]
+{
+    display: inline-block;
+    width: 200px;
+    margin: 20px 6px 6px 6px;
+    padding: 2px 6px;
+    border-width: 2px;
+    border-style: solid;
+    font-family: inherit;
+    font-size: 2em;
+    font-weight: bold;
+    line-height: 1.435;
+    text-align: center;
+    cursor: pointer;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    border-color: #828282;
+    padding-right: 8px;
+    overflow: visible;
+    color: White;
+    background-color: #E51933;
+    /*Gradient*/
+    background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));    
+    /*Shadow*/
+    -webkit-box-shadow: 0px 3px 1px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 3px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 3px 1px rgba(0, 0, 0, 0.2);
+}
+
+.cc-selector input[type="button"]:hover, input[type="submit"]:hover, input[type="reset"]:hover
+{
+    color:#fff;
+    background:#CC0033; 
+    background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));    
+}
+

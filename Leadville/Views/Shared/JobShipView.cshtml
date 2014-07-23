@@ -1,0 +1,31 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+        @Html.Partial("DropShipView", Model)
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.ShipMethodCD)
+        </div>
+        <div class="display-field">
+            @Html.DisplayOrDashFor(model => model.ShipMethodCD) @Html.DisplayOrDashFor(model => model.ShipMethodDescription)
+        </div>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.PriorityID)
+        </div>
+        <div class="display-field">
+           @Html.DisplayOrDashFor(model => model.PriorityDescription)
+        </div>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.PackingListNote)
+        </div>
+        <div class="display-field">
+            @Html.DisplayOrDashFor(model => model.PackingListNote)
+        </div>
+        
+        <div class="display-label">
+            @Html.LabelFor(model => model.ScheduleNote)
+        </div>
+        <div class="display-field">
+            @Html.DisplayOrDashFor(model => model.ScheduleNote)
+        </div>

@@ -1,0 +1,150 @@
+﻿@model CST.Prdn.ViewModels.NewPrdnRunViewModel
+
+@{  Html.Telerik().Window()
+        .Name("NewRunWindow")
+        .Title(LocalStr.Create + " " + LocalStr.Production + " " +LocalStr.Run)
+        .Content(@<text>
+            @using (Html.BeginForm("CreateRun", "Schedule", FormMethod.Post, new { id = "newRunForm" }))
+            {
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(m => m.CalledFromUrl);
+                <fieldset class="horiz-form horiz-form-narrow">
+                    <legend>@LocalStr.NewRun</legend>
+
+                    <div class="editor-label">
+                        @Html.LabelFor(m => m.NewPrdnOrderNo)
+                    </div>
+                    <div class="editor-field">
+                        @if (Model.EditOrdNo) {
+                            @Html.EditorFor(m => m.NewPrdnOrderNo)    
+                        } else { 
+                            @Html.SpanOrDashAndHiddenFor(m => m.NewPrdnOrderNo)
+                        }
+                        @Html.ValidationMessageFor(m => m.NewPrdnOrderNo)
+                    </div>
+
+                    <div class="editor-label">
+                        @Html.LabelFor(m => m.PrdnOrderShipDt)
+                    </div>
+                    <div class="editor-field">
+                        @Html.SpanOrDashAndHiddenFor(m => m.PrdnOrderShipDt)
+                    </div>
+
+                    <div class="editor-label">
+                        @Html.LabelFor(m => m.NewPrdnTypeID)
+                    </div>
+                    <div class="editor-field">
+                        @*@Html.DropDownList("NewPrdnTypeID", String.Empty)*@
+                        @Html.DropDownListFor(m => m.NewPrdnTypeID, new SelectList(Enumerable.Empty<SelectListItem>()))
+                        @Html.ValidationMessageFor(m => m.NewPrdnTypeID)
+                    </div>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.NewDescr)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(m => m.NewDescr)
+                        @Html.ValidationMessageFor(m => m.NewDescr)
+                    </div>
+
+                </fieldset>
+                <div>
+                    @*<button class="t-button t-button-icontext" type="submit"><span class="t-icon t-add"></span>Create</button>*@
+                    @Html.TIconSubmit(tIconClass: "t-add", caption: LocalStr.Create)
+                    @*<button id="new-run-close-button" class="t-button t-button-icontext" type="button"><span class="t-icon t-cancel"></span>Cancel</button>*@
+                    @Html.TIconButton(tIconClass: "t-cancel", id: "new-run-close-button", caption: LocalStr.Cancel)
+                </div>
+            }
+            
+            </text>)
+        .Width(400)
+        .Draggable(true)
+        .Modal(true)
+        .Visible(false)
+        .Render();
+}
+
+@{ Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    var curUrl = window.location.pathname;
+    $("#@Html.IdFor(m => m.CalledFromUrl)").val(curUrl);
+
+    function closeNewRunWindow() {
+        var window = $("#NewRunWindow").data("tWindow");
+        window.close();
+    };
+
+    $('#newRunForm').keyup(function(event) {
+        if (event.keyCode === 27) {
+            closeNewRunWindow();
+        };
+    });
+
+    $('#new-run-close-button').click(function(e) {
+        e.preventDefault();
+        closeNewRunWindow();
+    });
+
+    function loadUnusedRunTypes(poNo, type)
+    {
+        var prodTypeCD;
+        if (typeof getProdTypeFunc == 'function') { 
+            prodTypeCD = getProdTypeFunc();
+        }
+
+        $.getJSON('@Url.Action("_UnusedTypes", "Lookup")', { prdnOrdNo: poNo, prodTypeCD: prodTypeCD }, function(result) {
+            var ddl = $("#@Html.IdFor(m => m.NewPrdnTypeID)");
+            ddl.empty();
+            var items = 0;
+            var selId = null;
+            var selDescr = null;
+            var typeMatch = $.trim(type).toUpperCase();
+            $(result).each(function() {
+                ddl.append(
+                    $('<option/>', {
+                        value: this.Id
+                    }).html(this.Name)
+                );
+                items ++;
+                if ((type) && (this.UpperTypeCD.indexOf(typeMatch) === 0)) {
+                    selId = this.Id;
+                    selDescr = this.Name;
+                };
+                if (selId == null) {
+                    selId = this.Id;
+                    selDescr = this.Name;
+                }
+            });
+            if (items !== 0) {
+                if (selId !== null) {
+                    ddl.val(selId);
+                    $("#@Html.IdFor(m => m.NewDescr)").val(selDescr);
+                };
+                $('#NewRunWindow').data('tWindow').center().open();
+                $("#@Html.IdFor(m => m.NewPrdnTypeID)").focus();
+            } else {
+                alert('Sorry - all the @Html.DisplayNameFor(m => m.NewPrdnTypeID)s for @Html.DisplayNameFor(m => m.NewPrdnOrderNo)' + poNo + ' have already been made.');
+            };
+
+        });
+    };
+
+    $("#@Html.IdFor(m => m.NewPrdnTypeID)").change(function () {
+        var str = "";
+        $("#@Html.IdFor(m => m.NewPrdnTypeID) option:selected").each(function () {
+            str += $(this).text() + " ";
+            });
+        $("#@Html.IdFor(m => m.NewDescr)").val(str);
+    })
+    .change();
+
+    function openNewRunWindow(poNo, poShipDt, type)
+    {
+        @*$("#@Html.IdFor(m => m.NewPrdnOrderNo)").val(poNo);*@
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.NewPrdnOrderNo), poNo);
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.PrdnOrderShipDt), poShipDt);
+
+        loadUnusedRunTypes(poNo, type);
+    };
+    
+</text>); }

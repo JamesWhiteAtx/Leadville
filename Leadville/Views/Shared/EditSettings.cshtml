@@ -1,0 +1,191 @@
+﻿@model CST.Prdn.ViewModels.UserSettingsEditViewModel
+
+@{
+    ViewBag.Title = LocalStr.Edit + " " + LocalStr.Settings;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.UserID)
+    @Html.HiddenFor(model => model.UserEditable)
+    @Html.HiddenFor(model => model.urlReturn)
+    @Html.ValidationSummary(false)
+    <fieldset class="horiz-form horiz-form-wide medium-input">
+        <legend>@LocalStr.Edit @LocalStr.Settings</legend>
+
+        <div>
+            <div class="display-label">
+                @Html.LabelFor(model => model.Login)
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.Login)
+            </div>
+        </div>
+        <hr />
+        <div>
+            <div class="display-label">
+                @Html.LabelFor(model => model.DefaultRunDescr)
+            </div>
+            <div class="display-field">
+                @Html.SpanOrDashAndHiddenFor(model => model.DefaultRunDescr) @Html.SpanOrDashAndHiddenFor(model => model.DefaultRunID) 
+                &nbsp;
+                @Html.TIconButton(tIconClass: "t-search", caption: LocalStr.Select + " " + LocalStr.DefaultRun, 
+                    id: "btnSelectRun", htmlAttributes: new { title = LocalStr.Change + " " + LocalStr.Production + " " + LocalStr.Run })
+                @Html.ValidationMessageFor(model => model.DefaultRunID)
+            </div>
+            <div class="display-field">
+                @Html.TIconButton(tIconClass: "t-delete", id: "clearDefaultRun", caption: LocalStr.Clear+" "+LocalStr.DefaultRun)
+            </div>
+        </div>
+        <hr />
+        <div>
+            <div class="display-label">
+                @Html.LabelFor(model => model.JobPageSize)
+            </div>
+            <div class="display-field">
+                @Html.Telerik().IntegerTextBoxFor(m => m.JobPageSize).MinValue(1)
+                @Html.ValidationMessageFor(model => model.JobPageSize)
+            </div>
+        </div>
+        @if (Model.Requests)
+        {
+        <hr />
+        <div>
+            <div class="display-label">
+                @Html.LabelFor(model => model.RequestPageSize)
+            </div>
+            <div class="display-field">
+                @Html.Telerik().IntegerTextBoxFor(m => m.RequestPageSize).MinValue(1)
+                @Html.ValidationMessageFor(model => model.RequestPageSize)
+            </div>
+        </div>
+        }
+        @if (Model.NotNullAny(m => m.LabelPrinters))
+        {
+        <hr />
+        <div>
+            <div class="display-label">
+                @Html.LabelFor(model => model.LabelPrinterID)
+            </div>
+            <div class="display-field">
+                @Html.DropDownListFor(model => model.LabelPrinterID, Model.LabelPrinters, "-- Select " + @Html.DisplayNameFor(model => model.LabelPrinters) + " --")
+                @Html.TIconButton(tIconClass: "t-search", caption: "Test Connection", id: "btnTestPrntr", htmlAttributes: new { title = "Test printer connection" })
+                <span id="testMsg"></span>
+
+                @Html.ValidationMessageFor(model => model.LabelPrinterID)
+            </div>
+        </div>
+        }
+    </fieldset>
+
+    <div class="no-space horiz-form">
+        <div class="buttonBox">
+            @Html.TIconSave()
+            @Html.TIconReturnLink(Model.IfNotNull(m => m.urlReturn))
+        </div>
+    </div>
+    
+    @Html.HiddenFor(model => model.CanCreateRun)
+    @Html.HiddenFor(model => model.NewRunOrderNo)
+    @Html.HiddenFor(model => model.NewRunPrdnTypeID)
+    @Html.HiddenFor(model => model.NewRunNote)
+}
+
+@Html.Partial("PrdnRunDialog", new CST.Prdn.ViewModels.PrdnOrdRunListModel())
+
+@if (Model.CanCreateRun)
+{
+    @Html.Partial("NewRunDialog")
+}
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"))
+.OnDocumentReady(@<text>
+
+    function setNewRun(newRun) {
+        if (!newRun) { newRun = {poNo: " ", typeID: " ", note: " "}; };
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.NewRunOrderNo), newRun.poNo);
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.NewRunPrdnTypeID), newRun.typeID);
+        inputAndSpanValue(@Html.IdSpanIdFor(model => model.NewRunNote), newRun.note);
+    };
+    
+    function defineNewRun(newRun) {
+        setNewRun(newRun);
+        setSettingsRun({
+            runID: " ",
+            runDescr: newRun.poNo + newRun.typeDescr +" "+ newRun.shipDtStr + " [@LocalStr.NewRun]"
+        });
+    };
+
+    function settingsNewRun(item) {
+        openNewRunDialog({
+            poNo: item.poNo, 
+            shipDtStr: item.shipDtStr, 
+            callback: defineNewRun
+        });
+    };
+
+    var newRunFunc;
+    var canCreateRun = $("#@Html.IdFor(m => m.CanCreateRun)").val();
+    if ((canCreateRun) && ((typeof openNewRunDialog == "function"))) {
+        newRunFunc = settingsNewRun;
+    };
+
+    function setSettingsRun(item){
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.DefaultRunID), item.runID);
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.DefaultRunDescr), item.runDescr);
+    };
+
+    if ((typeof openPrdnRunDialog == "function")) { 
+        $("#btnSelectRun").click(function(e) {
+            e.preventDefault();
+            
+            openPrdnRunDialog({
+                pickRun: function (item) {
+                    setSettingsRun(item);
+                    setNewRun(null);
+                }, 
+                makeRun: newRunFunc 
+            });
+
+        });
+    };
+
+    $("#clearDefaultRun").click(function(e) {
+        e.preventDefault();
+        setSettingsRun({runID: " ", runDescr: "---"});
+        setNewRun(null);
+    });
+
+    $('#btnTestPrntr').click(function(e) {
+        e.preventDefault();
+        var printerID = $("#@Html.IdFor(m => m.LabelPrinterID)").val();
+        if (!printerID) {
+            printerID = 0;
+        };
+        
+        addLoadingClass( $("#testLabel") );
+        $("#testMsg").text('');
+
+        $.ajax({
+            url: '@Url.Action("_TestLabelPrinter", "Maintenance")',
+            data: { id: printerID },
+            dataType: 'json',
+            success: 
+                function(result) {
+                    $("#testMsg").text(result.Msg);
+                    if (result.Success) {
+                        $("#testMsg").removeClass("error");
+                    } else {
+                        $("#testMsg").addClass("error");
+                    };
+                },
+            complete: function() {
+                removeLoadingClass( $("#testLabel") ); 
+            }
+        });
+        return false;
+    });
+
+</text>);}
+

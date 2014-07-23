@@ -1,0 +1,90 @@
+﻿@model CST.Prdn.ViewModels.PrintLabelModel
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset class="horiz-form">
+        <legend> @ViewBag.Title </legend>
+
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.UrlReturn)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.HostName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.HostName)
+            @Html.ValidationMessageFor(model => model.HostName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Port)
+        </div>
+        <div class="editor-field small-input">
+            @Html.EditorFor(model => model.Port)
+            @Html.ValidationMessageFor(model => model.Port)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Active)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Active)
+            @Html.ValidationMessageFor(model => model.Active)
+        </div>
+
+        <div id="testLabel" class="editor-label">
+        </div>
+        <div class="editor-field">
+            @Html.TIconButton(tIconClass: "t-search", caption: "Test Connection", id: "btnTestPrntr", htmlAttributes: new { title = "Test printer connection" })
+            <span id="testMsg"></span>
+        </div>
+
+        <div id="buttons" class="buttonBox">
+            @Html.TIconSave(htmlAttributes: new { title = "Save changes to printer" })
+            @Html.TIconCancelLink(Model.IfNotNull(m => m.UrlReturn), htmlAttributes: new { title = "Cancel printer changes" })
+        </div>
+    </fieldset>
+}
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"))
+.OnDocumentReady(@<text>
+
+    $('#btnTestPrntr').click(function(e) {
+        e.preventDefault();
+        var hostName = $("#@Html.IdFor(m => m.HostName)").val();
+        var port = $("#@Html.IdFor(m => m.Port)").val();
+        
+        addLoadingClass( $("#testLabel") );
+        $("#testMsg").text('');
+
+        $.ajax({
+            url: '@Url.Action("_TestZebraConnection", "Maintenance")',
+            data: { hostName: hostName, port: port },
+            dataType: 'json',
+            success: 
+                function(result) {
+                    $("#testMsg").text(result.Msg);
+                    if (result.Success) {
+                        $("#testMsg").removeClass("error");
+                    } else {
+                        $("#testMsg").addClass("error");
+                    };
+                },
+            complete: function() {
+                removeLoadingClass( $("#testLabel") ); 
+            }
+        });
+        return false;
+    });
+
+</text>);}
+

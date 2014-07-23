@@ -1,0 +1,205 @@
+﻿@section HeadContent {
+    <style>
+        
+    .selector-listx {
+        clear: both;
+    }
+
+    ul.selector-listx {
+        /*float: left;*/
+        font-size: 12px;
+        list-style: none outside none;
+        margin-top: 10px;
+        padding: 0px 0px 0px 0px;
+        width: 700px;
+    }
+    
+    .selector-listx li {
+        overflow: hidden;
+        padding: 6px 0;
+        width: 23%;
+    }
+
+    .selector-listx li {
+        float: left;
+        margin: 0;
+    }
+
+    .selector-listx a {
+        font-weight: bold;
+        font-size: 15px;
+    }
+
+    .selector-listx a:link {
+        color: #323232;
+        text-decoration: none;
+    }
+
+    .selector-listx a:visited {
+        color: #666;
+        text-decoration: none;
+    }
+
+    .selector-listx a:hover {
+        color: red;
+    }
+
+    .selector-listx a.selectorMatch {
+        /*font-size: 17px;*/
+        /*font-style:italic;*/
+        /*font-weight: bold;*/
+        color: Blue;
+        /*text-decoration: underline;*/
+    }
+
+    .selector-listx a.selectorMatch:hover {
+        color: red;
+    }
+    </style>
+}
+
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Bigco/_CCLayout.cshtml";
+}
+
+<h2>Index</h2>
+        <ul class="selector-listx mulit-colx quadx">
+            <li>
+                <a href="#">Aaa</a>
+            </li>
+            <li>
+                <a href="#">Acura</a>
+            </li>
+            <li>
+                <a href="#" class="selectorMatch">Audi</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=BMW&amp;urlReturn=%2F">BMW</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=BUI&amp;urlReturn=%2F">Buick</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=CAD&amp;urlReturn=%2F">Cadillac</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=CHE&amp;urlReturn=%2F">Chevrolet</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=CHR&amp;urlReturn=%2F">Chrysler</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=DAE&amp;urlReturn=%2F"class="selectorMatch">Daewoo</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=DOD&amp;urlReturn=%2F">Dodge</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=EAG&amp;urlReturn=%2F">Eagle</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=FOR&amp;urlReturn=%2F">Ford</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=GMC&amp;urlReturn=%2F">GMC</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=GEO&amp;urlReturn=%2F">Geo</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=HINO&amp;urlReturn=%2F">Hino</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=HON&amp;urlReturn=%2F" class="selectorMatch">Honda</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=HUM&amp;urlReturn=%2F">Hummer</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=HYU&amp;urlReturn=%2F">Hyundai</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=INF&amp;urlReturn=%2F">Infiniti</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=ISU&amp;urlReturn=%2F">Isuzu</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=JEE&amp;urlReturn=%2F">Jeep</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=KIA&amp;urlReturn=%2F" class="selectorMatch">Kia</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=LAN&amp;urlReturn=%2F">Land Rover</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=LEX&amp;urlReturn=%2F">Lexus</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=LIN&amp;urlReturn=%2F">Lincoln</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=MAZ&amp;urlReturn=%2F">Mazda</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=MRB&amp;urlReturn=%2F">Mercedes Benz</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=MER&amp;urlReturn=%2F">Mercury</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=MINI&amp;urlReturn=%2F">Mini</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=MIT&amp;urlReturn=%2F">Mitsubishi</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=NIS&amp;urlReturn=%2F">Nissan</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=OLD&amp;urlReturn=%2F">Oldsmobile</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=PLY&amp;urlReturn=%2F">Plymouth</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=PON&amp;urlReturn=%2F">Pontiac</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=POR&amp;urlReturn=%2F">Porsche</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=RAM&amp;urlReturn=%2F">Ram</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=SAA&amp;urlReturn=%2F">Saab</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=SAT&amp;urlReturn=%2F">Saturn</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=SCION&amp;urlReturn=%2F">Scion</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=SMART&amp;urlReturn=%2F">Smart</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=SUB&amp;urlReturn=%2F">Subaru</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=SUZ&amp;urlReturn=%2F">Suzuki</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=TOY&amp;urlReturn=%2F">Toyota</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=VWG&amp;urlReturn=%2F">Volkswagen</a>
+            </li>
+            <li>
+                <a href="/Home/Year?makeCD=VOL&amp;urlReturn=%2F">Volvo</a>
+            </li>
+        </ul>

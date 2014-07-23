@@ -1,0 +1,165 @@
+﻿    <div id="uiDialogDiv" title="Lookup">
+        <table id="uiDialogTbl">
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var uiDialogID = "";
+    var uiDialogTitle = "Lookup";
+    var incStr = "";
+    
+    function divDialogInner() {
+        return $("div#uiDialogDiv");
+    }
+
+    function divDialogOuter() {
+        return divDialogInner().closest("div.ui-dialog");
+    }
+
+    function tblDialogList() {
+        return $("table#uiDialogTbl");
+    }
+
+    function getUiDialogID() {
+        return uiDialogID;
+    }
+    function setUiDialogID(id) {
+        uiDialogID = id;
+    }
+        
+    divDialogInner().dialog({
+        autoOpen: false,
+		resizable: true,
+		height:600,
+        width:600,
+		modal: true,
+		buttons: {
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		},
+        open: function (event, ui) {
+            divDialogOuter()
+                .keypress(function (e) {
+                    searchIncrStr( incStr + String.fromCharCode(e.which) );
+                })
+                .keydown(function (e) {
+                    if (e.keyCode == 8) {
+                        //alert(e.keyCode);
+                        e.preventDefault();
+                        window.event.keyCode = 0;
+                        if (incStr) {
+                            searchIncrStr( incStr.substring(0, incStr.length - 1) );
+                        }
+                    }
+                });
+        },
+        close: function (event, ui) {
+            divDialogOuter()
+                .unbind("keydown")
+                .unbind("keypress");
+        }
+	});
+
+@*    $("a.uiDialogItem").live("click", function(event) {
+        event.preventDefault(); //stop default browser behaviour
+        if (typeof uiDialogPickedFunc == 'function') {
+            uiDialogPickedFunc(event);
+        };
+        closeUiDialog();
+        return false;
+    });
+*@
+    function setIncrStr(str) {
+        incStr = str;
+
+        if (incStr) {
+            titl = uiDialogTitle + " [" + incStr + "]";
+        } else {
+            titl = uiDialogTitle;
+        }
+        $("span#ui-dialog-title-uiDialogDiv").text(titl);
+    }
+
+    function searchIncrStr(str) {
+        setIncrStr(str);
+
+        if (str) {
+
+            var tableRow = tblDialogList().find("td a.uiDialogItem").filter(function() {
+                return ($(this).text().search(new RegExp(incStr, "i")) >= 0);
+            }).closest("tr");
+
+            if (tableRow.length > 0) {
+                var container = divDialogInner();
+                var scrollTo = tableRow.first();
+
+                container.scrollTop(
+                    scrollTo.offset().top - container.offset().top + container.scrollTop()
+                );
+            
+                scrollTo.find("a.uiDialogItem").focus();
+            }
+        } else {
+            divDialogInner().scrollTop(0);
+        }
+        @*var matchAnchor = null;
+        tblDialogList().find("td a.uiDialogItem").each(function () {
+            if ($(this).text().search(new RegExp(incStr, "i")) < 0) {
+                $(this).closest("tr").hide();
+            } else {
+                $(this).closest("tr").show();
+                if (matchAnchor == null) {
+                    matchAnchor = $(this);
+                }
+            }
+        });
+        if (matchAnchor) {
+            matchAnchor.focus();
+        } else {
+            divDialogOuter().find("button.ui-button").first().focus();
+        }*@
+    }
+
+    function openUiDialog(dlgTitle) {
+        if (dlgTitle) {
+            uiDialogTitle = dlgTitle;
+        }
+        @*tblDialogList().find("tr").show();*@
+        setIncrStr('');
+        divDialogInner().dialog( "open" );
+    }
+
+    function closeUiDialog() {
+        divDialogInner().dialog( "close" );
+    }
+
+    function addUiDialogRow(elem1, elem2) {
+        elem1.addClass("uiDialogItem");
+        var newRow = $('<tr>').appendTo( tblDialogList().find("tbody") );
+        newRow.append( $('<td>').append( elem1 ) );
+
+        if (elem2) {
+            newRow.append( $('<td>').append( elem2 ) );
+        };
+
+    }
+
+    function addUiDialogItem(textStr, clickFunc, titleStr) {
+        var anch = $('<a>')
+                .attr({ href: '#', title: titleStr})
+                .text(textStr);
+        if (typeof clickFunc == 'function') {
+            anch.click(clickFunc);
+        };
+        addUiDialogRow( anch );
+    }
+
+    function clearUiDialog() {
+        tblDialogList().find("tbody").empty();
+    }
+
+</text>);}

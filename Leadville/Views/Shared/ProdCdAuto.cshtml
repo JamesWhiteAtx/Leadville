@@ -1,0 +1,81 @@
+﻿@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var pcaSettings;
+
+    function mapProdItem(item) {
+        $.extend(item, {label: item.CodeDescr ,value: item.ProdCD} );
+        return item; 
+    };
+
+    var pcaDefaults = {
+        selector: "#ProdCD",
+        urlEval: "@Url.Action("_ProdCdLookup", "Product")",
+        takeEval: 20,
+        map: mapProdItem,
+        select: undefined,
+        change: undefined,
+        wireTypeChange: true
+    };
+
+    function getProdType() {
+        return $("#ProdTypeCD").val();
+    };
+
+    function prodTypeMinLen() {
+        switch (getProdType()) {
+        case "120": return 3;
+        case "100": case "300": case "LEATHER PATTERN": return 4;
+        case "310": case "535": case "375": case "620": return 1;
+        case "600": case "605": case "610": case "630": case "640": return 2;
+        default:  return 3;
+        };
+    };
+
+    function prodCdAutocomplete() {
+        $(pcaSettings.selector).autocomplete({
+            source: function (request, response) {
+                var lookupUrl = evalString(pcaSettings.urlEval);
+                var prodCdTerm = $.trim(request.term);
+                var prodType = getProdType();
+                var take = evalNumber(pcaSettings.takeEval)
+                $.ajax({
+                    url: lookupUrl,
+                    dataType: "json",
+                    data: { prodCd: prodCdTerm, prodType: prodType, take: take },
+                    success: function (data) {
+                        if (!data) { data = []; };
+                        response( $.map(data, pcaSettings.map) );
+                    }
+                });
+            }
+            , autoFocus: true
+            , minLength: prodTypeMinLen()
+            , select: function (event, ui) {
+                if ((ui.item) && (typeof pcaSettings.select == "function")) {
+                    pcaSettings.select(ui.item);
+                };
+            }
+            , change: function (event, ui) {
+                if (typeof pcaSettings.change == "function") {
+                    pcaSettings.change();
+                };
+            }
+        });
+    };
+
+    function wireProdCdAutoMinLen() {
+        $(pcaSettings.selector).autocomplete("option", "minLength", prodTypeMinLen());
+    };
+
+    function wireProdCdAuto(options) {
+        pcaSettings = $.extend({}, pcaDefaults, options);
+        prodCdAutocomplete();
+        if (pcaSettings.wireTypeChange) {
+            $(document).on("change", "#ProdTypeCD", function () {
+                wireProdCdAutoMinLen();
+                return false;
+            });
+        };
+    };
+
+</text>);}

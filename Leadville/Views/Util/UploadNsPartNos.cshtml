@@ -1,0 +1,46 @@
+﻿@model CST.Prdn.UpldNsPartsImpIModel
+
+@{
+    ViewBag.Title = "NetSuite Part Nos";
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <fieldset class="horiz-form">
+        <legend>Upload NetSuite Part Nos</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SkipFirstRow)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SkipFirstRow)
+            @Html.ValidationMessageFor(model => model.SkipFirstRow)
+        </div>
+    
+        <label for="file">CSV File [Internal ID, Name]: </label>
+        <input type="file" name="uploadedFiles" id="uploadedFiles" />
+        <input type="submit" name="submit" value="Upload Part Nos" />
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FileName)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.FileName)
+            @Html.ValidationMessageFor(model => model.FileName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.QtyLoaded)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.QtyLoaded)
+            @Html.ValidationMessageFor(model => model.QtyLoaded)
+        </div>
+
+    </fieldset>
+    
+    <div>
+        @Html.ValidationSummary(true)
+    </div>
+    
+}

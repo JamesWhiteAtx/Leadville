@@ -1,0 +1,119 @@
+﻿@model CST.Prdn.ViewModels.PrdnOrdRunListModel
+           
+<fieldset>
+    <legend>@LocalStr.Lookup @LocalStr.Production @LocalStr.Run</legend>
+    <table>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.LkupRunCode)
+            </th>
+            <td class="editor-field">
+                @Html.TextBoxFor(m => m.LkupRunCode) 
+            </td>
+        </tr>
+    </table>
+</fieldset>
+
+<fieldset id="foundPrdnRun" style="display: none">
+    <legend>@LocalStr.Production @LocalStr.Run</legend>
+    <table>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.LkupPrdnOrdNo)
+            </th>
+            <td class="editor-field strengthened">
+                @Html.SpanAndHiddenFor(m => m.LkupPrdnOrdNo)
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.LkupShipDtStr)
+            </th>
+            <td class="editor-field strengthened">
+                @Html.SpanAndHiddenFor(m => m.LkupShipDtStr)
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.LkupPrdnRunID)
+            </th>
+            <td class="editor-field strengthened">
+                @Html.SpanAndHiddenFor(m => m.LkupPrdnRunID)
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.LkupPrdnTypeCD)
+            </th>
+            <td class="editor-field strengthened">
+                @Html.SpanAndHiddenFor(m => m.LkupPrdnTypeCD)
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.LkupPrdnTypeDescr)
+            </th>
+            <td class="editor-field strengthened">
+                @Html.SpanAndHiddenFor(m => m.LkupPrdnTypeDescr)
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.LkupProdTypeCD)
+            </th>
+            <td class="editor-field strengthened">
+                @Html.SpanAndHiddenFor(m => m.LkupProdTypeCD)
+            </td>
+        </tr>
+    </table>
+</fieldset>
+
+@Html.Partial("PrdnOrdRunAuto")
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var runLookCallback = null;
+    var runLookObj;
+    var runLookSelector = "#@Html.IdFor(m => m.LkupRunCode)";
+
+    function lkupRunSelect(item) {
+        runLookObj = item;
+        if (runLookObj) {
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.LkupPrdnOrdNo), runLookObj.poNo);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.LkupShipDtStr), runLookObj.shipDtStr);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.LkupPrdnRunID), runLookObj.runID);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.LkupPrdnTypeCD), runLookObj.typeCD);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.LkupPrdnTypeDescr), runLookObj.typeDescr);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.LkupProdTypeCD), runLookObj.prodTypeCD);
+            
+            $("#foundPrdnRun").show("fast");
+
+            if (typeof runLookCallback == "function") { 
+                runLookCallback(item);
+            };
+        } else {
+            clearPrdnRunLookup();
+        };
+    };
+
+    function wirePrdnRunLookup(options) {
+        runLookCallback = $(options).prop("select");
+        if (typeof wirePrdnOrdRunAuto == "function") { 
+            var defaults = {selector: runLookSelector};
+            var settings = $.extend({}, defaults, options);
+            settings.select = lkupRunSelect;
+            wirePrdnOrdRunAuto(settings);
+        };
+    };
+
+    function getPrdnRunItem() {   
+        return runLookObj;
+    };
+
+    function clearPrdnRunLookup() {
+        $(runLookSelector).val("");
+        $("#foundPrdnRun").hide();
+    };
+
+    $(runLookSelector).focus();
+</text>);}

@@ -1,0 +1,52 @@
+﻿@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var snaSettings;
+
+    function mapSerialItem(item) {
+        $.extend(item, {label: item.SerialNo ,value: item.SerialNo} );
+        return item; 
+    };
+
+    var snaDefaults = {
+        selector: "#SerialNo",
+        urlEval: "@Url.Action("_JobSerialLookup", "Lookup")",
+        map: mapSerialItem,
+        select: undefined,
+        change: undefined
+    };
+
+    function serialAutocomplete() {
+        $(snaSettings.selector).autocomplete({
+            source: function (request, response) {
+                var lookupUrl = evalString(snaSettings.urlEval);
+                var serialTerm = $.trim(request.term);
+                $.ajax({
+                    url: lookupUrl,
+                    dataType: "json",
+                    data: { term: serialTerm, take: 20 },
+                    success: function (data) {
+                        if (!data) { data = []; };
+                        response( $.map(data, snaSettings.map) );
+                    }
+                });
+            }
+            , autoFocus: true
+            , minLength: 5
+            , select: function (event, ui) {
+                if ((ui.item) && (typeof snaSettings.select == "function")) {
+                    snaSettings.select(ui.item);
+                };
+            }
+            , change: function (event, ui) {
+                if (typeof snaSettings.change == "function") {
+                    snaSettings.change();
+                };
+            }
+        });
+    };
+
+    function wireSerialAuto(options) {
+        snaSettings = $.extend({}, snaDefaults, options);
+        serialAutocomplete();
+    };
+</text>);}

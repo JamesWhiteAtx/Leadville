@@ -1,0 +1,12 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+@using CST.Prdn.Data
+
+    @if (Model.IsNotNull(m => m.EditWorksheet.IfNotNull(w => w.WorksheetOpts)))
+    {
+        <div class="display-label">
+            @Html.LabelFor(model => model.EditWorksheet)
+        </div>
+        <div class="display-field">
+            @Html.Partial("CharCompOpts", Model.EditWorksheet.WorksheetOpts, new ViewDataDictionary())
+        </div>
+    }

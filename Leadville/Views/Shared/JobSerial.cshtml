@@ -1,0 +1,18 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+        <div class="editor-label jobSerial">
+            @Html.LabelFor(model => model.SerialNo)
+        </div>
+        <div class="editor-field jobSerial">
+            <span class="strengthened larger">
+            @if ((String.IsNullOrWhiteSpace(Model.IfNotNull(m => m.SerialNo))) || (String.IsNullOrWhiteSpace(Model.IfNotNull(m => m.InvItemID))))
+            {
+                @Html.SpanOrDashAndHiddenFor(model => model.SerialNo)
+            }
+            else
+            {
+                @Html.ActionLink(Html.DisplayFor(model => model.SerialNo).ToString(), "FindItemSerial", new { id = Model.SerialNo }, new { title = LocalStr.View + " " + LocalStr.InventoryItem })
+                @Html.HiddenFor(model => model.SerialNo)
+            }
+            </span>
+        </div>

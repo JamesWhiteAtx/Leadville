@@ -1,0 +1,135 @@
+﻿@model  CST.Prdn.ViewModels.PrdnOrderMonth
+@using CST.Prdn.ViewModels
+@using CST.Prdn.Data
+
+@{
+    ViewBag.Title = "List";
+}
+
+<h3>@(LocalStr.ProductionOrder)s @LocalStr.For</h3>
+
+<div id="prod-cal-dropdown-div">
+@using (Html.BeginForm(null, null, FormMethod.Get))
+{
+    if (Model.Cal.HasPrevMonth)
+    {
+        <a href="@Url.Action(actionName: "List",
+            routeValues: new { year = Model.Cal.PrevYear, month = Model.Cal.PrevMonth })" 
+            class="t-button t-button-icon" title = "@LocalStr.Previous @LocalStr.Month">
+            <span class="t-icon t-arrow-prev"></span>
+        </a>
+    }
+    
+    @Html.DropDownListFor(x => x.Month, Model.Cal.Months, new { @class = "dropdown-submit" })
+
+    @Html.DropDownListFor(x => x.Year, Model.Cal.Years, new { @class = "dropdown-submit" })
+
+    if (Model.Cal.HasNextMonth)
+    {
+        <a href="@Url.Action(actionName: "List",
+            routeValues: new { year = Model.Cal.NextYear, month = Model.Cal.NextMonth })" 
+            class="t-button t-button-icon" title = "@LocalStr.Next @LocalStr.Month">
+            <span class="t-icon t-arrow-next"></span>
+        </a>
+    }
+}
+</div>
+
+@(
+Html.Telerik().Grid<PrdnOrdListModel>()
+    .Name("GridOrders")
+    .DataKeys(dataKeys => dataKeys.Add(o => o.PrdnOrdNo))
+    .DataBinding(dataBinding => { dataBinding.Ajax().Select("_PrdnOrdsForMonth", "Lookup", new { year = Model.Cal.Year, month = Model.Cal.Month }); })
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.PrdnOrdNo).Width(100);
+        columns.Bound(o => o.OrdShipDtStr).Width(120);
+        columns.Bound(o => o.RunCount);
+    })
+    //.Sortable()
+    //.Resizable(resizing => resizing.Columns(true))
+    //.Scrollable(s => s.Enabled(true).Height("auto"))
+    //.Pageable(settings => settings.Position(GridPagerPosition.Both).PageSize(100))
+    //.PrefixUrlParameters(false)
+    .DetailView(orderRuns => orderRuns.ClientTemplate(
+        Html.Telerik().Grid<PrdnRunViewModel>()
+        .Name("GridOrdRuns_<#= PrdnOrdNo #>")
+        .DataKeys(dataKeys => dataKeys.Add(r => r.ID))
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax()
+            .Select("_SelectRun", "Lookup", new { prdnNo = "<#= PrdnOrdNo #>" });
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(r => r.PrdnTypeCdDescr);
+            columns.Bound(r => r.ProdTypeCdDescr);
+            columns.Bound(r => r.Description);
+
+            columns.Bound(r => r.HasJobs)
+                .ClientTemplate(
+                    "<#= HasJobs ? 'checked' : 'unchecked' #>"
+                    );
+            
+            columns.Bound(r => r.HasJobs)
+                .ClientTemplate(
+                    "<input type='checkbox' disabled='disabled' name='HasJobs' <#= HasJobs? checked='checked' : '' #> />"+
+                    Html.TIconActionLink(tIconClass: "t-go-next", linkText: LocalStr.Schedule +" "+ LocalStr.Job + "s",
+                        actionName: "Jobs", controllerName: "Schedule",
+                        routeValues: new { id = "<#= ID #>" },
+                        htmlAttributes: new { @class = "t-button-bare", title = "Schedule Jobs" }
+                    ).ToString()
+                );
+            columns.Bound(r => r.ID);
+        })
+        .DetailView(orderRunJobs => orderRunJobs.ClientTemplate(
+            Html.Telerik().Grid<ListPrdnJobViewModel>()
+            .Name("GridOrdRunJobs_<#= ID #>")
+            .DataKeys(dataKeys => dataKeys.Add(j => j.ID))
+            .DataBinding(dataBinding => { dataBinding.Ajax().Select("_SelectRunJobs", "Lookup", new { id = "<#= ID #>" }); })
+            .Columns(columns =>
+            {
+                columns.Bound(r => r.RunSeqNo).ClientTemplate(
+                    @Html.ActionLink(linkText: "<#= RunSeqNo #>", actionName: "<#= Status==4 ? 'ViewJob' : 'Edit' #>", controllerName: "Job",
+                    routeValues: new { id = "<#= ID #>" }, htmlAttributes: new { title = "<#= Status==4 ? 'View' : 'Edit' #>" + " " + LocalStr.Job }
+                ).ToString()).Width(60);      
+                columns.Bound(r => r.SerialNo).ClientTemplate(
+                    @Html.ActionLink(linkText: "<#= SerialNo #>", actionName: "<#= Status==4 ? 'ViewJob' : 'Edit' #>", controllerName: "Job",
+                    routeValues: new { id = "<#= ID #>" }, htmlAttributes: new { title = "<#= Status==4 ? 'View' : 'Edit' #>" + " " + LocalStr.Job }
+                ).ToString()).Width(60);
+                columns.Bound(r => r.ProdCD).ClientTemplate(
+                    @Html.ActionLink(linkText: "<#= ProdCD #>", actionName: "Product",
+                    routeValues: new { id = "<#= ProdCD #>" }, htmlAttributes: new { title = LocalStr.View + " " + LocalStr.Product }
+                ).ToString());
+                columns.Bound(r => r.PatternStr).ClientTemplate(
+                    @Html.ActionLink(linkText: "<#= PatternStr #>", actionName: "Pattern",
+                    routeValues: new { id = "<#= PatternStr #>" }, htmlAttributes: new { title = LocalStr.View + " " + LocalStr.Pattern }
+                ).ToString());
+                columns.Bound(j => j.ColorStr);
+                columns.Bound(j => j.DecorStr).Width(60);
+                columns.Bound(j => j.ListDescr).Width(200).HtmlAttributes(new { @class = "nowrap" });
+                columns.Bound(j => j.StatusDescr);
+                columns.Bound(j => j.StatusTodayDtStr).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" }); ;
+                columns.Bound(j => j.CustCode);
+                columns.Bound(j => j.CustLocation).Width(70);
+                columns.Bound(j => j.PriorityCD).Width(50);
+                columns.Bound(r => r.ID).ClientTemplate(
+                    @Html.ActionLink(linkText: "<#= ID #>", actionName: "<#= Status==4 ? 'ViewJob' : 'Edit' #>", controllerName: "Job",
+                    routeValues: new { id = "<#= ID #>" }, htmlAttributes: new { title = "<#= Status==4 ? 'View' : 'Edit' #>" + " " + LocalStr.Job }
+                ).ToString());
+            })
+            .EnableCustomBinding(true)
+            .Pageable(settings => settings.Position(GridPagerPosition.Both).PageSize(Model.JobPageSize))
+            .ToHtmlString()
+        ))      
+        .ToHtmlString()
+    ))
+
+)
+   
+@{ Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text> 
+    $(".dropdown-submit").change(function () {
+        $(this).closest("form").submit();
+    });
+</text>);}
+

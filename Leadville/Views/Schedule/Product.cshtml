@@ -1,0 +1,54 @@
+﻿@model CST.Prdn.ViewModels.ProdScheduleLookupModel
+
+@{
+    ViewBag.Title = LocalStr.Product;
+}
+
+<h2>@LocalStr.Product</h2>
+
+<div class="horiz-form">
+    @Html.Partial("ProductLookup")
+
+    <div id="findProdBtns" class="buttonBox"  style="display: none">
+        @Html.TIconLinkVal(tIconClass: "t-go-next",
+            caption: LocalStr.Add+" "+LocalStr.Job,
+            id: "findProdAddJob",
+            actionName: "NewJob", controllerName: "Job", 
+            routeTokens: new { prodCd = @Html.IdFor(m => m.ProdCD) },
+            routeValues: new { urlReturn = Request.Url.PathAndQuery },
+            htmlAttributes: new { title = LocalStr.Add + " " + LocalStr.Job + " " + LocalStr.For + " " + LocalStr.Product })
+    </div>
+
+</div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    @if (Model.NotNullAny(m => m.PrdnProdTypeList))
+    {
+        <text>var types = [];</text>
+        foreach (var itm in Model.PrdnProdTypeList)
+        { <text>types.push("@itm.Code");</text> }
+    }
+    else
+    {  <text>var types;</text>  }
+        
+    if (typeof wireProductLookup == "function") { 
+        wireProductLookup({
+            callback: function(prod){
+                if (prod) {
+                    $("#findProdBtns").show("fast");
+                    if( types.lastIndexOf(prod.ProdTypeCD) == -1) { 
+                        $("#findProdAddJob").hide();
+                    } else {
+                        $("#findProdAddJob").show();
+                    };
+                } else {
+                    $("#findProdBtns").hide("fast");
+                };
+            }
+        });
+    };
+    
+</text>);}
+
+

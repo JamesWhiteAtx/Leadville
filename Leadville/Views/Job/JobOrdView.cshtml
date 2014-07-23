@@ -1,0 +1,24 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.OrderNo)
+    </div>
+    <div class="editor-field">
+        @Html.SpanOrDashAndHiddenFor(model => model.OrderNo) 
+        
+        @if (!String.IsNullOrWhiteSpace(Model.IfNotNull(m => m.OrderNo)))
+        {
+            @:&nbsp;&nbsp;
+            @Html.LabelFor(model => model.OrderTotal) 
+            @:&nbsp;
+            @Html.SpanOrDashAndHiddenFor(model => model.OrderTotal)
+        }
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.OrderLineInt)
+    </div>
+    <div class="editor-field medium-input">
+        @Html.SpanOrDashAndHiddenFor(m => m.OrderLineInt)
+        @Html.HiddenFor(m => m.OrderLineID)
+    </div>

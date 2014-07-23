@@ -1,0 +1,87 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.DropShip)
+    </div>
+    <div class="display-field">
+        @if (Model.IfNotNull(m => m.DropShip) == true) { @LocalStr.Yes } else { @LocalStr.No }
+    </div>
+        
+    @if (Model.IfNotNull(m => m.DropShip) == true)
+    {
+    <div id="drop-ship" class="div-border">
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.DropShipCustID)
+        </div>
+        <div class="display-field small-input">
+            @Html.DisplayFor(model => model.DropShipCustID)
+        </div>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.DropShipCustName)
+        </div>
+        <div class="display-field xtra-wide-input">
+            @Html.DisplayFor(model => model.DropShipCustName)
+        </div>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.ShipAddr1)
+        </div>
+        <div class="display-field xtra-wide-input">
+            @Html.DisplayFor(model => model.ShipAddr1)
+        </div>
+
+        @if (!String.IsNullOrWhiteSpace(Model.IfNotNull(m => m.ShipAddr2)))
+        {
+            <div class="display-label">
+                @Html.LabelFor(model => model.ShipAddr2)
+            </div>
+            <div class="display-field xtra-wide-input">
+                @Html.DisplayFor(model => model.ShipAddr2)
+            </div>
+        }
+        @if (!String.IsNullOrWhiteSpace(Model.IfNotNull(m => m.ShipAddr3)))
+        {
+            <div class="display-label">
+                @Html.LabelFor(model => model.ShipAddr3)
+            </div>
+            <div class="display-field xtra-wide-input">
+                @Html.DisplayFor(model => model.ShipAddr3)
+            </div>
+        }
+        @if (!String.IsNullOrWhiteSpace(Model.IfNotNull(m => m.ShipAddr4)))
+        {
+            <div class="display-label">
+                @Html.LabelFor(model => model.ShipAddr4)
+            </div>
+            <div class="display-field xtra-wide-input">
+                @Html.DisplayFor(model => model.ShipAddr4)
+            </div>
+        }
+        <div class="display-label">
+            @Html.LabelFor(model => model.ShipCity)
+        </div>
+        <div class="display-field wide-input">
+            @Html.DisplayFor(model => model.ShipCity)
+        </div>
+        <div class="display-label">
+            @Html.LabelFor(model => model.ShipState)
+        </div>
+        <div class="display-field medium-input">
+            @Html.DisplayFor(model => model.ShipState)
+        </div>
+        <div class="display-label">
+            @Html.LabelFor(model => model.ShipPostal)
+        </div>
+        <div class="display-field medium-input">
+            @Html.DisplayFor(model => model.ShipPostal)
+        </div>
+        <div class="display-label">
+            @Html.LabelFor(model => model.ShipCountry)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.ShipCountry)
+        </div>
+    </div>
+    }

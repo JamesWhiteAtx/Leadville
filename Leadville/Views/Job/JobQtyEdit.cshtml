@@ -1,0 +1,32 @@
+﻿@model CST.Prdn.ViewModels.AddPrdnJobViewModel
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Qty)
+        </div>
+        <div class="editor-field medium-input">
+            @Html.Telerik().IntegerTextBoxFor(m => m.Qty).MinValue(1).ClientEvents(events => events.OnChange("onJobQtyChange"))
+            @Html.ValidationMessageFor(model => model.Qty)
+        </div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    function onJobQtyChange(e) {
+        if (e.newValue > 1) {
+            if(typeof disableEditRunSeqNo == 'function') {
+                disableEditRunSeqNo();
+            };
+            if(typeof disableJobOrdEdit == 'function') {
+                disableJobOrdEdit();
+            };
+            $(".jobSerial").hide('fast');
+        } else {
+            if(typeof enableEditRunSeqNo == 'function') {
+                enableEditRunSeqNo();
+            };
+            if(typeof enableJobOrdEdit == 'function') {
+                enableJobOrdEdit();
+            };
+            $(".jobSerial").show('fast');
+        }
+    }
+</text>);}

@@ -1,0 +1,218 @@
+﻿@model CST.Prdn.ViewModels.IAttachedTo
+        <div class="div-border">        
+            @Html.HiddenFor(m => m.Attacher.Groups)
+            @Html.HiddenFor(m => m.Attacher.OrigExtantCount)
+            @Html.HiddenFor(m => m.Attacher.OrigCachedCount)
+            @Html.HiddenFor(m => m.Attacher.OrigNewCount)
+            @Html.HiddenFor(m => m.Attacher.OrigDeleteCount)
+        
+            <div id="viewFileRows" class="no-space">
+            @if (Model.IfNotNull(m => m.Attacher).IsNotNull(a => a.ViewFiles))
+            {
+                foreach (var item in Model.Attacher.ViewFiles)
+                {
+                    <div class="viewFileRow no-space">
+                        @Html.TIconActionLink(linkText: item.AttTypeDescr + ": " + item.DisplayDescr,
+                            actionName: "Attachment", controllerName: "Job", routeValues: new { id = item.ID }, tIconClass: "t-search",
+                            htmlAttributes: new { title = LocalStr.View + " " + LocalStr.Attachment, target = "_blank", @class = "t-button-bare" })
+                    </div>
+                }
+            }
+            </div>
+           
+            <div id="extantFileRows" class="no-space">
+            @if (Model.IfNotNull(m => m.Attacher).IsNotNull(a => a.ExtantFiles))
+            {
+                for (int i = 0; i < Model.Attacher.ExtantFiles.Count; i++)
+                {
+                    <div class="extantFileRow no-space">
+                        @Html.HiddenFor(m => m.Attacher.ExtantFiles[i].ID)
+                        @Html.DropDownListFor(m => m.Attacher.ExtantFiles[i].AttTypeID,
+                            new SelectList(Model.Attacher.AttTypes(), "Value", "Text",
+                             Model.Attacher.ExtantFiles[i].AttTypeID), "-- Select Type --")
+
+                        @Html.TextBoxFor(m => m.Attacher.ExtantFiles[i].Description) 
+                        <div class="fileInputMatch"> 
+                            @Html.TIconActionLink(linkText: Html.DisplayFor(m => m.Attacher.ExtantFiles[i].FileName).ToString(),
+                                actionName: "Attachment", controllerName: "Job", routeValues: new { id = Model.Attacher.ExtantFiles[i].ID }, tIconClass: "t-search",
+                                htmlAttributes: new { target = "_blank", @class = "t-button-bare image-link", 
+                                        data_img_id = Model.Attacher.ExtantFiles[i].ID, data_img_title = LocalStr.View + " " + LocalStr.Attachment }                                
+                                )
+                        </div>
+                        @Html.HiddenFor(m => m.Attacher.ExtantFiles[i].FileName)
+                        @Html.HiddenFor(m => m.Attacher.ExtantFiles[i].Deleted, new { @class = "deletedExtantFile" })
+                       
+                        @Html.TIconButton(caption: LocalStr.Delete, tIconClass: "t-minus",
+                             htmlAttributes: new { @class = "deleteExtantFileRow t-button-bare", title = LocalStr.Delete + " " + LocalStr.Attachment })
+                    </div>
+                }
+            }
+            
+            @if (Model.IfNotNull(m => m.Attacher).IsNotNull(a => a.DeleteFiles))
+            {
+                for (int i = 0; i < Model.Attacher.DeleteFiles.Count; i++)
+                { 
+                    @Html.HiddenFor(m => m.Attacher.DeleteFiles[i].ID)
+                }
+            }
+            
+            @if (Model.IfNotNull(m => m.Attacher).IsNotNull(a => a.CachedFiles))
+            {
+                for (int i = 0; i < Model.Attacher.CachedFiles.Count; i++)
+                {
+                    <div class="extantFileRow">
+                        @Html.HiddenFor(m => m.Attacher.CachedFiles[i].ID)
+                        @Html.HiddenFor(m => m.Attacher.CachedFiles[i].CacheID)
+                        @Html.TextBoxFor(m => m.Attacher.CachedFiles[i].Description) 
+                        @Html.DisplayFor(m => m.Attacher.CachedFiles[i].FileName)
+                        @Html.HiddenFor(m => m.Attacher.CachedFiles[i].FileName)
+                        @Html.HiddenFor(m => m.Attacher.CachedFiles[i].Deleted, new { @class = "deletedExtantFile" })
+                        @Html.TIconButton(caption: LocalStr.Delete, tIconClass: "t-minus",
+                             htmlAttributes: new { @class = "deleteExtantFileRow t-button-bare", title = LocalStr.Delete + " " + LocalStr.Attachment })
+                    </div>
+                }
+            }
+        </div>
+
+        @Html.Hidden("newFilesCount", (Model.Attacher.NewFiles != null) ? Model.Attacher.NewFiles.Count : 0)
+
+        <div id="newFileRows" class="no-space">
+            @if (Model.IfNotNull(m => m.Attacher).IsNotNull(a => a.NewFiles))
+            {
+                for (int i = 0; i < Model.Attacher.NewFiles.Count; i++)
+                {
+                    <div class="newFileRow">
+                        @Html.Hidden("Attacher.NewFiles.Index", i)
+                        @Html.TextBoxFor(m => m.Attacher.NewFiles[i].Description) 
+                        <a href="#" class="deleteNewFileRow">delete --</a>
+                    </div>
+                }
+            }
+        </div>
+        <div>
+            @Html.TIconButton(caption: LocalStr.AttachAFile, tIconClass: "t-plus", 
+                htmlAttributes: new { id = "addNewFileRow",  @class = "t-button-bare", title = LocalStr.AttachAFile })
+        </div>
+    </div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    @if (Model.IsNotNull(m => m.Attacher.IfNotNull(a => a.AttTypesFunc)))
+    {
+        <text>var attTypes = [];</text>
+        foreach (var itm in Model.Attacher.AttTypes().Take(1))
+        { <text>attTypes.push({val: @itm.Value, text: "@itm.Text", selected: true });</text> };
+        foreach (var itm in Model.Attacher.AttTypes().Skip(1))
+        { <text>attTypes.push({val: @itm.Value, text: "@itm.Text", selected: false });</text> }
+    }
+    else
+    {  <text>var attTypes = null;</text>  }
+
+    function dispExtantFileRows() {
+        if ($.trim($("#extantFileRows").html())) {
+            $("#extantFileRows").show();
+        } else {
+            $("#extantFileRows").hide();
+        }
+    };
+    function dispNewFileRows() {
+        if ($.trim($("#newFileRows").html())) {
+            $("#newFileRows").show();
+        } else {
+            $("#newFileRows").hide();
+        }
+    };
+
+    dispExtantFileRows();
+    dispNewFileRows();
+
+    $(document).on("click", ".deleteExtantFileRow", function () {
+        $(this).parents("div.extantFileRow:first").hide();
+        $(this).siblings(".deletedExtantFile:first").val("deleted");
+
+        dispExtantFileRows();
+        return false;
+    });
+
+    $(document).on("click", "a.deleteNewFileRow", function () {
+        $(this).parents("div.newFileRow:first").remove();
+
+        dispNewFileRows();
+        return false;
+    });
+
+    $("#addNewFileRow").click(function () {
+        var countStr = $("#newFilesCount").val();
+        var newFileIx = (countStr == "") ? -1 : parseInt(countStr, 10);
+        newFileIx++;
+
+        var upload = $('<input>').attr({
+            type: 'file',
+            name: 'uploadedFiles',
+            id: 'uploadedFile' + newFileIx
+        });
+
+        upload.change(function (evt) {
+            var fakePath = $(this).val();
+            var fileName = fakePath.split(/[\\,]+/).pop();
+            var descr = $(this).siblings(".newFileDescription:first");
+            if (descr) {
+                descr.val(fileName);
+                descr.select();
+            }
+        });
+
+        upload.click();
+
+        var newFileDiv = $('<div/>').addClass("newFileRow").addClass("no-space");
+
+        $("#newFileRows").append(newFileDiv);
+
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'Attacher.NewFiles.Index',
+            value: newFileIx
+        }).appendTo(newFileDiv);
+
+        if (attTypes) {
+            var sel = $('<select>').attr({
+                name: 'Attacher.NewFiles[' + newFileIx + '].AttTypeID'
+            }).appendTo(newFileDiv).after("&nbsp;");
+        
+            $(attTypes).each(function(i) {
+                var op = $("<option>").attr('value',this.val).text(this.text);
+                if (i==0) {
+                    op.attr('selected','selected');
+                };
+                sel.append(op);
+            });
+        };
+
+        $('<input>').attr({
+            type: 'text',
+            class: "newFileDescription",
+            name: 'Attacher.NewFiles[' + newFileIx + '].Description'
+        }).appendTo(newFileDiv).focus();
+
+        upload.appendTo(newFileDiv).after("&nbsp;");
+
+        var delNew = $('<a>').attr({ href: '#', title: "Remove Attachment" })
+            .addClass('t-button')
+            .addClass('t-button-icontext')
+            .addClass('deleteNewFileRow')
+            .addClass('t-button-bare')
+            ;
+        
+        delNew.append($('<span>').addClass('t-icon').addClass('t-minus'));
+        delNew.append("Delete");
+        delNew.appendTo(newFileDiv);
+
+        $("#newFilesCount").val(newFileIx);
+
+        dispNewFileRows();
+
+        return false;
+    });
+
+</text>);}

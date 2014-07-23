@@ -1,0 +1,32 @@
+﻿@if(Request.IsAuthenticated) {
+    <text>@LocalStr.User: <strong>@User.Identity.Name</strong></text>
+    <a href="@Url.Action(actionName: "LogOff", controllerName: "Account")" class="t-button t-button-icontext" title="Log Off">
+        <span class="t-icon t-cancel"></span>
+        @LocalStr.LogOff
+    </a>
+    @Html.ImageLink(imgSrc: Url.Content("~/Content/Images/gearGrey.png"),
+        actionName: "EditSettings",
+        routeValues: new { urlReturn = Request.Url.PathAndQuery },
+        linkHtmlAttributes: new { id = "view-settings-elm", title = "Hold over to view settings, click to edit" },
+        imgHtmlAttributes: new { alt = LocalStr.View + " " + LocalStr.Settings, style = "vertical-align: top" }
+    )
+        
+}
+else
+{
+    <a href="@Url.Action(actionName: "LogOn", controllerName: "Account")" class="t-button t-button-icontext" title="Log On">
+        <span class="t-icon t-update"></span>
+        @LocalStr.LogOn
+    </a>
+
+    foreach (var item in @LocalizationHelper.GetCultureSelectList())
+    {
+        @Html.ActionLink(item.Text, "SetLanguage", "Account", new { culture = item.Value, returnUrl = this.Request.RawUrl }, null)    
+    }
+
+}
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    viewSettingsBubble($('#view-settings-elm'));
+</text>);}

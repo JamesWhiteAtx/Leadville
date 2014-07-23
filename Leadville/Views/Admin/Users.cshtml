@@ -1,0 +1,65 @@
+﻿@using CST.Prdn.ViewModels
+
+@{
+    ViewBag.Title = "Users";
+}
+
+<h2>Users</h2>
+
+@(
+ Html.Telerik().Grid<UserViewModel>()
+        .Name("Grid")
+        .DataKeys(dataKeys => dataKeys.Add(p => p.ID))
+
+        .ToolBar(commands =>
+        {
+            commands.Custom()
+            .HtmlAttributes(new { id = "addUserBtn" })
+            .ButtonType(GridButtonType.ImageAndText).ImageHtmlAttributes(new { @class = "t-icon t-add" })
+            .Text("Add User")
+            .Action("AddUser", "Admin");
+        })
+        
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax()
+                .Select("_SelectUser", "Admin")                //.Insert("_InsertUser", "Admin")                //.Update("_SaveUser", "Admin")
+                .Delete("_DeleteUser", "Admin")
+                ;
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.ID).Width(50).ReadOnly();
+            columns.Bound(p => p.Login).Width(100).HtmlAttributes(new { @class = "text-input-upper" });
+            columns.Bound(p => p.FullName).Width(160);
+            columns.Bound(p => p.EMail).Width(160);
+            columns.Bound(p => p.Active).Width(50)
+                .ClientTemplate("<input type='checkbox' disabled='disabled' name='Active' <#= Active? checked='checked' : '' #> />");
+
+            columns.Bound(p => p.ID)
+                .ClientTemplate(
+                    @Html.ActionLink(linkText: "Edit", actionName: "EditUser", controllerName: "Admin", routeValues: new { id = "<#= ID #>" },
+                        htmlAttributes: new { @class = "t-button" }).ToString()
+                )
+                .Title("").Width(80).ReadOnly();
+
+
+            columns.Bound(p => p.ID)
+                .ClientTemplate(
+                    @Html.ActionLink(linkText: "Groups", actionName: "UserGroups", controllerName: "Admin", routeValues: new { userID = "<#= ID #>" },
+                        htmlAttributes: new { @class = "t-button" }).ToString()
+                )
+                .Title("").Width(80).ReadOnly();
+                        
+            columns.Command(commands =>
+            {
+                commands.Delete().ButtonType(GridButtonType.ImageAndText); //commands.Edit().ButtonType(GridButtonType.ImageAndText);
+            }).Width(220).Title("");
+                               
+        })
+        .Editable(editing => editing.Mode(GridEditMode.InLine))
+        .Pageable()
+        //.Scrollable()
+        .Sortable()
+    )
+

@@ -1,0 +1,23 @@
+﻿@model IEnumerable<CST.ISIS.Data.CharCompOpt>
+
+    <table class="prod-options-list char-comp-opts">
+        @if (Model.IsAny())
+        {
+            foreach (var item in Model)
+            {
+            <tr @(item.Overriden ? "class=overriden" : "")>
+
+                <td class="indent-@(item.Level)">@Html.DisplayFor(modelItem => item.TypeDescr)</td>
+                <td>@Html.DisplayFor(modelItem => item.OptionCode2)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OptionDescr)
+                    @if ((item.ImgCount > 0) && (item.ProdImageInfoSet != null))
+                    {
+                        @Html.Partial("ProdImageInfoSet", item.ProdImageInfoSet)
+                    }    
+                </td>
+            </tr>
+            }
+        }
+    </table>
+        

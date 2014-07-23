@@ -1,0 +1,69 @@
+﻿@model CST.Prdn.ViewModels.UserSettingsViewModel
+
+@{
+    ViewBag.Title = LocalStr.View + " " + LocalStr.Settings;
+}
+
+    @Html.HiddenFor(model => model.urlReturn)
+
+    <fieldset>
+        <legend>@LocalStr.Settings</legend>
+        <table>
+        <tbody>
+            <tr>
+                <th class="display-label nowrap">
+                    @Html.LabelFor(model => model.Login)    
+                </th>
+                <td class="display-field nowrap">
+                    @Html.DisplayFor(model => model.Login)    
+                </td>
+            </tr>
+            <tr>
+                <th class="display-label nowrap">
+                    @Html.LabelFor(model => model.DefaultRunDescr)    
+                </th>
+                <td class="display-field nowrap">
+                    @Html.DisplayOrDashFor(model => model.DefaultRunDescr) @Html.DisplayOrDashFor(model => model.DefaultRunID) 
+                </td>
+            </tr>
+            <tr>
+                <th class="display-label nowrap">
+                    @Html.LabelFor(model => model.JobPageSize)    
+                </th>
+                <td class="display-field nowrap">
+                    @Html.DisplayOrDashFor(m => m.JobPageSize)
+                </td>
+            </tr>
+            @if (Model.Requests)
+            {
+            <tr>
+                <th class="display-label nowrap">
+                    @Html.LabelFor(model => model.RequestPageSize)    
+                </th>
+                <td class="display-field nowrap">
+                    @Html.DisplayOrDashFor(m => m.RequestPageSize)
+                </td>
+            </tr>
+            }
+            <tr>
+                <th class="display-label nowrap">
+                    @Html.LabelFor(model => model.LabelPrinterDisplay)    
+                </th>
+                <td class="display-field nowrap">
+                    @Html.DisplayOrDashFor(m => m.LabelPrinterDisplay)
+                </td>
+            </tr>
+        </tbody>
+        </table>
+        <div>
+            @Html.ImageLink(imgSrc: Url.Content("~/Content/Images/gearBlack.png"),
+                actionName: "EditSettings",
+                additionalText: LocalStr.Edit+" "+LocalStr.Settings,
+                //routeValues: new { urlReturn = Request.Url.PathAndQuery },
+                linkHtmlAttributes: new { @class = "t-button-icon t-button" },
+                imgHtmlAttributes: new { alt = LocalStr.View + " " + LocalStr.Settings, style = "vertical-align: middle" }
+            )
+        </div>
+    </fieldset>
+
+

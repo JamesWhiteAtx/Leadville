@@ -1,0 +1,69 @@
+﻿@model CST.Prdn.BulkSaleImpIModel
+@using CST.Prdn
+           
+@{
+    ViewBag.Title = "Warehouse Transfer Results";
+}
+
+<div class='vert-space-bot'>
+    @Html.TIconActionLink(tIconClass: "t-go-back", linkText: "Back to Warehouse List", actionName: "TrnsfrWrhsList")
+</div>
+
+<fieldset class="horiz-form">
+    @*<legend>Whtransfter</legend>*@
+
+    <div class="display-label strengthened">
+        @Html.LabelFor(model => model.RunName)
+    </div>
+    <div class="display-field strengthened">
+        @Html.DispAndHiddenFor(model => model.RunName)
+    </div>
+
+</fieldset>
+
+@(
+Html.Telerik().Grid<BulkSaleResult>()
+    .Name("Grid")
+    .DataKeys(dataKeys => {dataKeys.Add(m => m.RunName); dataKeys.Add(m => m.SerialNum);})
+
+    //.ToolBar(toolBar => { toolBar.Template("<span/>");})    
+    
+    .DataBinding(dataBinding =>
+    {
+        dataBinding.Ajax()
+            .Select("_SelectWhtransResults", "Util", new { ID = Model.RunName });
+    })
+    .Columns(columns =>
+    {
+        columns.Bound(r => r.RunName).Visible(false);
+        columns.Bound(r => r.CustPO).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.SerialNum).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.RWProdCD).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.HV).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.DeptID).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.Status).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.OrderNo).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.OrderPO).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.OrderStatus).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.OrderDt).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.OrderLine).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.ExbiStatus).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.OrderPart).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.OrderDescr).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.OrderAmt).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.Invoice).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(r => r.InvoiceLine).HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+    })
+    .Pageable(settings => settings.Position(GridPagerPosition.Both).PageSize(1000))
+    .Scrollable(s => s.Enabled(true).Height("auto"))
+    .Sortable()
+    .Filterable()
+    .Resizable(resizing => resizing.Columns(true))
+    .ClientEvents(events => events.OnDataBound("onDataBound"))
+)
+
+@{Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text>
+    function onDataBound(e) {
+        tGridAddExpExcel(e, '@Url.Action("ExportWHResults", routeValues: new { id = Model.RunName })');
+    }
+</text>);}

@@ -1,0 +1,78 @@
+﻿@model CST.Prdn.ViewModels.UserLookupViewModel
+           
+@{
+    ViewBag.Title = "FindUser";
+}
+
+<h2>FindUser</h2>
+
+@Html.Partial("UserLookup")
+
+@*<fieldset id="findUserButtons" style="display: none">*@
+<div class="horiz-form">
+    <div id="findUserButtons" class="buttonBox"  style="display: none">
+        <button class="t-button" id="findUserEditBtn" title="Edit User">
+            <span class="t-icon t-edit"></span>
+            Edit
+        </button>
+
+        <button class="t-button" id="findUserGroupsBtn" title="Goto User Groups List">
+            <span class="t-icon t-arrow-next"></span>
+            Groups
+        </button>
+
+        <button class="t-button botton-sep" id="findUserDeleteBtn" title="Delete User">
+            <span class="t-icon t-delete"></span>
+            Delete
+        </button>
+    </div>
+</div>
+
+@using (Html.BeginForm(actionName: "DeleteUser", controllerName: "Admin", method: FormMethod.Post, htmlAttributes: new {id="findUserDeleteForm"}))
+{
+    <input id="deleteUserID" name="ID" type="hidden"/>
+}
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    if (typeof wireUserLookups == 'function') { 
+        wireUserLookups(
+            "@Url.Action("_UserLookup", "Admin")", 
+            null,
+            $("#findUserButtons")
+        );
+    };
+
+    $("#findUserEditBtn").click(function (e) {
+        e.preventDefault();
+        var current_id = $("#@Html.IdFor(m => m.ID)").val();
+        var actionUrl = '@Html.Raw(Url.Action("EditUser", "Admin", new { id = "ISERIDTOKEN" }))';
+        actionUrl = actionUrl.replace("ISERIDTOKEN", current_id);
+        $(location).attr('href', actionUrl);
+        return false;
+    });
+
+    $("#findUserGroupsBtn").click(function (e) {
+        e.preventDefault();
+        var current_id = $("#@Html.IdFor(m => m.ID)").val();
+        var actionUrl = '@Html.Raw(Url.Action("UserGroups", "Admin", new { userID = "ISERIDTOKEN" }))';
+        actionUrl = actionUrl.replace("ISERIDTOKEN", current_id);
+        $(location).attr('href', actionUrl);
+        return false;
+    });
+
+    $("#findUserDeleteBtn").click(function (e) {
+        e.preventDefault();
+        
+        var current_id = $("#@Html.IdFor(m => m.ID)").val();
+        var login = $("#@Html.IdFor(m => m.Login)").val();
+
+        if ( confirm("Are you sure you want to delete this User '"+login+"'?") ) {
+            $("#deleteUserID").val(current_id);
+            $("#findUserDeleteForm").submit();
+        };
+        return false;
+    });
+
+</text>);}

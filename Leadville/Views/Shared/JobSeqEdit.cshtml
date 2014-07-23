@@ -1,0 +1,92 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+@{
+    const string NoRunSeqTxt = "next available";
+}
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RunSeqNo)
+        </div>
+        <div class="editor-field small-input">
+            @Html.HiddenFor(model => model.RunSeqNo)
+            @Html.SpanFor(model => model.EditRunSeqNo, @NoRunSeqTxt)
+            @Html.HiddenFor(model => model.EditRunSeqNo)
+            @Html.TIconButton(tIconClass: "t-updn", id: "jobSeqChange", htmlAttributes: new { @class = "t-button-bare", title = LocalStr.Change+" "+LocalStr.SeqNo })
+            <div id="sequenceList" style="display: none">
+                @Html.DropDownList("jobSequences", new SelectList(Enumerable.Empty<SelectListItem>()))
+            </div>
+        </div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    function setEditRunSeqNo(seq, txt) {
+        inputValueAndSpanValue('@Html.IdFor(m => m.EditRunSeqNo)', '@Html.SpanIdFor(m => m.EditRunSeqNo)', seq, txt);
+    };
+    
+    function disableEditRunSeqNo() {
+        $("#jobSequences").val('');
+        setEditRunSeqNo('', '@NoRunSeqTxt');
+        $('#jobSeqChange').hide('fast');
+    };
+    function enableEditRunSeqNo() {
+        $('#jobSeqChange').show('fast');
+    };
+
+    $("#jobSeqChange").click(function(e) {
+        e.preventDefault();
+        var exst = $("#sequenceList").is(':data(dialog)');
+        if (exst == false) {
+            $.getJSON('@Url.Action("_JobRunSeqlist", "Lookup")', { id: $('#@Html.IdFor(m => m.RunID)').val() }, function(result) {
+                var curSeq = $('#@Html.IdFor(m => m.EditRunSeqNo)').val();
+
+                var ddl = $("#jobSequences");
+                ddl.empty();
+                var items = 0;
+                var selId = null;
+
+                $(result).each(function() {
+                    var seq = this.toString();
+                    ddl.append(
+                        $('<option/>', {value: seq}).html(seq)
+                    );
+                    items ++;
+                    if ((selId == null) && (curSeq == seq)) {
+                        selId = seq;
+                    }
+                });
+
+                if ((selId === null) && (!curSeq)) {
+                    ddl.append( $('<option/>', {value: ''}).html('@NoRunSeqTxt') );
+                };
+
+                if (items !== 0) {
+                    if (selId !== null) {
+                        ddl.val(selId);
+                    } else {
+                        ddl.val('');
+                    };
+                    $("#sequenceList").dialog({
+                        resizable: false,
+                        height: 75,
+                        width: 30,
+                        title: '@LocalStr.SeqNo',
+                        position: { my: "left", of: e, collision: "fit" }
+                    });
+                    exst = true;
+                    
+                    $("#jobSequences").change(function () {
+                        var seq = $("#jobSequences option:selected").val();
+                        var txt = $("#jobSequences option:selected").text();
+                        setEditRunSeqNo(seq, txt);
+                        $("#sequenceList").dialog("close");
+                    });
+
+                };
+            });
+        };
+        if (exst == true) {
+            $("#sequenceList").dialog("open");
+        };
+    });
+</text>);}
+

@@ -1,0 +1,73 @@
+﻿@model CST.Prdn.ViewModels.GroupLookupViewModel
+
+<fieldset>
+    <legend>Lookup Group</legend>
+    <div>
+        </div>
+            @Html.LabelFor(m => m.AppCode)
+        <div>
+        <div>
+            @(Html.Telerik().DropDownListFor(m => m.AppID)
+                    .Name("grpLookAppsDownList")
+                    .DataBinding(binding => binding.Ajax().Select("_AppsSelectList", "Admin", new { userID = Model.UserID }))
+                    .Placeholder("Select App...")
+                    .CascadeTo("grpLookGroupsDropDownList")
+                    .HtmlAttributes(new { style = "width:300px" })
+            )
+            @Html.HiddenFor(model => model.AppID)
+            @Html.ValidationMessageFor(model => model.AppID)
+        </div>
+        <div>
+            @Html.LabelFor(m => m.Name)
+        </div>
+        <div>
+            @(Html.Telerik().DropDownListFor(m => m.ID)
+                    .Name("grpLookGroupsDropDownList")
+                    .DataBinding(binding => binding.Ajax().Select("_GroupsSelectList", "Admin", new { userID = Model.UserID }))
+                    .Placeholder("Select Group...")
+                    .HtmlAttributes(new { style = "width:300px" })
+            )
+            @Html.HiddenFor(model => model.ID)
+            @Html.ValidationMessageFor(model => model.ID)
+        </div>
+    </div>
+<div>
+    @Html.ValidationSummary(false)
+</div>
+
+</fieldset>
+
+@{Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text>
+
+    var selectrToHideShow = null;
+
+    function groupLookupWireEvents(hideShowSlctr) {
+
+        if (hideShowSlctr) {
+            selectrToHideShow = hideShowSlctr;
+            selectrToHideShow.hide();
+        };
+
+        $("#grpLookGroupsDropDownList").bind("valueChange", function(e) { 
+            grpLookGroupsDropChange(e);                
+        });
+
+    };
+
+    groupLookupWireEvents();
+
+    function grpLookGroupsDropChange(e) {
+
+        $("#@Html.IdFor(m => m.AppID)").val( $("#grpLookAppsDownList").val() );
+        $("#@Html.IdFor(m => m.ID)").val(e.value);
+        
+        if (selectrToHideShow) {
+            if (e.value) {
+                selectrToHideShow.show("fast");
+            } else {
+                selectrToHideShow.hide("fast");
+            };
+        };
+    };
+
+</text>);}

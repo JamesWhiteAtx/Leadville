@@ -1,0 +1,25 @@
+﻿@model CST.Prdn.ViewModels.PrdnOrdRunListModel
+           
+@{
+    ViewBag.Title = LocalStr.Lookup + " " + LocalStr.Production + " " + LocalStr.Run;
+}
+
+@Html.Partial("PrdnRunLookup")
+
+<div class="horiz-form">
+    <div id="findPrdRunButtons" class="buttonBox"  style="display: none">
+        @Html.TIconLinkVal(tIconClass: "t-go-next", caption: LocalStr.Job + "s", actionName: "Jobs", routeTokens: new { id = @Html.IdFor(m => m.LkupPrdnRunID) },
+                     htmlAttributes: new { title = LocalStr.Job + "s" })
+        @Html.TIconLinkVal(tIconClass: "t-go-next", caption: LocalStr.ProductionOrder, actionName: "Runs", routeTokens: new { id = @Html.IdFor(m => m.LkupPrdnOrdNo) },
+                     htmlAttributes: new { title = LocalStr.ProductionOrder })
+    </div>
+</div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    if (typeof wirePrdnRunLookup == "function") { 
+        wirePrdnRunLookup({ 
+            select: function(item) {$("#findPrdRunButtons").show("fast");} 
+        });
+    };
+</text>);}

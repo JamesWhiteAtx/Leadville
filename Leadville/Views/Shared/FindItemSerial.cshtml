@@ -1,0 +1,139 @@
+﻿@model CST.Prdn.ViewModels.InvLookupItemViewModel
+
+@{
+    ViewBag.Title = LocalStr.Lookup + " " + LocalStr.InventoryItem;
+}
+
+<h2>@LocalStr.Lookup @LocalStr.InventoryItem</h2>
+
+<div class="horiz-form">
+    @*@Html.HiddenFor(model => model.LabelPrinterID)*@
+    @Html.HiddenFor(model => model.LabelPrinterID)
+    @Html.HiddenFor(model => model.PrinterName)
+    @Html.HiddenFor(model => model.PrinterHostName)
+    @Html.HiddenFor(model => model.PrinterPort)
+
+    <div>
+        @Html.LabelFor(model => model.SerialNo): @Html.EditorFor(model => model.SerialNo) 
+        @Html.TIconButton(tIconClass: "t-delete", id: "clearSerialNo", htmlAttributes: new { @class = "t-button-bare", title = LocalStr.Clear + " " + Html.GetDisplayName(model => model.SerialNo).ToString() })
+        <span class="field-validation-valid" data-valmsg-for="@Html.IdFor(m => m.SerialNo)" data-valmsg-replace="true"></span>
+    </div>
+    <div id="invItemDetails">
+        @if (!String.IsNullOrWhiteSpace(Model.IfNotNull(m => m.InvItemID)))
+        {
+            @Html.Partial("InvItemDetails", Model)
+        }
+    </div>
+    <div id="invItemPrint" style="display:none">
+        @Html.ImageButtonLinkVal(imgSrc: Url.Content("~/Content/Images/barlabel.png"),
+            actionName: "ItemLabel",
+            routeTokens: new { id = Html.IdFor(m => m.SerialNo), 
+                LabelPrinterID = Html.IdFor(m => m.LabelPrinterID),
+                PrinterName = Html.IdFor(model => model.PrinterName),
+                PrinterHostName = Html.IdFor(model => model.PrinterHostName),
+                PrinterPort = Html.IdFor(model => model.PrinterPort),
+            },
+            imgHtmlAttributes: new { title = LocalStr.Print + " " + LocalStr.Label })
+    </div>
+</div>
+
+@Html.Partial("SerialAuto")
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var lastSerial; 
+
+    function selectSerialNo(item) {
+        var serialInput = $("#@Html.IdFor(m => m.SerialNo)");
+        clearErrorValidation("@Html.IdFor(m => m.SerialNo)");
+        if (item) {
+            lookupItemInfo(item.SerialNo);
+        } else {
+            var serial = serialInput.val();
+            if ((!serial) || (serial.trim() === '')) {
+                loadItemInfo();
+            } else if (serial != lastSerial) {
+                lookupItemInfo(serial);
+            };
+        };
+        lastSerial = serialInput.val();
+    };
+
+    function lookupItemInfo(serialNo) {
+        var serialInput = $("#@Html.IdFor(m => m.SerialNo)");
+        var printerHost = $("#@Html.IdFor(m => m.PrinterHostName)").val();
+        addLoadingClass(serialInput);
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("_SerialLookupSubView", "Lookup")", 
+            data: { serialNo: serialNo },
+            success: function (itemInfo) {
+                if (itemInfo) {
+                    loadItemInfo(itemInfo);
+                } else {
+                    var serial = serialInput.val();
+                    setErrorValidation("@Html.IdFor(m => m.SerialNo)", "@LocalStr.Sorry - @Html.DisplayNameFor(m => m.SerialNo) "+serial+ " @LocalStr.verbIsNot @LocalStr.valid.");
+                    loadItemInfo();
+                };
+            },
+            complete: function () {
+                removeLoadingClass(serialInput);
+            },
+            error: function (req, status, error) {
+                setErrorValidation("@Html.IdFor(m => m.SerialNo)", "@LocalStr.Sorry - " + error);
+                loadItemInfo();
+            }
+        });
+    };
+
+    function loadItemInfo(itemInfo) {
+        if (itemInfo) {
+            $("#invItemDetails").html(itemInfo.DetailPartial);
+            displayPrint();
+        } else {
+            $("#invItemDetails").empty();
+            $("#invItemPrint").hide();
+        };
+    };
+
+    function displayPrint() {
+        var itemID  = $("#@Html.IdFor(m => m.InvItemID)").val();
+        var printerID = $("#@Html.IdFor(m => m.LabelPrinterID)").val();
+        if ((printerID) && (itemID)) {
+            $("#invItemPrint").show();
+        } else {
+            $("#invItemPrint").hide();
+        }
+    }
+
+    if (typeof wireSerialAuto == "function") { 
+        wireSerialAuto({ 
+            selector: "#@Html.IdFor(m => m.SerialNo)", 
+            urlEval: "@Url.Action("_InvSerialLookup", "Lookup")",
+            select: selectSerialNo,
+            change: selectSerialNo
+        });
+    };
+
+    $("#@Html.IdFor(m => m.SerialNo)").keypress(function(e) {
+        if (e.keyCode == '13') {
+            var serial = $("#@Html.IdFor(m => m.SerialNo)").val();
+            if (serial) {
+                selectSerialNo({SerialNo: serial});
+            } else {
+                clearErrorValidation("@Html.IdFor(m => m.SerialNo)");
+                loadItemInfo();
+            };
+        }
+    });
+
+    $("#clearSerialNo").click(function() {
+        $("#@Html.IdFor(m => m.SerialNo)").val("").focus();
+        clearErrorValidation("@Html.IdFor(m => m.SerialNo)");
+        loadItemInfo();
+    });
+
+    $("#@Html.IdFor(m => m.SerialNo)").focus();
+    displayPrint();
+
+</text>);}

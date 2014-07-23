@@ -1,0 +1,50 @@
+﻿@model IEnumerable<CST.Prdn.ViewModels.LeatherListModel>
+
+
+<table>
+    <tr>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().ProdCD)
+        </th>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().ColorCDStr)
+        </th>
+        <th>
+        </th>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().DecorStr)
+        </th>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().ProdDescr)
+        </th>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().Cost)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.TIconActionLink(tIconClass: "t-search", linkText: Html.DisplayFor(modelItem => item.ProdCD).ToString(), actionName: "Product", 
+             routeValues: new {id=Html.DisplayFor(modelItem => item.ProdCD).ToString()},
+             htmlAttributes: new { @class = "t-button-bare" })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ColorCDStr)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ColorDescrStr)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DecorStr)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProdDescr)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cost)
+        </td>
+    </tr>
+}
+
+</table>

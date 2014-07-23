@@ -1,0 +1,53 @@
+﻿@using CST.Prdn.ViewModels
+
+@{
+    ViewBag.Title = "Label Printers";
+}
+
+<h2>Label Printers</h2>
+
+@(
+ Html.Telerik().Grid<PrintLabelModel>()
+        .Name("Grid")
+        .DataKeys(dataKeys => dataKeys.Add(c => c.ID))
+        .ToolBar(commands =>
+        {
+            commands.Custom()
+            .HtmlAttributes(new { id = "addPrinterBtn" })
+            .ButtonType(GridButtonType.ImageAndText).ImageHtmlAttributes(new { @class = "t-icon t-add" })
+            .Text("Add Printer")
+            .Action("AddLabelPrinter", "Maintenance", new { urlReturn = Request.Url.PathAndQuery });
+        })
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax()
+                .Select("_SelectLabelPrinter", "Maintenance")
+                .Delete("_DeleteLabelPrinter", "Maintenance");
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.ID).Width(50).ReadOnly();
+            columns.Bound(c => c.Name);
+            columns.Bound(c => c.HostName);
+            columns.Bound(c => c.Port).Width(75);
+            columns.Bound(c => c.Active)
+                .ClientTemplate("<input type='checkbox' disabled='disabled' name='Active' <#= Active? checked='checked' : '' #> />");
+
+            columns.Bound(p => p.ID)
+                .ClientTemplate(
+                    @Html.ActionLink(linkText: "Edit", actionName: "EditLabelPrinter", controllerName: "Maintenance", routeValues: new { id = "<#= ID #>", urlReturn = Request.Url.PathAndQuery },
+                        htmlAttributes: new { @class = "t-button" }).ToString()
+                )
+                .Title("").Width(100).ReadOnly();
+            
+            columns.Command(commands =>
+            {
+                commands.Delete().ButtonType(GridButtonType.ImageAndText);
+            }).Width(220).Title("");
+                               
+        })
+        .Editable(editing => editing.Mode(GridEditMode.InLine))
+        .Pageable()
+        .Scrollable()
+        .Sortable()
+)

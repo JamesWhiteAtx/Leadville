@@ -1,0 +1,11 @@
+﻿@model CST.Prdn.ViewModels.DefaultRunViewModel
+
+   
+    @Html.LabelFor(m => m.DefaultRunDescr) <strong>@Html.DisplayOrDashFor(m => m.DefaultRunDescr)</strong> @Html.HiddenFor(m => m.DefaultRunID)
+
+    @if (Model.UserEditable)
+    {
+        @Html.ActionLink(linkText: "Change Default Run", actionName: "EditDefaultRun", controllerName: "Schedule",
+                                    routeValues: new { runID = @Model.DefaultRunID, runDescr = @Model.DefaultRunDescr, urlReturn = @Request.Url.AbsoluteUri },
+                                    htmlAttributes: new { @class = "t-button" })
+    }

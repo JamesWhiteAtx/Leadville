@@ -1,0 +1,17 @@
+﻿@model CST.Prdn.ViewModels.UserViewModel
+
+@{
+    ViewBag.Title = "Add User";
+}
+
+<h2>Add User</h2>
+
+@Html.Partial("UserEdit", Model)
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"))
+.OnDocumentReady(@<text>
+    
+    $("#@Html.IdFor(m => m.AlterPassword)").attr("disabled", true);
+
+</text>);}

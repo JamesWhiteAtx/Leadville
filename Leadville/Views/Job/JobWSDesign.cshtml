@@ -1,0 +1,65 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    @Html.HiddenFor(model => model.WorksheetID)
+
+    @if (Model.IsNotNull(m => m.EditWorksheet))
+    {
+        <div class="display-label">
+            @Html.LabelFor(model => model.EditWorksheet)
+        </div>
+        <div class="display-field worksheet-editor">
+            @Html.Partial("WorksheetDesign", Model)    
+        </div>
+    }
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    function displayWSOptions(wsCount)
+    {
+        if (wsCount > 0) {    
+            $("#worksheet-opts").show("fast");
+        } else {
+            $("#worksheet-opts").hide("fast");
+        };
+    }
+
+    var wsOptCount = parseInt($("#@Html.IdFor(m => m.ReqWSCount)").val(), 10);
+    displayWSOptions(wsOptCount);
+
+    @*function loadReqWSOptions(requestID)
+    {
+        $("#worksheet-opts").hide("fast");
+        var tbl = $("#ws-options-list");
+        if (tbl) {
+            tbl.empty();
+            if(requestID) {        
+                $.getJSON('@Url.Action("_WorksheetOptions", "Request")', { requestID: requestID }, function(result) {
+                    $(result).each(function() {
+                        
+                        if($("#worksheet-opts").is(":hidden")) {
+                            $("#worksheet-opts").show("fast");
+                        }
+
+                        var td = $('<td>').text(this.OptionDescr);
+
+                        if ((this.ImgCount > 0) && (this.ProdImageInfoSet)) {
+                            $.each(this.ProdImageInfoSet, function(index, value) { 
+                                appendProdImgLink(td, "@Url.Action("ViewImage", "Product")/" + value.ImageID, 
+                                    value.ImageType, "@Url.Content("~/Content/Images/pencil.gif")");
+                            });
+                        }
+
+                        tbl.append($('<tr>')
+                            .append($('<td>').attr("class", "indent-"+this.Level).text(this.TypeDescr))
+                            .append($('<td>').text(this.OptionCode2))
+                            .append(td)
+                        );
+                    });
+                });
+            }
+        }
+    }*@
+
+
+</text>);}

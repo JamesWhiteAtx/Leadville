@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link rel="SHORTCUT ICON" href="@Url.Content("~/Content/Images/Bigco/favicon.ico")"/>
+    <meta charset="utf-8" />
+    <title>Roadwire @ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/Bigco.css")" rel="stylesheet" type="text/css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-1.7-development-only.js" type="text/javascript"></script>
+    @RenderSection("HeadContent", required:false)
+</head>
+<body>
+    <div class="page">
+        <header>
+            <div id="header-top">
+                <div id="rw_header">
+                    <div id="rw_logo">
+                        <a href="/" title="Roadwire"><h1>Roadwire</h1></a>
+                    </div>
+                    <div id="cc_logo">
+                        <a href="/" title="Roadwire"><h1>Bigco</h1></a>
+                    </div>
+                </div>
+                <div id="rw_mainmenu">
+                    <div id="rw_navigation">
+                        <ul>
+                            <li><a href="http://roadwire.com/" title="Home">Roadwire</a></li>
+                            <li>
+                                @Html.ActionLink(linkText: "Bigco", controllerName:"Bigco", actionName:"Index")
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="select_back">
+                    @RenderSection("SelectBack", false)
+                </div>
+                <div id="rw_breadcrumbs">
+                    @RenderSection("Breadcrumbs", false)
+                </div>
+            </div>
+        </header>
+
+        <section id="main"  class="clearfix">
+            <div id="sideBar">
+                @RenderSection("SideBar", false)
+            </div>
+            <div id="contentArea">
+                @RenderBody()
+            </div>
+        </section>
+        <footer>
+            <p>Copyright © 1066 Company of mine. All rights reserved. The Company trademark and logo are registered trademarks of Company.  All other registered trademarks or trademarks are property of their respective owners.</p>
+        </footer>
+    </div>
+</body>
+</html>

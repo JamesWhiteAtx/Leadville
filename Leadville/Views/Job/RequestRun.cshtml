@@ -1,0 +1,107 @@
+﻿@model CST.Prdn.ViewModels.RequestScheduleViewModel
+           
+@{
+    ViewBag.Title = "Choose Run";
+}
+    @if (Model.SettingsModel != null)
+    {
+    <div class="right-align">
+            @Html.Partial("Settings", Model.SettingsModel)
+    </div>
+    }
+
+    <fieldset class="horiz-form medium-input">
+        <h3>Select Run For Request</h3>
+        @Html.HiddenFor(model => model.ProdTypeCD)
+        @Html.HiddenFor(model => model.ProdCD)
+        <div class="display-label">
+            @Html.LabelFor(model => model.RequestID)
+        </div>
+        <div class="display-field">
+            @Html.HiddenFor(model => model.RequestID)
+            @Html.DisplayFor(model => model.RequestID)
+        </div>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.ReqPartDescr)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.ReqPartDescr)
+        </div>
+
+        @if (Model.PossibleRuns.IsAny())
+        {
+            <div id="possibleRuns">
+            <hr />
+            <h3>Choose from runs that match @LocalStr.ProductType </h3>
+            @foreach (var item in Model.PossibleRuns)
+            {
+	            <div>
+                @Html.TIconActionLink(
+                    linkText: item.Text, actionName: "ScheduleRequest",
+                    routeValues: new { reqID = Model.RequestID, urlReturn = Model.UrlReturn, runID = item.Value },
+                    htmlAttributes: new { title = LocalStr.Schedule + " " + LocalStr.Job })
+                </div>
+            }
+            <h3>Or ...</h3>
+            </div>
+        }
+        <div>
+        <hr />
+        <h3>Lookup Run</h3>
+        @Html.TIconButton(tIconClass: "t-search", caption: LocalStr.Select + " " + LocalStr.Run, id: "btnSelectRun", htmlAttributes: new { title = LocalStr.Change + " " + LocalStr.Production + " " + LocalStr.Run })
+        </div>
+    </fieldset>
+
+<div class="horiz-form no-space">
+    <div class="buttonBox">
+        <span id="findReqRunButtons" style="display: none">
+        @Html.TIconLinkVal(tIconClass: "t-go-next", caption: LocalStr.Schedule + " " + LocalStr.Job, actionName: "ScheduleRequest",
+            routeValues: new { reqID = Model.RequestID, urlReturn = Model.UrlReturn },
+            routeTokens: new { runID = @Html.IdFor(m => m.RunID) },
+            htmlAttributes: new { id = "foundRun", title = LocalStr.Schedule + " " + LocalStr.Job })
+        </span>
+        @Html.HiddenFor(model => model.UrlReturn)
+        @Html.TIconReturnLink(Model.IfNotNull(m => m.UrlReturn))
+    </div>
+</div>
+
+@Html.Partial("PrdnRunDialog")
+@Html.Partial("NewRunDialog")
+
+@{ Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    function reqMakeRun(item) {
+        openNewRunDialog({
+            poNo: item.poNo, 
+            prodTypeEval: $("#@Html.IdFor(m => m.ProdTypeCD)").val(),
+            shipDtStr: item.shipDtStr, 
+            callback: function (newRun) {
+                linkUrl("@Html.Raw(Url.Action("RequestNewRun", new { id = Model.RequestID, urlReturn = Model.UrlReturn, orderNo = "_parm_", typeID = "_parm_", note = "_parm_" }))", newRun.poNo, newRun.typeID, newRun.note);
+            }
+        });
+    };
+    
+    function selectRun() {
+        openPrdnRunDialog({
+            prodTypeEval: $("#@Html.IdFor(m => m.ProdTypeCD)").val(),
+            pickRun: function (item) {
+                linkUrl("@Html.Raw(Url.Action("ScheduleRequest", new { reqID = Model.RequestID, urlReturn = Model.UrlReturn, runID = "_parm_" }))", item.runID);
+            },
+            makeRun: (typeof openNewRunDialog == "function") ? reqMakeRun : undefined
+        });
+    };
+
+    if (typeof openPrdnRunDialog == "function") { 
+        $('#btnSelectRun').click(function(e) {
+           e.preventDefault();
+           selectRun();
+        });
+    };
+
+    if ( $("#possibleRuns").length < 1 ) {
+        selectRun();
+    };
+</text>); }  
+

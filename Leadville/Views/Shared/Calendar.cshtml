@@ -1,0 +1,94 @@
+﻿@using CST.Prdn.ViewModels
+
+@model  CST.Prdn.ViewModels.ProductionCalendar
+           
+@{
+    ViewBag.Title = LocalStr.ProductionCalendar;
+}
+
+<h2>@LocalStr.ProductionCalendar</h2>
+
+<div id="prod-cal-dropdown-div">
+@using (Html.BeginForm(null, null, FormMethod.Get))
+{
+    if (Model.HasPrevMonth)
+    {
+        <a href="@Url.Action(actionName: "Calendar", 
+            routeValues: new { year = Model.PrevYear, month = Model.PrevMonth })" 
+            class="t-button t-button-icon" title = "@LocalStr.Previous @LocalStr.Month">
+            <span class="t-icon t-arrow-prev"></span>
+        </a>
+    }
+    
+    @Html.DropDownListFor(x => x.Month, Model.Months, new { @class = "dropdown-submit" })
+
+    @Html.DropDownListFor(x => x.Year, Model.Years, new { @class = "dropdown-submit" })
+
+    if (Model.HasNextMonth)
+    {
+        <a href="@Url.Action(actionName: "Calendar", 
+            routeValues: new { year = Model.NextYear, month = Model.NextMonth })" 
+            class="t-button t-button-icon" title = "@LocalStr.Next @LocalStr.Month">
+            <span class="t-icon t-arrow-next"></span>
+        </a>
+    }
+    else if (Model.AllowEditing) 
+    {
+        <a href="@Url.Action(actionName: "DefinePrdnCalendar", 
+            routeValues: new { year = Model.NextYear, month = Model.NextMonth })" 
+            class="t-button t-button-icon" title = "@LocalStr.Next @LocalStr.Month">
+            <span class="t-icon t-edit"></span>
+            @LocalStr.Define @Model.FDONextMonth.ToString("MMMM yyyy")
+        </a>
+    }
+}
+</div>
+    
+<div id="prod-cal-div" class="t-widget t-grid">
+    <table id="prod-cal" class="t-widget t-grid">
+        <thead class="t-grid-header">
+            <tr class="prod-cal-weekdays">
+                @foreach (var item in Model.CalMonth.CalendarDays.Take(7))
+                {
+                <th class="prod-cal-dow t-header">
+                    <span class="t-link">
+                        @item.CalDay.ToString("ddd", System.Globalization.CultureInfo.CurrentCulture)
+                    </span>
+                </th>
+                }
+            </tr>
+        </thead>
+        @{ DateTime today = DateTime.Today; }
+        @foreach (PrdnCalendarDay[] week in Model.CalMonth.PrdnCalWeek())
+        {
+        <tr class="prod-cal-week">
+            @foreach (PrdnCalendarDay day in week)
+            {
+                @Html.ProdDayTd(day, today, Model) 
+            }
+        </tr>
+        }
+    </table>
+</div>
+
+@{ Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text> 
+
+    $(".dropdown-submit").change(function () {
+        $(this).closest("form").submit();
+    });
+
+@if (Model.AllowEditing)
+{<text>
+    // Add onclick handler to ship day checkboxes
+    $(".prod-cal-ship-day").click(function () {
+        var chkd = ($(this).is(":checked"));
+        var current_id = $(this).attr("id");
+        var actionUrl = '@Html.Raw(Url.Action("PrdnShipDay", "Maintenance", new { dateId = "DATEIDTOKEN", shipDay = "SHIPDAYTOKEN" }))';
+        actionUrl = actionUrl.replace("DATEIDTOKEN", current_id);
+        actionUrl = actionUrl.replace("SHIPDAYTOKEN", chkd);
+        $(location).attr('href', actionUrl);
+    });
+</text>}
+               
+</text>);}
+

@@ -1,0 +1,90 @@
+﻿@model  CST.Prdn.ViewModels.AppGroupsViewModel
+            
+@using CST.Prdn.ViewModels
+
+
+@{
+    ViewBag.Title = "Groups";
+}
+
+<h2>Groups</h2>
+
+<h4>
+@Html.LabelFor(m => m.AppID)
+
+@(Html.Telerik().ComboBoxFor(m => m.AppID)
+            .AutoFill(true)
+            .SelectedIndex(0)
+            .BindTo(Model.AppList)
+            .HighlightFirstMatch(true)
+            .ClientEvents(events => events
+                .OnChange("onDropDownListChange")
+            )
+            .HtmlAttributes(new { style = "width:300px" })
+)
+</h4>
+
+@(
+ Html.Telerik().Grid<GroupViewModel>()
+        .Name("Grid")
+        .DataKeys(dataKeys => dataKeys.Add(p => p.ID))
+        .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.ImageAndText).ImageHtmlAttributes(new { style = "margin-left:0" }))
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax()
+                .Select("_SelectAppGroup", "Admin", new { appID = Model.AppID })
+                .Insert("_InsertAppGroup", "Admin")
+                .Update("_SaveAppGroup", "Admin")
+                .Delete("_DeleteAppGroup", "Admin")
+                ;
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.AppGroupCode).ReadOnly();
+            columns.Bound(p => p.GroupID).Width(90).ReadOnly();
+            columns.Bound(p => p.Code).Width(100).HtmlAttributes(new { @class = "text-input-upper" });
+            columns.Bound(p => p.Name).Width(200);
+            columns.Bound(p => p.Description);
+            columns.Bound(p => p.AppAdmin).ClientTemplate("<input type='checkbox' disabled='disabled' name='AppAdmin' <#= AppAdmin? checked='checked' : '' #> />");
+            columns.Bound(p => p.Active).ClientTemplate("<input type='checkbox' disabled='disabled' name='Active' <#= Active? checked='checked' : '' #> />");
+
+            columns.Bound(p => p.AppID)
+                .ClientTemplate(
+                    @Html.ActionLink(linkText: "Users", actionName: "GroupUsers", controllerName: "Admin", routeValues: new { groupID = "<#= GroupID #>" },
+                        htmlAttributes: new { @class = "t-button" }).ToString()
+                )
+                .Title("").Width(80).ReadOnly();
+                        
+            columns.Command(commands =>
+            {
+                commands.Edit().ButtonType(GridButtonType.ImageAndText);
+                commands.Delete().ButtonType(GridButtonType.ImageAndText);
+            }).Width(220).Title("Commands");
+                               
+        })
+        .Editable(editing => editing.Mode(GridEditMode.InLine))
+        .Pageable(settings => settings.Position(GridPagerPosition.Both).PageSize(50))
+        //.Scrollable()
+        .Sortable()
+        .ClientEvents(events => events.OnSave("onGridSave"))
+    )
+
+
+@{Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text>
+    bindTGridUpper();
+
+    function onDropDownListChange(e) {
+        var grid = $("#Grid").data("tGrid");
+        //send additional arguments by passing them as a literal JavaScript object
+        grid.rebind({ appId: e.value });
+    }
+
+    function onGridSave(e) {
+        var combobox = $('#AppID').data('tComboBox');
+        var appIDValue = combobox.value();
+
+        var values = e.values;
+        values.AppID = appIDValue;
+    }
+
+</text>);}

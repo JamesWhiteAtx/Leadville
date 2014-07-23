@@ -1,0 +1,46 @@
+﻿@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    function mapOrdFromModel(item) { 
+        $.extend(item, {value: item.PrdnOrdNo, label: item.PrdnOrdDescr} );
+        return item; 
+    };
+
+    function wirePrdnOrdAuto(options) {
+        var defaults = {
+            selector: "#PrdnOrdNo",
+            urlEval: "@Url.Action("_PrdnOrdLookup", "Lookup")",
+            select: undefined,
+            change: undefined,
+            map: mapOrdFromModel
+        };
+
+        var settings = $.extend({}, defaults, options);
+        
+        $(settings.selector).autocomplete({
+            source: function (request, response) {
+                var lookupUrl = evalString(settings.urlEval);
+                var trimTerm = $.trim(request.term);
+
+                $.ajax({
+                    url: lookupUrl,
+                    dataType: "json",
+                    data: { term: trimTerm },
+                    success: function (data) {
+                        if (!data) { data = []; };
+                        response( $.map(data, settings.map) );
+                    }
+                });
+            }
+            , autoFocus: true
+            , minLength: 3
+            , select: function (event, ui) {
+                if ((ui.item) && (typeof settings.select == "function")) {
+                    settings.select(ui.item);
+                };
+            }
+            , change: settings.change
+        });
+    };    
+
+</text>);}

@@ -1,0 +1,17 @@
+﻿@using System.Configuration;
+
+@{
+    ViewBag.Title = @LocalStr.About +" " + @LocalStr.ApplicationName;
+}
+
+<h2>@LocalStr.About @LocalStr.ApplicationName</h2>
+
+<p>
+    Configuration: @ConfigurationManager.AppSettings["Configuration"]
+</p>
+<p>
+    Version: @Html.CurrentVersion() 
+</p>
+<p>
+    Data Store: @ViewBag.DBName
+</p>

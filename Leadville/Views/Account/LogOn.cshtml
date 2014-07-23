@@ -1,0 +1,52 @@
+﻿@model CST.Security.LogOnModel
+
+@{
+    ViewBag.Title = LocalStr.LogOn;
+}
+
+<h2>@LocalStr.LogOn</h2>
+
+@Html.ValidationSummary(true, LocalStr.LogOn +" "+LocalStr.failed+".")
+
+@using (Html.BeginForm()) {
+    <div>
+        <fieldset>
+            <div class="editor-label">
+                @Html.LabelFor(m => m.Login)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(m => m.Login) @*, new { @onkeyup = "caps(this)" })*@
+                @Html.ValidationMessageFor(m => m.Login)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.Password)
+            </div>
+            <div class="editor-field">
+                @Html.PasswordFor(m => m.Password)
+                @Html.ValidationMessageFor(m => m.Password)
+            </div>
+
+            <div class="editor-label">
+                @Html.CheckBoxFor(m => m.RememberMe)
+                @Html.LabelFor(m => m.RememberMe)
+            </div>
+
+            <div class="editor-label">
+                <input type="submit" value="@LocalStr.LogOn" />
+            </div>
+        </fieldset>
+    </div>
+}
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"))
+.OnDocumentReady(@<text>
+
+    $("#@Html.IdFor(m => m.Login)").keypress(function(event) {
+        keyPressUpper(event, this);
+    });
+
+    $("#@Html.IdFor(m => m.Login)").focus();
+
+</text>);}

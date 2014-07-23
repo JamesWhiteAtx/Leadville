@@ -1,0 +1,59 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.ID)
+        </div>
+        <div class="display-field">
+           @Html.SpanOrDashAndHiddenFor(model => model.ID)
+        </div>
+          
+        <div class="display-label">
+            @Html.LabelFor(model => model.RunDescription)
+        </div>
+        <div class="display-field">
+            <span class="in-line">
+                @if (Model.IfNotNull(m => m.RunID) > 0)
+                {
+                <span class="strengthened emphasized">
+                    @Html.ActionLink(Html.DisplayFor(model => model.RunDescription).ToString(), "Jobs", "Schedule", new { id = Model.RunID }, new { id = Html.IdFor(m => m.RunID)+"href" })
+                </span>
+                } else {
+                    @Html.DisplayOrDashFor(model => model.RunDescription)
+                }
+                @Html.HiddenFor(model => model.RunDescription)
+                @Html.SpanOrDashAndHiddenFor(model => model.RunID)
+
+                @if (Model.CanEditRun)
+                {
+                <text>&nbsp;</text>
+                @Html.TIconButton(tIconClass: "t-search", caption: LocalStr.Change + " " + LocalStr.Run, id: "btnJobSelRun", htmlAttributes: new { title = LocalStr.Change + " " + LocalStr.Production + " " + LocalStr.Run })
+                }
+            </span>
+        </div>
+
+@if (Model.CanEditRun)
+{ 
+    @Html.Partial("PrdnRunDialog")
+
+    Html.Telerik().ScriptRegistrar()
+    .OnDocumentReady(@<text>
+        function selectRun() {
+            openPrdnRunDialog({
+                prodTypeEval: $("#@Html.IdFor(m => m.ProdTypeCD)").val(),
+                pickRun: function (item) {
+                    inputAndSpanValue(@Html.IdSpanIdFor(m => m.RunID), item.runID);
+                    inputAndSpanValue(@Html.IdSpanIdFor(m => m.RunDescription), item.runDescr);
+                    $('#@Html.IdFor(m => m.RunID)href').text(item.runDescr).attr('href', '@Url.Action("Jobs", "Schedule")/' + item.runID);
+                }
+            });
+        };
+
+        if (typeof openPrdnRunDialog == "function") { 
+            $('#btnJobSelRun').click(function(e) {
+               e.preventDefault();
+               selectRun();
+            });
+        };
+    </text>); 
+}
+    

@@ -1,0 +1,160 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdTypeDescr)
+    </div>
+    <div class="display-field">
+        @Html.DispAndHiddenFor(model => model.ProdTypeCD)
+        @Html.DispAndHiddenFor(model => model.ProdTypeDescr)
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.ProdCD)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.ProdCD)
+        @Html.ValidationMessageFor(model => model.ProdCD)
+
+        @Html.LabelFor(model => model.ProdDescr)
+        @Html.SpanOrDashAndHiddenFor(model => model.ProdDescr)
+
+        <span id="prod-image-set">
+        @if ((Model != null) && (Model.ProdImageInfoSet != null))
+        {
+            @Html.Partial("ProdImageInfoSet", Model.ProdImageInfoSet)
+        }
+        </span>
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdOptions)
+    </div>
+    <div id="prod-options-container" class="display-field">
+        @Html.Partial("CharCompOpts", Model.ProdOptions, new ViewDataDictionary())
+    </div>
+    
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    
+    function loadProdOptions(prodCd, parentProdCD) {
+        var tbl = $("table.prod-options-list");
+        tbl.empty();
+
+        if ((prodCd) && (parentProdCD)) {
+            addLoadingClass($("#@Html.IdFor(m => m.ProdCD)"));
+            $.getJSON('@Url.Action("_ProdOptions", "Product")', { prodCD: prodCd, parent: parentProdCD }, function(result) {
+                $(result).each(function() {
+                    var td = $('<td>').text(this.OptionDescr);
+
+                    if ((this.ImgCount > 0) && (this.ProdImageInfoSet)) {
+                        $.each(this.ProdImageInfoSet, function(index, value) { 
+                            appendProdImgLink(td, "@Url.Action("ViewImage", "Product")/" + value.ImageID, 
+                                value.ImageType, "@Url.Content("~/Content/Images/pencil.gif")");
+                        });
+                    }
+                    tbl.append($('<tr>')
+                        .append($('<td>').attr("class", "indent-"+this.Level).text(this.TypeDescr))
+                        .append($('<td>').text(this.OptionCode2))
+                        .append(td)
+                    );
+                });
+                removeLoadingClass($("#@Html.IdFor(m => m.ProdCD)"));
+            });
+        } 
+    }
+
+    function loadImgSet(prodCd) {
+        elem = $('#prod-image-set');
+        if (elem) {
+            elem.children('a').remove();
+
+            if (prodCd) {
+                addLoadingClass($("#@Html.IdFor(m => m.ProdCD)"));
+                $.getJSON('@Url.Action("_ProdImgSet", "Product")', { prodCD: prodCd}, function(result) {
+                    $(result).each(function() {
+                       appendProdImgLink(elem, "@Url.Action("ViewImage", "Product")/" + this.ImageID, 
+                        this.ImageType, this.SrcPath);
+                    });
+                    removeLoadingClass($("#@Html.IdFor(m => m.ProdCD)"));
+                });
+            } 
+        }
+    }
+
+    var lastProdCd = $("#@Html.IdFor(m => m.ProdCD)").val(); 
+
+    function prodPicked(item) {
+        clearErrorValidation("@Html.IdFor(m => m.ProdCD)");
+        var prodInput = $("#@Html.IdFor(m => m.ProdCD)");
+        if (item) {
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.ProdDescr), item.prodDescr);
+            loadImgSet(item.prodCd);
+            loadProdOptions(item.prodCd, item.parentProdCD);
+
+        } else {
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.ProdDescr), "@Html.DashStr()");
+            loadImgSet(null);
+            loadProdOptions(null, null);
+        
+            var prodCode = prodInput.val();
+        
+            if ((prodCode) && (prodCode !== '') && (prodCode != lastProdCd)) {
+                var prodType = $("#@Html.IdFor(m => m.ProdTypeCD)").val();
+                
+                addLoadingClass(prodInput);
+                $.getJSON('@Url.Action("_ProdCodeCheck", "Product")', { prodCd: prodCode, prodType: prodType }, function(result) {
+                    if (result) {
+                        inputAndSpanValue(@Html.IdSpanIdFor(m => m.ProdDescr), result.ProdDescr);
+                        loadImgSet(result.ProdCD);
+                        loadProdOptions(result.ProdCD, result.ParentProdCD);
+                    } else {
+                        setErrorValidation("@Html.IdFor(m => m.ProdCD)", "Sorry - "+prodCode+ " is not a valid @Html.DisplayNameFor(m => m.ProdCD)");
+                        //alert("Sorry - "+prodCode+ " is not a valid @Html.DisplayNameFor(m => m.ProdCD)"); 
+                    };
+                    removeLoadingClass(prodInput);
+                });
+            };
+        };
+        lastProdCd = prodInput.val();
+    }
+
+    function prodLookupItem(item) {
+        return { 
+            label: item.LookupLabel 
+            ,value: item.LookupValue
+            ,prodCd: item.ProdCD
+            ,prodDescr: item.ProdDescr
+            ,parentProdCD: item.ParentProdCD
+        };
+    };
+
+
+    $("#@Html.IdFor(m => m.ProdCD)").autocomplete({
+        source: function (request, response) {
+
+            var prodCdTerm = $.trim(request.term);
+            var prodType = $("#@Html.IdFor(m => m.ProdTypeCD)").val();
+
+            $.ajax({
+                url: '@Url.Action("_ProdCdLookup", "Product")',
+                dataType: "json",
+                data: { prodCd: prodCdTerm, prodType: prodType },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return prodLookupItem(item);
+                    }));
+                }
+            });
+        }
+        , autoFocus: true
+        , minLength: 5
+        , select: function (event, ui) {
+            prodPicked(ui.item);
+        }
+        , change: function (event, ui) { 
+            prodPicked(ui.item);
+        }
+
+    });
+
+</text>);}

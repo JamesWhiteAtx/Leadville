@@ -1,0 +1,78 @@
+﻿@using CST.Prdn.ViewModels
+
+@model  CST.Prdn.ViewModels.LocationViewModel
+
+
+@{
+    ViewBag.Title = "Locations";
+}
+
+<h2>Production Locations</h2>
+
+<h4>
+@Html.LabelFor(m => Model.MfgrID)
+
+@(Html.Telerik().ComboBoxFor(m => Model.MfgrID)
+            .AutoFill(true)
+            .SelectedIndex(0)
+            .BindTo(Model.MfgrList)
+            .HighlightFirstMatch(true)
+            .ClientEvents(events => events
+                .OnChange("onDropDownListChange")
+            )
+            .HtmlAttributes(new { style = "width:300px" })
+)
+</h4>
+
+@(
+ Html.Telerik().Grid<PrdnLocViewModel>()
+        .Name("Grid")
+            .DataKeys(dataKeys => dataKeys.Add(r => r.ID))
+        .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.ImageAndText).ImageHtmlAttributes(new { style = "margin-left:0" }))
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax()
+                .Select("_SelectLocation", "Maintenance", new { mfgrID = Model.MfgrID })
+                .Insert("_InsertLocation", "Maintenance")
+                .Update("_SaveLocation", "Maintenance")
+                .Delete("_DeleteLocation", "Maintenance");
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(r => r.MfgrID).Visible(false);
+            columns.Bound(r => r.ID).Width(50).ReadOnly();
+            columns.Bound(r => r.Code).Width(100).HtmlAttributes(new { @class = "text-input-upper" });
+            columns.Bound(r => r.Name).Width(300);
+            columns.Bound(r => r.Active)
+                .ClientTemplate("<input type='checkbox' disabled='disabled' name='Active' <#= Active? checked='checked' : '' #> />");            
+            columns.Command(commands =>
+            {
+                commands.Edit().ButtonType(GridButtonType.ImageAndText);
+                commands.Delete().ButtonType(GridButtonType.ImageAndText);
+            }).Width(220).Title("Commands");
+        })
+        .Editable(editing => editing.Mode(GridEditMode.InLine))
+        .Pageable()
+        .Scrollable()
+        .Sortable()
+        .ClientEvents(events => events.OnSave("onGridSave"))
+)
+
+@{Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text>
+    bindTGridUpper();
+
+    function onDropDownListChange(e) {
+        var grid = $("#Grid").data("tGrid");
+        //send additional arguments by passing them as a literal JavaScript object
+        grid.rebind({ mfgrId: e.value });
+    }
+
+    function onGridSave(e) {
+        var combobox = $('#MfgrID').data('tComboBox');
+        var mgfrIDValue = combobox.value();
+
+        var values = e.values;
+        values.MfgrID = mgfrIDValue;
+    }
+
+</text>);}

@@ -1,0 +1,59 @@
+﻿@model  CST.Prdn.ViewModels.UserGroupsViewModel
+            
+@using CST.Prdn.ViewModels
+
+@{
+    ViewBag.Title = "User Groups";
+}
+
+<h2>User Groups</h2>
+
+<div>
+    <strong> @Html.LabelFor(m => m.UserID): @Html.ActionLink(linkText: Model.UserLogin, actionName: "EditUser", routeValues: new {id = Model.UserID })</strong>
+    @Html.DisplayFor(m => m.FullName)  (@Html.DisplayFor(m => m.UserID))
+</div>
+
+@(
+ Html.Telerik().Grid<GroupLookupViewModel>()
+        .Name("Grid")
+        .DataKeys(dataKeys => dataKeys.Add(p => p.ID))
+        .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.ImageAndText).ImageHtmlAttributes(new { style = "margin-left:0" }))
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax()
+                .Select("_SelectUserGroup", "Admin", new { groupID = Model.UserID })
+                .Insert("_InsertUserGroup", "Admin", new { groupID = Model.UserID })
+                //.Update("_SaveUser", "Admin", new { groupID = Model.GroupID })
+                .Delete("_DeleteUserGroup", "Admin", new { groupID = Model.UserID })
+                ;
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.ID).Width(50).Title("Group ID");
+            columns.Bound(p => p.AppGroupCode).Width(50);
+            columns.Bound(p => p.Name).Width(50);
+            columns.Bound(p => p.Description).Width(100);
+            columns.Command(commands =>
+            {
+                //commands.Edit().ButtonType(GridButtonType.ImageAndText);
+                commands.Delete().ButtonType(GridButtonType.ImageAndText);
+            }).Width(220).Title("Commands");
+        })
+        .Editable(editing => editing.Mode(GridEditMode.PopUp).TemplateName("LookupGroup"))
+        .Editable(e => e.DefaultDataItem(new GroupLookupViewModel { UserID = Model.UserID }))
+        .Pageable(settings => settings.Position(GridPagerPosition.Both).PageSize(50))
+        //.Scrollable()
+        .Sortable()
+        .ClientEvents(events => events.OnEdit("onGridEdit"))
+)
+
+@{Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text>
+
+    // this has to be done here because the GroupLookup view is used a template by the grid
+    function onGridEdit(e) {
+        if(typeof groupLookupWireEvents == 'function') { 
+            groupLookupWireEvents($("a.t-grid-insert"));
+        };
+    };
+
+</text>);}

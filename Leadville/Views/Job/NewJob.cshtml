@@ -1,0 +1,193 @@
+﻿@model CST.Prdn.ViewModels.JobSelectRunViewModel
+
+@{
+    ViewBag.Title = @LocalStr.New+ " " + LocalStr.Job;
+}
+
+@if (Model.SettingsModel != null)
+{
+    <div class="right-align">
+        @Html.Partial("Settings", Model.SettingsModel)
+    </div>
+}
+
+<fieldset class="horiz-form medium-input">
+    <legend>@LocalStr.Add @LocalStr.Job @LocalStr.to @LocalStr.Run</legend>
+    <div class="editor-label">
+       @LocalStr.Lookup  @Html.LabelFor(m => m.RunCode)
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(m => m.RunCode) 
+    </div>
+    @if (Model.IsNotNull(m => m.ForProdCD))
+    {
+        <div class="display-label">
+           @LocalStr.For  @Html.LabelFor(m => m.ForProdDescr)
+        </div>
+        <div class="display-field">
+            @Html.DispAndHiddenFor(m => m.ForProdCD) - @Html.DispAndHiddenFor(m => m.ForProdDescr) (@Html.DispAndHiddenFor(m => m.ForProdTypeCD))
+        </div>
+    }
+</fieldset>    
+
+<div id="jobRunDetails" class="horiz-form no-space" style="display: none">
+    <div class="buttonBox larger strengthened">
+        @Html.TIconLinkVal(tIconClass: "t-add", caption: LocalStr.Add + " " + LocalStr.New + " " + LocalStr.Job + " " + LocalStr.to + " " + Model.OrderNo + Model.TypeCD,
+            actionName: "Add",
+            routeValues: new { urlReturn = Model.UrlReturn },
+            routeTokens: new { runID = Html.IdFor(m => m.RunID), prodCD = Html.IdFor(m => m.ForProdCD) },
+            htmlAttributes: new { style = "display: none", id = "newJobAdd" })
+
+        @Html.TIconLinkVal(tIconClass: "t-add", caption: LocalStr.Create + " " + LocalStr.Run + " " + LocalStr.and + " " + LocalStr.Add + " " + LocalStr.Job,
+            actionName: "NewRunAddJob",
+            routeTokens: new { orderNo = Html.IdFor(m => m.OrderNo), typeID = Html.IdFor(m => m.NewRunTypeID), note = Html.IdFor(m => m.NewRunNote), prodCD = Html.IdFor(m => m.ForProdCD) },
+            htmlAttributes: new { style = "display: none", id = "newJobNewRunAdd" })
+    </div>
+    <div>
+    </div>
+    <fieldset>
+        <legend>Run Details</legend>
+        <div class="display-label">
+            @Html.LabelFor(model => model.OrderNo)
+        </div>
+        <div class="display-field">
+            @Html.SpanAndHiddenFor(model => model.OrderNo)
+        </div>
+        <div class="display-label">
+            @Html.LabelFor(model => model.ShipDtStr)
+        </div>
+        <div class="display-field">
+            @Html.SpanAndHiddenFor(model => model.ShipDtStr)
+        </div>
+        <div class="display-label">
+            @Html.LabelFor(model => model.TypeCD)
+        </div>
+        <div class="display-field">
+            @Html.SpanAndHiddenFor(model => model.TypeCD)
+        </div>
+        <div class="display-label">
+            @Html.LabelFor(model => model.TypeDescr)
+        </div>
+        <div class="display-field">
+            @Html.SpanAndHiddenFor(model => model.TypeDescr)
+        </div>
+        <div class="display-label">
+            @Html.LabelFor(model => model.ProdTypeCD)
+        </div>
+        <div class="display-field">
+            @Html.SpanAndHiddenFor(model => model.ProdTypeCD)
+        </div>
+        <div id="jobRunExists" class="no-space">
+            <div class="display-label">
+                @Html.LabelFor(model => model.RunID)
+            </div>
+            <div class="display-field">
+                @Html.SpanAndHiddenFor(model => model.RunID)
+            </div>
+        </div>
+        <div id="jobNewRun" class="no-space">
+            <div class="display-label">
+                @Html.LabelFor(model => model.NewRunNote)
+            </div>
+            <div class="display-field">
+                @Html.SpanAndHiddenFor(model => model.NewRunNote)
+                @Html.HiddenFor(model => model.NewRunTypeID)
+            </div>
+        </div>
+    </fieldset>    
+
+</div>
+
+<div>
+    @Html.TIconReturnLink(Model.UrlReturn)
+</div>
+
+@Html.Partial("PrdnOrdRunAuto", new CST.Prdn.ViewModels.PrdnOrdRunListModel())
+@Html.Partial("NewRunDialog")
+
+@{ Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var runLookCallback = null;
+    var runLookObj;
+    var runLookSelector = "#@Html.IdFor(m => m.RunCode)";
+
+    function displayRunExists(runCode) {
+        $("#jobRunDetails legend").text("Selected Run Details");
+        $("#jobRunDetails").show("fast");
+        $("#jobRunExists").show();
+        $("#jobNewRun").hide();
+        $("#newJobAdd").show();
+        $("#newJobNewRunAdd").hide();
+        if (runCode) {
+            $("#newJobAdd").text("@LocalStr.Add @LocalStr.New @LocalStr.Job @LocalStr.to " + runCode);
+        };
+        $("#newJobAdd").focus();
+    };
+    
+    function displayNewRun(runCode) {
+        $("#jobRunDetails legend").text("New Run Details");
+        $("#jobRunDetails").show("fast");
+        $("#jobRunExists").hide();
+        $("#jobNewRun").show();
+        $("#newJobAdd").hide();
+        $("#newJobNewRunAdd").show();
+        if (runCode) {
+            $("#newJobNewRunAdd").text("@LocalStr.Create @LocalStr.New @LocalStr.Run (" + runCode + ") @LocalStr.and @LocalStr.Add @LocalStr.New @LocalStr.Job");
+        };
+        $("#newJobNewRunAdd").focus();
+    };
+
+    function lkupRunSelect(item) {
+        runLookObj = item;
+        if (runLookObj) {
+            if (runLookObj.runID) {
+                inputAndSpanValue(@Html.IdSpanIdFor(m => m.OrderNo), runLookObj.poNo);
+                inputAndSpanValue(@Html.IdSpanIdFor(m => m.ShipDtStr), runLookObj.shipDtStr);
+                inputAndSpanValue(@Html.IdSpanIdFor(m => m.TypeCD), runLookObj.typeCD);
+                inputAndSpanValue(@Html.IdSpanIdFor(m => m.TypeDescr), runLookObj.typeDescr);
+                inputAndSpanValue(@Html.IdSpanIdFor(m => m.ProdTypeCD), runLookObj.prodTypeCD);
+                inputAndSpanValue(@Html.IdSpanIdFor(m => m.RunID), runLookObj.runID);
+                inputAndSpanValue(@Html.IdSpanIdFor(m => m.NewRunTypeID), " ");
+                inputAndSpanValue(@Html.IdSpanIdFor(m => m.NewRunNote), " ");
+                displayRunExists(runLookObj.poNo + runLookObj.typeCD);
+            }
+            else 
+            if (runLookObj.poNo) {
+                $("#jobRunDetails").hide();
+                openNewRunDialog({
+                    poNo: item.poNo, 
+                    shipDtStr: item.shipDtStr, 
+                    callback: function (newRun) {
+                        inputAndSpanValue(@Html.IdSpanIdFor(m => m.OrderNo), newRun.poNo);
+                        inputAndSpanValue(@Html.IdSpanIdFor(m => m.ShipDtStr), runLookObj.shipDtStr);
+                        inputAndSpanValue(@Html.IdSpanIdFor(m => m.TypeCD), newRun.typeCD);
+                        inputAndSpanValue(@Html.IdSpanIdFor(m => m.TypeDescr), newRun.typeDescr);
+                        inputAndSpanValue(@Html.IdSpanIdFor(m => m.ProdTypeCD), newRun.prodTypeCD);
+                        inputAndSpanValue(@Html.IdSpanIdFor(m => m.RunID), " ");
+                        inputAndSpanValue(@Html.IdSpanIdFor(m => m.NewRunTypeID), newRun.typeID);
+                        inputAndSpanValue(@Html.IdSpanIdFor(m => m.NewRunNote), newRun.note);
+                        displayNewRun(newRun.poNo + newRun.typeCD);
+                    }
+                });
+            };     @*} else { clearPrdnRunLookup();*@
+        };
+    };    
+
+    if (typeof wirePrdnOrdRunAuto == "function") { 
+        wirePrdnOrdRunAuto({
+            selector: runLookSelector,
+            listPOEval: true,
+            prodTypeEval: function() { return $("#@Html.IdFor(m => m.ForProdTypeCD)").val(); },
+            select: lkupRunSelect,
+        });
+    };
+
+    var runID = $("#@Html.IdFor(m => m.RunID)").val();
+    
+    if (runID) {
+        displayRunExists();
+    } else {
+        $(runLookSelector).focus();
+    };
+
+</text>);}

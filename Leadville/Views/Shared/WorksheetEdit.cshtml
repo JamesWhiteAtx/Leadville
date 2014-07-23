@@ -1,0 +1,49 @@
+﻿@model CST.Prdn.ViewModels.IEditWorksheetOwner
+
+    @Html.HiddenFor(m => m.EditWorksheet.Editable)
+    @Html.HiddenFor(m => m.EditWorksheet.WorksheetID)
+    @Html.HiddenFor(m => m.EditWorksheet.Modified)
+    @Html.HiddenFor(m => m.EditWorksheet.ProdCD)
+    @Html.HiddenFor(m => m.EditWorksheet.ProdSetid)
+
+    <div id="worksheet-values">
+        @if (Model.EditWorksheet.WorksheetOpts.IsAny())
+        {
+            <table id="worksheet-opt-rows" class="char-comp-opts">
+            <tbody>
+                @for (int i = 0; i < Model.EditWorksheet.WorksheetOpts.Count; i++)
+                {
+                <tr>
+                    <td class="indent-0">
+                        @Html.Hidden(Html.GetFullHtmlFieldName(m => m.EditWorksheet.WorksheetOpts) + ".Index", i)
+                        @Html.DispAndHiddenFor(m => m.EditWorksheet.WorksheetOpts[i].TypeDescr)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].Type)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].TypeCD)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.EditWorksheet.WorksheetOpts[i].OptionCode2,
+                            new
+                            {
+                                @class = "ws-opt-lookup",
+                                data_opt_index = i,
+                                data_opt_type = @Model.EditWorksheet.WorksheetOpts[i].Type,
+                                data_opt_type_cd = @Model.EditWorksheet.WorksheetOpts[i].TypeCD
+                            }
+                        )
+                        @Html.ValidationMessageFor(m => m.EditWorksheet.WorksheetOpts[i].OptionCode2)
+                        @Html.SpanFor(m => m.EditWorksheet.WorksheetOpts[i].OptionDescr, null, new { @class = "ws-opt-descr" })
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].OptionDescr, new { @class = "ws-opt-descr" })
+                        @Html.ValidationMessageFor(m => m.EditWorksheet.WorksheetOpts[i].OptionDescr)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].OptionCode1)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].OptionCode3, new { @class = "ws-opt-code3" })
+                    </td>
+                </tr>
+                }
+            </tbody>
+            </table>
+            
+            @Html.Partial("WorksheetScripts")
+        }
+    </div>    
+
+

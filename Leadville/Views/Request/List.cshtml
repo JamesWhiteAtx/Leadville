@@ -1,0 +1,14 @@
+﻿@using CST.Prdn.ViewModels
+
+@model RequestLookupViewModel
+
+@{
+    ViewBag.Title = "Unshipped Requests";
+}
+
+<h5>
+    As of: @DateTime.Now.ToString(CultureInfo.CurrentUICulture)  - @ViewBag.RefreshMsg  
+</h5>
+
+@Html.Partial("GridList", Model)
+

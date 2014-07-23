@@ -1,0 +1,14 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+@using CST.Prdn.Data
+   
+        <div id="buttons" class="buttonBox">
+        @if ((Model.EditStatus != PrdnJobStatus.Completed) && Model.CanStatusTo(PrdnJobStatus.Completed))
+	    {
+            @Html.TIconActionLink(tIconClass: "t-update", linkText: LocalStr.Complete + " " + LocalStr.Job, actionName: "CompleteJob",
+                 routeValues: new { id = Model.ID, urlReturn = Model.UrlReturn },
+                 htmlAttributes: new { @class = "strengthened" })
+	    }
+            @Html.TIconSubmit(tIconClass: "t-update", caption: Model.SaveCaption)
+            @Html.HiddenFor(model => model.UrlReturn)
+            @Html.TIconLink(linkText: LocalStr.Cancel + " " + LocalStr.Changes, url: Model.IfNotNull(m => m.UrlReturn), tIconClass: "t-cancel")
+        </div>

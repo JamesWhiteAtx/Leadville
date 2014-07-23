@@ -1,0 +1,75 @@
+﻿@model CST.Prdn.ViewModels.IProductViewModel
+
+@Html.Partial("ProdCdAuto")
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var pclSettings;
+    var lastProdCd; 
+
+    function lookupProdInfo(lookUrl, parm, prod) {
+        var prodInput = $("#@Html.IdFor(m => m.ProdCD)");
+        addLoadingClass(prodInput);
+        $.ajax({
+            type: "GET",
+            url: lookUrl,
+            data: parm,
+            success: function (prodLookup) {
+                if (prodLookup) {
+                    if (prod) { $.extend(prodLookup, prod); };
+                    pclLoadInfo(prodLookup);
+                } else {
+                    var prodCd = prodInput.val();
+                    setErrorValidation("@Html.IdFor(m => m.ProdCD)", "@LocalStr.Sorry - @Html.DisplayNameFor(m => m.ProdCD) "+prodCd+ " @LocalStr.verbIsNot @LocalStr.valid.");
+                    pclLoadInfo();
+                };
+            },
+            complete: function () {
+                removeLoadingClass(prodInput);
+            },
+            error: function (req, status, error) {
+                setErrorValidation("@Html.IdFor(m => m.ProdCD)", "@LocalStr.Sorry - " + error);
+                pclLoadInfo({Product: prod});
+            }
+        });
+    };
+
+    function pclPicked(item) {
+        var prodInput = $("#@Html.IdFor(m => m.ProdCD)");
+        clearErrorValidation("@Html.IdFor(m => m.ProdCD)");
+        if (item) {
+            lookupProdInfo("@Url.Action("_ProdSubViews", "Product")", {  prodCd: item.@Html.IdFor(m => m.ProdCD), parentProdCD: item.@Html.IdFor(m => m.ParentProdCD) }, item);
+        } else {
+            var prodCode = prodInput.val();
+            if ((!prodCode) || (prodCode.trim() === '')) {
+                pclLoadInfo();
+            } else if (prodCode != lastProdCd) {
+                var prodType = $("#@Html.IdFor(m => m.ProdTypeCD)").val();
+                lookupProdInfo("@Url.Action("_ProdCodeCheck", "Product")", {  prodCd: prodCode, prodType: prodType });
+            };
+        };
+        lastProdCd = prodInput.val();
+    };
+
+    function pclLoadInfo(prodLookup) {
+        if (typeof pclSettings.lookup == "function") { 
+            pclSettings.lookup(prodLookup);
+        };
+    };
+
+    function forceProdCdLookup(options) {
+        lastProdCd = undefined;
+        pclPicked();
+    };
+
+    function wireProdCdLookup(options) {
+        pclSettings = $.extend({}, options);
+        if (options) {
+            delete options.lookup;
+        };
+        if (typeof wireProdCdAuto == "function") { 
+            wireProdCdAuto($.extend({}, {select: pclPicked, change: pclPicked}, options));
+        };
+        lastProdCd = $("#@Html.IdFor(m => m.ProdCD)").val(); 
+    };
+</text>);}

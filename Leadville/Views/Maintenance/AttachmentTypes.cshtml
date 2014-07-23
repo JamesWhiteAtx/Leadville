@@ -1,0 +1,54 @@
+﻿@model CST.Prdn.ViewModels.AttachmentTypesViewModel
+           
+@using CST.Prdn.ViewModels
+
+@{
+    ViewBag.Title = "Attachment Types";
+}
+
+<h2>Attachment Types</h2>
+
+@(
+ Html.Telerik().Grid<PrdnAttTypeViewModel>()
+        .Name("Grid")
+            .DataKeys(dataKeys => dataKeys.Add(p => p.ID))
+        .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.ImageAndText).ImageHtmlAttributes(new { style = "margin-left:0" }))
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax()
+                .Select("_SelectAttType", "Maintenance")
+                .Insert("_InsertAttType", "Maintenance")
+                .Update("_SaveAttType", "Maintenance")
+                .Delete("_DeleteAttType", "Maintenance")
+                ;
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.ID).Width(50).ReadOnly();
+            columns.Bound(p => p.Code).Width(100).HtmlAttributes(new { @class = "text-input-upper" });
+            columns.ForeignKey(p => p.GroupCD, Model.Groups);
+            columns.Bound(p => p.Name).Width(160);
+            columns.Bound(p => p.Description);
+            columns.Bound(p => p.EspDescription);
+            columns.Bound(p => p.DisplayOrder).Width(50);
+            columns.Bound(p => p.SelectOrder).Width(50);
+
+            columns.Bound(p => p.Active)
+                .ClientTemplate("<input type='checkbox' disabled='disabled' name='Active' <#= Active? checked='checked' : '' #> />");            
+            
+            columns.Command(commands =>
+            {
+                commands.Edit().ButtonType(GridButtonType.ImageAndText);
+                commands.Delete().ButtonType(GridButtonType.ImageAndText);
+            }).Width(220).Title("Commands");
+                               
+        })
+        .Editable(editing => editing.Mode(GridEditMode.InLine))
+        .Pageable()
+        //.Scrollable()
+        .Sortable()
+        )
+
+@{Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text>
+    bindTGridUpper();
+</text>);}

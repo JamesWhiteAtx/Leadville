@@ -1,0 +1,32 @@
+﻿@model CST.Security.ChangeLanguageModel
+
+@{
+    ViewBag.Title = LocalStr.Change + " " + LocalStr.Language;
+}
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true, "Language change was unsuccessful. Please correct the errors and try again.")
+    <fieldset class="horiz-form">
+        <legend>@LocalStr.Change @LocalStr.Language</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Login)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.Login)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Culture)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.Culture, Model.CultureList, "-- Select " + @Html.DisplayNameFor(model => model.Culture) + " --")
+            @Html.ValidationMessageFor(model => model.Culture)
+        </div>
+
+        <div class="buttonBox">
+            <input type="submit" value="@LocalStr.Change @LocalStr.Language" id="btnSubmit" />
+        </div>
+
+    </fieldset>
+}

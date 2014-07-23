@@ -1,0 +1,232 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+@using CST.Prdn.Data
+
+    <div class="editor-label jobOrder">
+        @Html.LabelFor(model => model.OrderNo)
+    </div>
+    <div class="editor-field jobOrder">
+        @Html.EditorFor(model => model.OrderNo)
+        @Html.ValidationMessageFor(model => model.OrderNo)
+        @Html.Raw("&nbsp;&nbsp;") 
+        @Html.LabelFor(model => model.OrderTotal) 
+        @Html.Raw("&nbsp;") 
+        @Html.SpanAndHiddenFor(model => model.OrderTotal)
+    </div>
+
+    <div class="editor-label jobOrder">
+        @Html.LabelFor(model => model.OrderLineInt)
+    </div>
+    <div class="editor-field medium-input jobOrder">
+        @Html.Telerik().IntegerTextBoxFor(m => m.OrderLineInt).MinValue(1)
+        @Html.ValidationMessageFor(model => model.OrderLineInt)
+    </div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    var prodTypeElm = $("#@Html.IdFor(m => m.ProdTypeCD)");
+    var prodType;
+    if (prodTypeElm) {
+        prodType = prodTypeElm.val();
+    } else {
+        prodType = null;
+    };
+
+    if(typeof enableCustFeatures == 'function') { 
+        var custID = $("#@Html.IdFor(m => m.CustID)").val();
+        enableCustFeatures(custId);
+    };
+
+    $("#@Html.IdFor(m => m.OrderNo)").autocomplete({
+        source: function (request, response) {
+            var orderTerm = $.trim(request.term);
+            $.ajax({
+                url: '@Url.Action("_CstOrdLineLookup", "Lookup")',
+                dataType: "json",
+                data: { orderNo: orderTerm, prodTypeCD: prodType },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return orderLookupItem(item);
+                    }));
+                }
+            });
+        }
+        , autoFocus: true
+        , minLength: 6
+        , select: function (event, ui) {
+            jobOrderPicked(ui.item);
+        }
+        , change: function (event, ui) { 
+           jobOrderPicked(ui.item); 
+        }
+    });
+    
+    function orderLookupItem(item) {
+        return { 
+            label: item.LookupLabel 
+            ,value: item.LookupValue    @*,reqId: item.RequestID*@ @*,spcWS: item.SpecialWSDescr*@
+            ,custID: @PrdnDataHelper.PrdnCustIDCST
+            ,custLoc: item.CustLoc      @*,shipMethod: item.ShipMethodCD*@
+            ,prodCd: item.ProdCD
+            ,prodDescr: item.ProdDescr
+            ,parentProdCD: item.ParentProdCD
+            ,ordNo: item.OrderNo
+            ,ordLine: item.OrderLine
+            ,ordLineID: item.OrderLineID
+            ,dropShip: item.DropShip
+            ,dropCust: item.ShipCustID
+        };
+    };
+
+    var lastOrdNo = $("#@Html.IdFor(m => m.OrderNo)").val();
+
+    function jobOrderPicked(item) {
+        clearErrorValidation("@Html.IdFor(m => m.OrderNo)");
+        var ordInput = $("#@Html.IdFor(m => m.OrderNo)");
+        if (item) {
+            assignOrderVals(item);
+        } else {
+            curOrderNo = ordInput.val();
+         
+            if ((curOrderNo) && (curOrderNo !== '') ) {
+                if (curOrderNo != lastOrdNo) {
+                    var prodType = $("#@Html.IdFor(m => m.ProdTypeCD)").val();
+                    addLoadingClass(ordInput);
+                    $.getJSON('@Url.Action("_CstOrdNoLookup", "Lookup")', { orderNo: curOrderNo, prodTypeCD: prodType }, function(result) {
+                        if (result) {
+                            assignOrderVals(orderLookupItem(result));
+                        } else {
+                            assignOrderLine('');
+                            setErrorValidation("@Html.IdFor(m => m.OrderNo)", "Sorry - "+curOrderNo+ " is not a valid @Html.DisplayNameFor(m => m.OrderNo)");
+                        };
+                        removeLoadingClass(ordInput);
+                    });
+                };
+            } else {
+                setJobOrdTotal(0, "$0");
+            }
+        };
+        lastOrdNo = ordInput.val();
+    };
+
+    function assignOrderLine(line) {
+        var lineTextBox = $("#@Html.IdFor(m => m.OrderLineInt)").data("tTextBox");
+        if (lineTextBox) { 
+            lineTextBox.value(line) 
+        };
+    };
+
+    function assignOrderVals(item) {
+        var ordInput = $("#@Html.IdFor(m => m.OrderNo)");       
+        if (ordInput.length > 0) {
+            var curOrdNo = ordInput.val();
+            if (curOrdNo !== item.ordNo) { 
+                ordInput.val(item.ordNo);
+                @*curOrdNo = ordInput.val();*@
+            };
+        };
+
+        assignOrderLine(item.ordLine);
+
+        var lnIdInput = $("#@Html.IdFor(m => m.OrderLineID)");
+        if (lnIdInput.length > 0) {
+            var curLnId = lnIdInput.val();
+            if (curLnId !== item.ordLineID) { 
+                lnIdInput.val(item.ordLineID);
+            };
+        };
+
+        var rdoY = $("#dropShipY");
+        if (rdoY) { rdoY.prop('checked', item.dropShip); };
+        var rdoN = $("#dropShipN");
+        if (rdoN) { rdoN.prop('checked', !item.dropShip); };
+
+        if(typeof showDropShip == 'function') { 
+            showDropShip(item.dropShip);
+        };
+            
+        if (item.dropShip) {
+            var custIDInput = $("#@Html.IdFor(m => m.DropShipCustID)")
+
+            if ((custIDInput) && (custIDInput.val() !== item.dropCust)) { 
+                custIDInput.val(item.dropCust);
+            };
+
+            if (typeof OrderDropShipLookup == 'function') { 
+                OrderDropShipLookup(item.ordNo);
+            };
+        } else {
+            if (typeof assignDropShip == 'function') { 
+                assignDropShip(null);
+            };
+            if (item.ordNo != lastOrdNo) {
+                $.getJSON('@Url.Action("_CstOrdTotalLookup", "Lookup")', { orderNo: item.ordNo }, function(result) {
+                    if (result) {
+                        setJobOrdTotal(result.value, result.formatted);
+                    };
+                });
+            };
+        };
+
+        var custDDL = $("#@Html.IdFor(m => m.CustID)");
+        if ((custDDL.length>0) && (item.custID) && (item.custID !== ''))  {
+            var curCust = custDDL.val();
+            if (item.custID != curCust) {
+                custDDL.val(item.custID);
+
+                if (typeof loadOrdCustLocs == 'function') { 
+                    loadOrdCustLocs(item.custID, item.custLoc);
+                };
+            } else {
+                var locElm = $("#@Html.IdFor(m => m.CustLocation)");
+                if (locElm) {
+                    var curLoc = locElm.val();
+                    if (curLoc != item.custLoc) {
+                        locElm.val(item.custLoc);
+                    };
+                }
+            }
+        };
+            
+        var prodInput = $("#@Html.IdFor(m => m.ProdCD)");
+        if ((prodInput.length>0) && (item.prodCd) && (item.prodCd !== ''))  {
+            prodInput.val(item.prodCd);
+            if (typeof forceProdCdLookup == "function") { 
+                forceProdCdLookup();
+            };
+        };
+
+        var shipViaInput = $("#@Html.IdFor(m => m.ShipMethodCD)")
+        if (shipViaInput) {
+            shipViaInput.val(item.shipMethod);
+        };
+    };        
+
+    function setJobOrdTotal(tot, txt) {
+        inputValueAndSpanValue(@Html.IdSpanIdFor(m => m.OrderTotal), tot, txt);
+    };
+    function disableJobOrdEdit() {
+        clearErrorValidation("@Html.IdFor(m => m.OrderNo)");        
+        $("#@Html.IdFor(m => m.OrderNo)").val('');
+        assignOrderLine('');
+        setJobOrdTotal(0, "$0");
+        $(".jobOrder").hide('fast');
+    };
+    function enableJobOrdEdit() {
+        $(".jobOrder").show('fast');
+    };
+
+    function OrderDropShipLookup(ordNo) {
+        $.getJSON('@Url.Action("_OrderShipToLookup", "Lookup")', { orderNo: ordNo }, function(result) {
+            if (result) {
+                if ((typeof assignDropShip == 'function') && (typeof custLookupItem == 'function')) { 
+                    assignDropShip( custLookupItem(result) );
+                };
+                setJobOrdTotal(result.OrdTot, result.FormatOrdTot);
+            } else {
+                setJobOrdTotal(0, "$0");
+            };
+        });
+    };
+
+</text>);}

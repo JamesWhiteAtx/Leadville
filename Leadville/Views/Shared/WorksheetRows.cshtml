@@ -1,0 +1,81 @@
+﻿@using CST.ISIS.Data
+@model CST.Prdn.ViewModels.IEditWorksheetOwner
+
+@if (this.ViewContext.FormContext == null)
+{
+    this.ViewContext.FormContext = new FormContext();
+}          
+        <table id="worksheet-opt-rows" class="char-comp-opts">
+            <tbody>
+            @if ( Model.IsNotNull(m => m.IfNotNull(x => x.EditWorksheet).IfNotNull(x => x.WorksheetOpts)) )                
+            {
+                bool wsEditable = ( Model.IfNotNull(m => m.EditWorksheet).IfNotNull(e => e.Editable) == true );
+                    
+                for (int i = 0; i < Model.EditWorksheet.WorksheetOpts.Count; i++)
+                {
+                    string trClass = Model.EditWorksheet.WorksheetOpts[i].TypeGroupCD;
+                    if (wsEditable && Model.EditWorksheet.WorksheetOpts[i].GroupStart) { trClass = trClass + " td-top-border"; }
+            
+                <tr class="@(trClass)">
+                    <td class="indent-@(Model.EditWorksheet.WorksheetOpts[i].Level)">
+                        @Html.Hidden(Html.GetFullHtmlFieldName(m => m.EditWorksheet.WorksheetOpts)+".Index", i)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].TypeGroupCD)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].Type)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].TypeCD)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].Level)
+                        @Html.DispAndHiddenFor(m => m.EditWorksheet.WorksheetOpts[i].TypeDescr)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].OptionCode1)
+                    </td>
+                    <td>
+                        @if ( !wsEditable || ((Model.EditWorksheet.WorksheetOpts[i].Type == OptionType.Component) && (Model.EditWorksheet.WorksheetOpts[i].GroupStart)) )
+                        {
+                            @Html.DispAndHiddenFor(m => m.EditWorksheet.WorksheetOpts[i].OptionCode2)
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(m => m.EditWorksheet.WorksheetOpts[i].OptionCode2, 
+                                new {@class="ws-opt-lookup", 
+                                    data_opt_index = i,
+                                    data_opt_type = @Model.EditWorksheet.WorksheetOpts[i].Type,
+                                    data_opt_type_cd = @Model.EditWorksheet.WorksheetOpts[i].TypeCD
+                                }
+                            ) 
+                            @Html.ValidationMessageFor(m => m.EditWorksheet.WorksheetOpts[i].OptionCode2)
+                        }
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].OptionCode3, new { @class = "ws-opt-code3" })
+                    </td>
+                    <td>
+                        @{bool udf = wsEditable && Model.EditWorksheet.WorksheetOpts[i].UserDefined;}
+                        @Html.SpanFor(m => m.EditWorksheet.WorksheetOpts[i].OptionDescr, null, new { @class = "ws-opt-descr" + (udf ? " ws-elem-hidden" : null) })
+                        @Html.TextBoxFor(m => m.EditWorksheet.WorksheetOpts[i].OptionDescr, new { @class = "ws-opt-descr" + (!udf ? " ws-elem-hidden" : null) })
+                        @Html.ValidationMessageFor(m => m.EditWorksheet.WorksheetOpts[i].OptionDescr)
+
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].ImgCount)
+                        @if ( (Model.EditWorksheet.WorksheetOpts[i].ImgCount > 0) && (Model.EditWorksheet.WorksheetOpts[i].ProdImageInfoSet != null) )
+                        {
+                            @Html.Partial("ProdImageInfoSet", Model.EditWorksheet.WorksheetOpts[i].ProdImageInfoSet)
+                        }
+                        
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].UserDefined, new { @class = "ws-opt-udf" })
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].ParentOptionCode1)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].ParentOptionCode2)
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].ParentOptionCode3)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(m => m.EditWorksheet.WorksheetOpts[i].GroupStart)
+                        @if (wsEditable && Model.EditWorksheet.WorksheetOpts[i].GroupStart)
+                        {
+                            <button type="button" class="t-button t-button-icontext deleteWSRow" title="Clear" data-group-id = "@Model.EditWorksheet.WorksheetOpts[i].TypeGroupCD">
+                                <span class="t-icon t-minus"></span>
+                                Clear
+                            </button>
+                        }
+                    </td>
+                    
+                </tr>
+                }
+            }
+            </tbody>
+        </table>

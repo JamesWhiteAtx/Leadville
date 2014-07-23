@@ -1,0 +1,18 @@
+﻿@model CST.Prdn.ViewModels.InvItemViewModel
+
+@{
+    ViewBag.Title = LocalStr.InventoryItem;
+}
+
+<h2>@LocalStr.InventoryItem</h2>
+
+<div id="invItemDetails" class="horiz-form">
+    <div class="display-label">
+        @Html.LabelFor(model => model.SerialNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SerialNo)
+    </div>
+
+    @Html.Partial("InvItemDetails", Model)
+</div>

@@ -1,0 +1,341 @@
+﻿@model CST.Prdn.ViewModels.RequestViewModel
+
+@{  ViewBag.Title = "Request Maintenance";  }
+
+<a href="@Url.Action(actionName: "ScheduleRequest", controllerName: "Job", routeValues: new { reqID = Model.ID })" 
+    class="t-button t-button-icontext" title="Schedule a Job for this Request">
+    <span class="t-icon t-add"></span>
+    Schedule
+</a>
+
+@using (Html.BeginForm(actionName: null, controllerName: null, method: FormMethod.Post))
+{
+    @Html.ValidationSummary(true)
+    <fieldset class="horiz-form horiz-form-wide">
+        <legend>Request Maintenance</legend>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.SoldStockStr)
+        </div>
+        <div class="display-field">
+            <strong>@Html.DispAndHiddenFor(model => model.SoldStockStr)</strong>
+        </div>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.ID)
+        </div>
+        <div class="display-field">
+            @Html.DispAndHiddenFor(model => model.ID)
+        </div>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.RequestDeptID)
+        </div>
+        <div class="display-field">
+            @Html.DispAndHiddenFor(model => model.RequestDeptID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RequestDt)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.RequestDt)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RequiredDt)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.RequiredDt)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RequestCstUserID)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.RequestCstUserID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.OrderNo)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.OrderNo)
+        </div>
+
+        @if ((Model != null) && Model.DropShipOrder)
+        {
+            <div class="display-label">
+                @Html.LabelFor(model => model.ShipToName)
+            </div>
+            <div class="display-field">
+                @Html.Partial("DropShipCustomer", Model)
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.OrderTotal)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.OrderTotal)
+            </div>
+        }
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.OrderLine)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.OrderLine)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ProdCD)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.ProdCD)
+
+            @if ((Model != null) && (Model.ProdImageInfoSet != null))
+            {
+                @Html.Partial("ProdImageInfoSet", Model.ProdImageInfoSet)
+            }
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ReqPattern)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.ReqPattern)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PartDescr)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.PartDescr)  @Html.DispAndHiddenFor(model => model.ColorDescr)
+        </div>
+
+        @if ((Model != null) && ((Model.ProdOptions != null)))
+        {
+            <div class="display-label">
+                @Html.LabelFor(model => model.ProdOptions)
+            </div>
+            <div class="display-field">
+                @Html.Partial("CharCompOpts", Model.ProdOptions, new ViewDataDictionary())
+            </div>
+        }
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SpecialWSDescr)
+        </div>
+        <div class="editor-field">
+            <em><strong>
+            @Html.DispAndHiddenFor(model => model.SpecialWSDescr)
+            </strong></em>
+        </div>
+        
+        @if ((Model != null) && ((Model.WorksheetOptions != null)))
+        {
+            <div class="display-label">
+                @Html.LabelFor(model => model.WorksheetOptions)
+            </div>
+            <div class="display-field">
+                @Html.Partial("CharCompOpts", Model.WorksheetOptions, new ViewDataDictionary())
+            </div>
+        }
+
+        @if ((Model != null) & Model.HasAttachment)
+        {
+        <div class="display-label">
+            @Html.LabelFor(model => model.HasAttachment)
+        </div>      
+        <div class="display-field">  
+            @*<a href="@Url.Action("Attachment", "Request", new { id = Model.ID })"  target="_blank" title="Attachment"  class="image-link"><img src="@Url.Content("~/Content/Images/paperclipSmall.gif")" alt=@LocalStr.Attachment/></a>*@
+            @Html.ImageLink(imgSrc: Url.Content("~/Content/Images/paperclipSmall.gif"),
+                actionName: "Attachment",
+                controllerName: "Request",
+                routeValues: new { id = Model.ID },
+                linkHtmlAttributes: new { target = "_blank", @class = "image-link", 
+                    data_img_id = Model.ID, 
+                    data_img_title = LocalStr.Request+" "+Model.ID+" "+LocalStr.Attachment },
+                imgHtmlAttributes: new { alt = LocalStr.Attachment }
+            )
+        </div>
+        }
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ModifiedKitStr)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.ModifiedKitStr)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipBranchVia)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.ShipBranchVia)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RequestComment)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.RequestComment)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Status)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.StatusStr, Model.StatusList())
+            @Html.ValidationMessageFor(model => model.StatusStr)
+        </div>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.InProduction)
+        </div>
+        <div class="editor-field">
+            @Html.RadioButtonFor(model => model.InProduction, "Y", new { @id = "InProductionY" }) Yes
+            @Html.RadioButtonFor(model => model.InProduction, "N", new { @id = "InProductionN" }) No
+            @Html.ValidationMessageFor(model => model.InProduction)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SerialNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SerialNo)
+            @Html.ValidationMessageFor(model => model.SerialNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ExpArrivalDt)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ExpArrivalDt)
+            @Html.ValidationMessageFor(model => model.ExpArrivalDt)
+        </div>
+
+        <div class="branch-ship">
+            <div class="display-label">
+                @Html.LabelFor(model => model.ShipDeptID)
+            </div>
+            <div class="editor-field">
+                @if ((Model != null) && (Model.DepartmentList != null))
+                {  
+                    @Html.DropDownListFor(model => model.ShipDeptID, Model.DepartmentList)   
+                }
+                @Html.ValidationMessageFor(model => model.ShipDeptID)
+            </div>
+
+            <div class="display-label">
+                @Html.LabelFor(model => model.ShipContact)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.ShipContact)
+                @Html.ValidationMessageFor(model => model.ShipContact)
+            </div>
+        </div>
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.ShipVia)
+        </div>
+        <div class="editor-field">
+            @if ((Model != null) && (Model.ShipMethodList != null))
+            {    
+                @Html.DropDownListFor(model => model.ShipVia, Model.ShipMethodList, "-- Select Shipping Method --") 
+            }
+            @Html.ValidationMessageFor(model => model.ShipVia)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.TrackingNo)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TrackingNo)
+            @Html.ValidationMessageFor(model => model.TrackingNo)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.InteriorColor)
+        </div>
+        <div class="editor-field">
+            @Html.DispAndHiddenFor(model => model.InteriorColor)
+        </div>
+
+        <div>
+            Central Ordering Comments:
+        </div>
+        <div>
+            @Html.TextAreaFor(model => model.ProcComment, new { @rows = "3", @cols = "70" })
+            @Html.ValidationMessageFor(model => model.ProcComment)
+        </div>
+
+        <div id="buttons">
+            @Html.HiddenFor(model => model.UrlReturn)
+            <button class="t-button t-button-icontext" type="submit" title="Save changes to Request">
+                <span class="t-icon t-update"></span>
+                Save
+            </button>
+
+            @{
+            string urlReturn;
+            if (Model.UrlReturn == null)
+            {
+                urlReturn = Url.Action(actionName: "List", controllerName: "Request", routeValues: new { requestID = Model.ID });
+            }
+            else
+            {
+                urlReturn = Model.UrlReturn;
+            }
+            }
+
+            <a href="@urlReturn" class="t-button t-button-icontext" title="Cancel Request Update">
+                <span class="t-icon t-cancel"></span>
+                Cancel
+            </a>
+
+        </div>
+
+        @Html.Partial("RequestStatus", Model)
+
+    </fieldset>
+}
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"))
+.OnDocumentReady(@<text>
+
+        //Hide div
+        if ($("#InProductionY").is(":checked")) {
+            $(".branch-ship").css("display", "none");
+        }
+
+        // Add onclick handler to checkbox w/id checkme
+        $("#InProductionY").click(function () {
+
+            // If checked
+            if ($("#InProductionY").is(":checked")) {
+                //show the hidden div
+                $(".branch-ship").hide("fast");
+            }
+            else {
+                //otherwise, hide it
+                $(".branch-ship").show("fast");
+            }
+        });
+
+        $("#InProductionN").click(function () {
+
+            // If checked
+            if ($("#InProductionN").is(":checked")) {
+                //show the hidden div
+                $(".branch-ship").show("fast");
+            }
+            else {
+                //otherwise, hide it
+                $(".branch-ship").hide("fast");
+            }
+        });
+
+
+</text>);}
+

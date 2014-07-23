@@ -1,0 +1,13 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+@using CST.Prdn.Data
+
+    @if (Model.ProdTypeCD == PrdnDataHelper.LeatherProdTypeCd)
+    {
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RowDeduct)
+        </div>
+        <div class="editor-field medium-input">
+            @Html.Telerik().IntegerTextBoxFor(m => m.RowDeductInt).MinValue(1)
+            @Html.ValidationMessageFor(model => model.RowDeductInt)
+        </div>
+    }

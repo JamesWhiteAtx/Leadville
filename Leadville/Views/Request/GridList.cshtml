@@ -1,0 +1,99 @@
+﻿@using CST.Prdn.ViewModels
+
+@model RequestLookupViewModel
+
+@if (Model.SettingsModel != null)
+{
+    <div class="right-align">
+    @*@Html.Partial("DefaultRun", Model.DefaultRunModel)*@
+    @Html.Partial("Settings", Model.SettingsModel)
+    </div>
+}
+
+@(
+    Html.Telerik().Grid<RequestListViewModel>()
+    .Name("Grid")
+    .DataKeys(dataKeys => dataKeys.Add(r => r.ID))
+    .DataBinding(dataBinding =>
+    {
+        dataBinding.Ajax()
+            .Select("_SelectRequest", "Request", new { 
+                id = Model.RequestID,
+                fromDt = Model.FromDt, 
+                thruDt = Model.ThruDt,
+                allStauses = Model.AllStauses,
+                statusNew = Model.StatusNew,
+                statusProcessing = Model.StatusProcessing,
+                statusConfirmed = Model.StatusConfirmed,
+                statusScheduled = Model.StatusScheduled,
+                statusCanceled = Model.StatusCanceled
+            });
+    })
+    .Columns(columns =>
+    {
+        columns.Bound(r => r.ID)
+            .ClientTemplate(
+                
+            @Html.ActionLink(
+            linkText: LocalStr.Schedule, actionName: "ScheduleRequest", controllerName: "Job",
+                routeValues: new { reqID = "<#= ID #>" },
+                htmlAttributes: new { @class = "t-grid-retpage", title = LocalStr.Schedule + " " + LocalStr.Job }
+                ).ToString()
+                +"<p />"+  
+                @Html.ActionLink(
+                linkText: LocalStr.Edit, actionName: "Edit", controllerName: "Request",
+                    routeValues: new { id = "<#= ID #>" },
+                    htmlAttributes: new { @class = "t-grid-retpage", title = LocalStr.Edit + " " + LocalStr.Request }
+                ).ToString()
+            )
+            .Title("").Width(80).ReadOnly();
+        columns.Bound(r => r.SoldStockStr).Width(50).ReadOnly();
+        columns.Bound(r => r.ID).Width(50);
+        columns.Bound(r => r.OrderNo).Width(50);
+        columns.Bound(r => r.ElapsedStr).ReadOnly();
+        columns.Bound(r => r.RequestDt).ReadOnly();
+        columns.Bound(r => r.RequiredDt).ReadOnly();
+        columns.Bound(r => r.ExpArrivalDt).Width(120).ReadOnly();
+        columns.Bound(r => r.RequestDeptID).ReadOnly();
+        columns.Bound(r => r.ProdCD).ReadOnly();
+        columns.Bound(r => r.ReqPattern).ReadOnly();
+        columns.Bound(r => r.ListDescr).ReadOnly();
+        columns.Bound(r => r.RequestCstUserID).ReadOnly();
+        columns.Bound(r => r.StatusStr).ReadOnly();
+        columns.Bound(r => r.ProcDtUser).ReadOnly();
+        columns.Bound(r => r.ConfDtUser).ReadOnly();
+    })
+    .Sortable()
+    .Pageable(settings => settings.Position(GridPagerPosition.Bottom).PageSize(Model.PageSize))
+        .ClientEvents(events => events.OnDataBound("tGridBoundRetPage"))
+    
+)
+@*
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    function onGridBound(e) {
+        var urlReturn = window.location.pathname;
+        $("a.schedule-request-link").each(function() {
+            var url = document.createElement('a');
+            url.href = $(this).attr("href")
+
+            var parmO = parmObj(url.search);
+            parmO.urlReturn = urlReturn;
+
+            var actUrl = url.pathname +'?'+ $.param(parmO);
+            $(this).attr("href", actUrl);
+        });
+        $("a.edit-request-link").each(function() {
+            var url = document.createElement('a');
+            url.href = $(this).attr("href")
+
+            var parmO = parmObj(url.search);
+            parmO.urlReturn = urlReturn;
+
+            var actUrl = url.pathname +'?'+ $.param(parmO);
+            $(this).attr("href", actUrl);
+        });
+
+    };
+</text>);}
+*@

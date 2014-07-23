@@ -1,0 +1,15 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.OrderNo)
+    </div>
+    <div class="display-field">
+        @Html.DisplayOrDashFor(model => model.OrderNo) 
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.OrderLineInt)
+    </div>
+    <div class="display-field medium-input">
+        @Html.DisplayOrDashFor(m => m.OrderLineInt)
+    </div>

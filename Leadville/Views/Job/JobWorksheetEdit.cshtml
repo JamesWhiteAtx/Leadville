@@ -1,0 +1,13 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    @Html.HiddenFor(model => model.WorksheetID)
+    
+    @if (Model.IsNotNull(m => m.EditWorksheet))
+    {
+        <div class="display-label">
+            @Html.LabelFor(model => model.EditWorksheet)
+        </div>
+        <div class="display-field">
+            @Html.Partial("WorksheetEdit", Model)    
+        </div>
+    }

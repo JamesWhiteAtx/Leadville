@@ -1,0 +1,57 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+@using CST.Prdn.Data
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(false)
+    <fieldset class="horiz-form medium-input">
+        <legend>@Model.ViewCaption</legend>
+        
+        @Html.Partial("JobHeaderEdit", Model)
+
+        @Html.Partial("JobSeqEdit", Model)
+
+        @if (Model is CST.Prdn.ViewModels.AddPrdnJobViewModel)
+        {
+            @Html.Partial("JobQtyEdit", Model)
+        }
+        @Html.Partial("JobSerial", Model)
+        
+        @Html.Partial("JobCustEdit", Model)
+
+        @if (!(Model is CST.Prdn.ViewModels.AddPrdnJobViewModel))
+        {
+            @Html.Partial("JobCstReqView", Model)
+        }
+        @Html.Partial("JobPurchOrdEdit", Model)
+
+        @Html.Partial("JobOrdEdit", Model)
+
+        @Html.Partial("JobProdEdit", Model)
+
+        @if (Model.ProdTypeCD == PrdnDataHelper.LeatherProdTypeCd)
+        {
+            @Html.Partial("JobWSDesign", Model)
+        }
+        else if (Model.ProdTypeCD == PrdnDataHelper.WarrantyProdTypeCd)
+        { 
+            @Html.Partial("JobWorksheetEdit", Model)
+        }
+        
+        @Html.Partial("JobProdOptEdit", Model)
+
+        @Html.Partial("JobShipEdit", Model)
+
+        @Html.Partial("JobStatusEdit", Model)
+
+        @Html.Partial("JobEditButtons", Model)
+
+        @if (Model.Attacher != null)
+        {
+            @Html.Partial("FileAttacher", Model)    
+        }
+
+        @Html.Partial("JobStatusHistView", Model)
+
+    </fieldset>
+}

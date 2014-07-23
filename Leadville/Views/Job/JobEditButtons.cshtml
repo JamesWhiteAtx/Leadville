@@ -1,0 +1,8 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+        <div id="buttons" class="buttonBox">
+            @Html.TIconSubmit(tIconClass: "t-add", caption: Model.SaveCaption)
+            @Html.HiddenFor(model => model.UrlReturn)
+            @Html.TIconLink(linkText: LocalStr.Cancel + " " + LocalStr.Changes, url: Model.UrlReturn, tIconClass: "t-cancel")
+        </div>
+

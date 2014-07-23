@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "Seats";
+    Layout = "~/Views/Bigco/_CCLayout.cshtml";
+}
+<div id="sel-container" class="cc-selector">
+    <div id="sel-car"></div>
+    <div id="sel-int-col"></div>
+    <div id="sel-leather"></div>
+    <div id="sel-rows"></div>
+    <div id="sel-filler">
+        <div><img border="0" alt="Leather Car Seats" src="@Url.Content("~/Content/Images/Bigco/leather_seats.png")"/></div>
+        <div><img border="0" alt="Leather Car Seats" src="@Url.Content("~/Content/Images/Bigco/banner.jpg")"/></div>
+    </div>
+    <div id="sel-member"></div>
+</div>
+
+@section Breadcrumbs {
+    <ul id="selCrumbs">
+    </ul>
+}
+@section SideBar {
+    <h2>Leather Seats</h2>
+    <div>
+        <img alt="Leather Car Seats" src="@Url.Content("~/Content/Images/Bigco/two_tone_thumb.png")"/>
+    </div>
+    <h2>Seat Heaters</h2>
+    <div>
+        <img alt="Leather Car Seats" src="@Url.Content("~/Content/Images/Bigco/RW-SH4P.png")"/>
+    </div>
+}
+@section HeadContent {
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/Scripts/ccseats.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var slctr = new CCSelector({
+                carCont: $('#sel-car'),
+                intColCont: $('#sel-int-col'),
+                leatherCont: $('#sel-leather'),
+                rowsCont: $('#sel-rows'),
+                memberCont: $('#sel-member'),
+                fillerElm: $('#sel-filler'),
+                makesUrl: '@Url.Action("Makes", "Bigco")',
+                yearsUrl: '@Url.Action("Years", "Bigco")',
+                modelsUrl: '@Url.Action("Models", "Bigco")',
+                bodiesUrl: '@Url.Action("Bodies", "Bigco")',
+                patternsUrl: '@Url.Action("Patterns", "Bigco")',
+                intColsUrl: '@Url.Action("InteriorColors", "Bigco")',
+                leathersUrl: '@Url.Action("LeatherColors", "Bigco")',
+                altImgSrc: '@Url.Content("~/Content/Images/Bigco/img_not_avail.png")',
+                rowsUrl: '@Url.Action("Rows", "Bigco")',
+                submitUrl: '@Url.Action("OrderSeat", "Bigco")',
+                changeFunc: updCrumbs
+            });
+
+            function updCrumbs(slctr) {
+                var list = $('ul#selCrumbs').empty();
+                var obj;
+                if ((obj = slctr.getCarObj()) && (obj.isShowing())) {
+                    list.append($('<li>').append(obj.caption.text()));
+                };
+                if ((obj = slctr.getIntColObj()) && (obj.isShowing())) {
+                    list.append($('<li>').append(obj.caption.text()));
+                };
+                if ((obj = slctr.getLeatherObj()) && (obj.isShowing())) {
+                    list.append($('<li>').append(obj.caption.text()));
+                };
+                if ((obj = slctr.getRowsObj()) && (obj.isShowing())) {
+                    list.append($('<li>').append(obj.caption.text()));
+                };
+                if ((obj = slctr.getMemberObj()) && (obj.isShowing())) {
+                    list.append($('<li>').append(obj.caption.text()));
+                };
+            }
+        });
+    </script>
+}
+

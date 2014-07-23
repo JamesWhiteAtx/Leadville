@@ -1,0 +1,198 @@
+﻿@using CST.Prdn.Data
+@using CST.Prdn.ViewModels
+
+@model CST.Prdn.ViewModels.SchedJobRunModel
+
+@{
+    ViewBag.Title = "Schedule Jobs";
+}
+
+<table class="layout">
+    <tr>
+        <td class="strengthened">
+            @LocalStr.Schedule @(LocalStr.Job)s @(LocalStr.For): 
+            @if (Model.IfNotNull(m => m.RunID) > 0)
+            {   <span class="larger">
+                @Html.ActionLink(Html.DisplayFor(model => model.PrdnOrderNo).ToString(), "Runs", new { id = Model.PrdnOrderNo })@Html.DisplayFor(model => model.PrdnTypeCD) 
+                </span>
+                @Html.DisplayFor(model => model.PrdnTypeDescr)  @Html.DisplayFor(model => model.ShipDtStr) 
+            } else {
+                @Html.SpanOrDashFor(model => model.RunDescr) 
+            }
+            (@Html.DisplayFor(model => model.ProdTypeCD))
+            &nbsp; 
+            @Html.TIconButton(tIconClass: "t-search", caption: LocalStr.Change + " " + LocalStr.Run, id: "btnSelectRun", htmlAttributes: new { title = LocalStr.Change + " " + LocalStr.Production + " " + LocalStr.Run })
+            @Html.LabelFor(model => model.RunID) @Html.SpanOrDashAndHiddenFor(model => model.RunID)
+        </td>
+        @if (Model.SettingsModel != null)
+        {
+        <td class="right-align">
+             @Html.Partial("Settings", Model.SettingsModel)
+        </td>
+        }
+    </tr>
+</table>
+
+@Html.HiddenFor(model => model.RunID)
+@Html.HiddenFor(model => model.PrdnOrderNo)
+@Html.HiddenFor(model => model.ShipDtStr)
+@Html.HiddenFor(model => model.PrdnTypeDescr)
+@Html.HiddenFor(model => model.ProdTypeCD)
+
+@if (Model.IfNotNull(m => m.RunID) > 0)
+{
+    <div class="no-space strengthened">
+        @(LocalStr.Job)s
+    </div>
+
+    Html.Telerik().Grid<ListPrdnJobViewModel>()
+    .Name("ScheduleJobsGrid")
+    .DataKeys(dataKeys => dataKeys.Add(j => j.ID))
+    .ToolBar(toolBar =>
+    {
+        if (Model.RunID > 0)
+        {
+            toolBar.Template(
+                "<table class='t-grid-top-left'><tr><td>"
+                + Html.Partial("JobStatusFilter", Model.FilterModel).ToString()
+                + "</td><td class='right-align'>"
+                + Html.TIconActionLink(tIconClass: "t-add", linkText: LocalStr.Add+" "+LocalStr.Job,
+                    actionName: "Add", controllerName: "Job",
+                    routeValues: new { runID = Model.RunID },
+                    htmlAttributes: new { @class = "t-grid-retpage", title = "Create a new job" }
+                ).ToString()
+                + "</td></tr></table>"
+            );
+        }
+    })
+    .DataBinding(dataBinding =>
+    {
+        dataBinding.Ajax()
+            .Select("_SelectStatusJobs", "Lookup", new { id = Model.RunID })
+            .Delete("_DeleteJob", "Job");
+    })
+    .Columns(columns =>
+    {
+        columns.Bound(j => j.RunSeqNo)
+            .ClientTemplate(
+                Html.UpDnInnerHtml("<#=RunSeqNo#>", 
+                htmlAttributes: new { @class = "cst-job-updn", data_id = "<#=ID#>", data_seq = "<#=RunSeqNo#>", data_up_url=@Url.Action("JobSeqDn") }).ToString()
+            ).Width(60).HtmlAttributes(new { @class = "td-updn" });
+        columns.Bound(j => j.SerialNo).ReadOnly();
+        columns.Bound(j => j.ProdCD).Width(80).ReadOnly();
+        if ((Model.ProdTypeCD == PrdnDataHelper.LeatherProdTypeCd) || (Model.ProdTypeCD == PrdnDataHelper.WarrantyProdTypeCd))
+        {
+            columns.Bound(j => j.PatternStr).Width(80).ReadOnly();
+            columns.Bound(j => j.ColorStr).ReadOnly();
+        }
+         if (Model.ProdTypeCD == PrdnDataHelper.LeatherProdTypeCd)
+        {
+            columns.Bound(j => j.DecorStr).Width(60).ReadOnly();
+        }
+        columns.Bound(j => j.ListDescr).Width(200).ReadOnly().HtmlAttributes(new { @class = "nowrap" });
+        columns.Bound(j => j.StatusDescr).ReadOnly();
+        columns.Bound(j => j.StatusTodayDtStr).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" }); 
+        columns.Bound(j => j.CustCode).ReadOnly();
+        columns.Bound(j => j.CustLocation).Width(70).ReadOnly();
+        columns.Bound(j => j.PriorityCD).Width(50).ReadOnly();
+        columns.Bound(j => j.ID)
+            .ClientTemplate(
+            
+                Html.TIconActionLink(tIconClass: "t-edit", linkText: LocalStr.Edit,
+                    actionName: "Edit", controllerName: "Job",
+                    routeValues: new { id = "<#= ID #>" },
+                    htmlAttributes: new { @class = "editJobCtrl t-grid-retpage", title = "Edit Job" }
+                ).ToString()
+                +
+                Html.TIconActionLink(tIconClass: "t-search", linkText: LocalStr.View,
+                    actionName: "ViewJob", controllerName: "Job",
+                    routeValues: new { id = "<#= ID #>" },
+                    htmlAttributes: new { @class = "viewJobCtrl t-grid-retpage", title = "View Job" }
+                ).ToString()
+                
+                
+            ).Title("").ReadOnly();
+        columns.Command(commands =>
+        {
+            commands.Delete().ButtonType(GridButtonType.ImageAndText).HtmlAttributes(new { @class = "delJobCtrl" });
+        }).HtmlAttributes(new { name = "delCommand" });
+
+        columns.Bound(j => j.ID).Title("ID").Width(40).ReadOnly();
+    })
+    .EnableCustomBinding(true)
+    .Pageable(settings => settings.Position(GridPagerPosition.Both).PageSize(Model.PageSize))
+    .PrefixUrlParameters(false)
+    .ClientEvents(events => events
+        .OnDataBinding("jobStsFiltBinding")
+        .OnRowDataBound("schedJobsRowDataBound")
+        .OnDataBound("schedJobsDataBound")
+        .OnComplete("tGridNameDelRebind")
+        .OnLoad("schedJobsLoad")
+        .OnError("tGridError"))
+    .Resizable(resizing => resizing.Columns(true))
+    .Scrollable(s => s.Enabled(true).Height("auto"))
+    .Render();
+}
+
+@Html.Partial("PrdnRunDialog")
+@Html.Partial("NewRunDialog")
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    function schedJobsRowDataBound(e) {
+        if (e.dataItem.InvItemExists) {
+            $(e.row).find(".editJobCtrl").remove();
+        } else {
+            $(e.row).find(".viewJobCtrl").remove();
+        };
+        if (!e.dataItem.CanDelete) {
+            $(e.row).find(".delJobCtrl").remove();
+        };
+    };
+
+    function schedJobsDataBound(e) {
+        tGridBoundRetPage(e);
+        wireGridUpDn(e, '.cst-job-updn', '@Url.Action("_JobSeqUp", "Job")', '@Url.Action("_JobSeqDn", "Job")');
+
+        var grid = $("#ScheduleJobsGrid").data("tGrid");
+        //grid.pageTo(10);
+        var pg = grid.currentPage;
+        var pg2 = pg;
+
+    };
+
+    function schedJobsLoad(e) { 
+        tGridReRefresh(e, "@LocalStr.Refresh @(LocalStr.Job)s", "@LocalStr.Refresh @(LocalStr.Job)s"); 
+    };
+
+    function schdMakeRun(item) {
+        openNewRunDialog({
+            poNo: item.poNo, 
+            shipDtStr: item.shipDtStr, 
+            callback: function (newRun) {
+                linkUrl("@Html.Raw(Url.Action("ScheduleJobNewRun", new { orderNo = "_parm_", typeID = "_parm_", note = "_parm_" }))", newRun.poNo, newRun.typeID, newRun.note);
+            }
+        });
+    };
+
+    function selectRun() {
+        openPrdnRunDialog({
+            pickRun: function (item) {
+                linkUrl("@Html.Raw(Url.Action(ViewContext.RouteData.Values["Action"].ToString(), new { id = "_parm_" }))", item.runID);
+            },
+            makeRun: (typeof openNewRunDialog == "function") ? schdMakeRun : undefined
+        });
+    };
+
+    if (typeof openPrdnRunDialog == "function") { 
+        $('#btnSelectRun').click(function(e) {
+           e.preventDefault();
+           selectRun();
+        });
+    };
+
+    var runID =  $("#@Html.IdFor(m => m.RunID)").val();
+    if (runID < 1) {
+        selectRun();
+    };
+</text>);}

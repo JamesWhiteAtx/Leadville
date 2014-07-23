@@ -1,0 +1,34 @@
+﻿@model CST.Prdn.ViewModels.IEditWorksheetOwner
+@using CST.Prdn.ViewModels           
+
+@if (this.ViewContext.FormContext == null)
+{
+    this.ViewContext.FormContext = new FormContext();
+} 
+
+        @(Html.Telerik().Menu()
+            .Name("worksheet-t-menu")
+            //.HtmlAttributes(new { style = "width: 100px" })
+            .Items(menu =>
+            {
+                menu.Add().Text(LocalStr.Definition + " " + LocalStr.Option+"s")
+                    .Items(item =>
+                    {
+                        item.Add().Text("Color")
+                            .Items(itemCol =>
+                            {
+                                itemCol.Add().Text("One Tone").HtmlAttributes(new { @id = "one-tone", data_opt_type = WSEditOptType.Meta, data_meta = WSEditMetaType.OneTone });
+                                itemCol.Add().Text("Two Tone").HtmlAttributes(new { @id = "two-tone", data_opt_type = WSEditOptType.Meta, data_meta = WSEditMetaType.TwoTone });
+                                itemCol.Add().Text("Three Tone").HtmlAttributes(new { @id = "three-tone", data_opt_type = WSEditOptType.Meta, data_meta = WSEditMetaType.ThreeTone });
+                            });
+                        item.Add().Text("Embroidery").HtmlAttributes(new { @id = "mnu-emb", data_opt_type = WSEditOptType.Component, data_prod_type = "600" });
+                        item.Add().Text("Heat Seal").HtmlAttributes(new { @id = "mnu-hs", data_opt_type = WSEditOptType.Component, data_prod_type = "610" });
+                        item.Add().Text("Perforated Insert").HtmlAttributes(new { @id = "mnu-perf", data_opt_type = WSEditOptType.Component, data_prod_type = "620" });
+                        item.Add().Text("Sewing Thread").HtmlAttributes(new { @id = "mnu-thread", data_opt_type = WSEditOptType.Component, data_prod_type = "640" });
+                        item.Add().Text("Piping").HtmlAttributes(new { @id = "mnu-piping", data_opt_type = WSEditOptType.Component, data_prod_type = "630" });
+                    });
+            })
+            .ClientEvents(events => events
+                .OnSelect("onWsMenuSelect")
+            )
+        )

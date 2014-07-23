@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="UtilModel.Store" Alias="Self" Provider="Oracle.DataAccess.Client" ProviderManifestToken="10.2" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="UtilModelStoreContainer">
+          <EntitySet Name="FG_BULK_SALE_IMPORT" EntityType="UtilModel.Store.FG_BULK_SALE_IMPORT" store:Type="Tables" Schema="SYSADM" />
+          <EntitySet Name="PS_TO_NS_PARTNO" EntityType="UtilModel.Store.PS_TO_NS_PARTNO" store:Type="Tables" Schema="SYSADM" />
+          <EntitySet Name="FG_BULK_SALE_IMPORT_VW" EntityType="UtilModel.Store.FG_BULK_SALE_IMPORT_VW" store:Type="Views" store:Schema="SYSADM" store:Name="FG_BULK_SALE_IMPORT_VW">
+            <DefiningQuery>SELECT 
+      "FG_BULK_SALE_IMPORT_VW"."FG_RUN_NAME" AS "FG_RUN_NAME", 
+      "FG_BULK_SALE_IMPORT_VW"."FG_LOCKED" AS "FG_LOCKED", 
+      "FG_BULK_SALE_IMPORT_VW"."FG_SERIAL_NUM" AS "FG_SERIAL_NUM", 
+      "FG_BULK_SALE_IMPORT_VW"."FG_CUST_PO" AS "FG_CUST_PO", 
+      "FG_BULK_SALE_IMPORT_VW"."FG_VENDOR_ID" AS "FG_VENDOR_ID", 
+      "FG_BULK_SALE_IMPORT_VW"."FG_PROD_CD" AS "FG_PROD_CD", 
+      "FG_BULK_SALE_IMPORT_VW"."FG_PROD_DESC" AS "FG_PROD_DESC", 
+      "FG_BULK_SALE_IMPORT_VW"."HV" AS "HV", 
+      "FG_BULK_SALE_IMPORT_VW"."FG_CUR_DEPTID" AS "FG_CUR_DEPTID", 
+      "FG_BULK_SALE_IMPORT_VW"."FG_CUR_INV_STATUS_CD" AS "FG_CUR_INV_STATUS_CD", 
+      "FG_BULK_SALE_IMPORT_VW"."COST" AS "COST"
+      FROM "SYSADM"."FG_BULK_SALE_IMPORT_VW" "FG_BULK_SALE_IMPORT_VW"</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="FG_BULK_SALE_RESULT_VW" EntityType="UtilModel.Store.FG_BULK_SALE_RESULT_VW" store:Type="Views" store:Schema="SYSADM" store:Name="FG_BULK_SALE_RESULT_VW">
+            <DefiningQuery>SELECT 
+      "FG_BULK_SALE_RESULT_VW"."RUN_NAME" AS "RUN_NAME", 
+      "FG_BULK_SALE_RESULT_VW"."FG_CUST_PO" AS "FG_CUST_PO", 
+      "FG_BULK_SALE_RESULT_VW"."SERIAL_NUM" AS "SERIAL_NUM", 
+      "FG_BULK_SALE_RESULT_VW"."PROD_CD" AS "PROD_CD", 
+      "FG_BULK_SALE_RESULT_VW"."HV" AS "HV", 
+      "FG_BULK_SALE_RESULT_VW"."DEPTID" AS "DEPTID", 
+      "FG_BULK_SALE_RESULT_VW"."STATUS" AS "STATUS", 
+      "FG_BULK_SALE_RESULT_VW"."ORDER" AS "ORDER", 
+      "FG_BULK_SALE_RESULT_VW"."ORDER_PO" AS "ORDER_PO", 
+      "FG_BULK_SALE_RESULT_VW"."ORDER_STATUS" AS "ORDER_STATUS", 
+      "FG_BULK_SALE_RESULT_VW"."ORDER_DT" AS "ORDER_DT", 
+      "FG_BULK_SALE_RESULT_VW"."EXBI_STATUS" AS "EXBI_STATUS", 
+      "FG_BULK_SALE_RESULT_VW"."ORDER_LN" AS "ORDER_LN", 
+      "FG_BULK_SALE_RESULT_VW"."ORDER_PART" AS "ORDER_PART", 
+      "FG_BULK_SALE_RESULT_VW"."ORDER_DESCR" AS "ORDER_DESCR", 
+      "FG_BULK_SALE_RESULT_VW"."ORDER_AMT" AS "ORDER_AMT", 
+      "FG_BULK_SALE_RESULT_VW"."INVOICE" AS "INVOICE", 
+      "FG_BULK_SALE_RESULT_VW"."INVOICE_LINE" AS "INVOICE_LINE", 
+      "FG_BULK_SALE_RESULT_VW"."INVOICE_AMT" AS "INVOICE_AMT"
+      FROM "SYSADM"."FG_BULK_SALE_RESULT_VW" "FG_BULK_SALE_RESULT_VW"</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+        <EntityType Name="FG_BULK_SALE_IMPORT">
+          <Key>
+            <PropertyRef Name="FG_RUN_NAME" />
+            <PropertyRef Name="FG_SERIAL_NUM" />
+          </Key>
+          <Property Name="FG_RUN_NAME" Type="varchar2" Nullable="false" MaxLength="20" />
+          <Property Name="FG_CUST_PO" Type="varchar2" MaxLength="30" />
+          <Property Name="FG_SERIAL_NUM" Type="varchar2" Nullable="false" MaxLength="30" />
+          <Property Name="FG_LOCKED" Type="varchar2" Nullable="false" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="PS_TO_NS_PARTNO">
+          <Key>
+            <PropertyRef Name="INTERNALID" />
+            <PropertyRef Name="NS_NAME" />
+          </Key>
+          <Property Name="INTERNALID" Type="varchar2" Nullable="false" MaxLength="50" />
+          <Property Name="NS_NAME" Type="varchar2" Nullable="false" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'SYSADM.FG_BULK_SALE_IMPORT_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="FG_BULK_SALE_IMPORT_VW">
+          <Key>
+            <PropertyRef Name="FG_RUN_NAME" />
+            
+            <PropertyRef Name="FG_SERIAL_NUM" />
+          </Key>
+          <Property Name="FG_RUN_NAME" Type="varchar2" Nullable="false" MaxLength="20" />
+          <Property Name="FG_LOCKED" Type="varchar2" Nullable="false" MaxLength="1" />
+          <Property Name="FG_SERIAL_NUM" Type="varchar2" Nullable="false" MaxLength="30" />
+          <Property Name="FG_CUST_PO" Type="varchar2" MaxLength="30" />
+          <Property Name="FG_VENDOR_ID" Type="varchar2" MaxLength="10" />
+          <Property Name="FG_PROD_CD" Type="varchar2" MaxLength="30" />
+          <Property Name="FG_PROD_DESC" Type="varchar2" MaxLength="100" />
+          <Property Name="HV" Type="varchar2" />
+          <Property Name="FG_CUR_DEPTID" Type="varchar2" MaxLength="10" />
+          <Property Name="FG_CUR_INV_STATUS_CD" Type="varchar2" MaxLength="30" />
+          <Property Name="COST" Type="number" />
+        </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'SYSADM.FG_BULK_SALE_RESULT_VW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="FG_BULK_SALE_RESULT_VW">
+          <Key>
+            <PropertyRef Name="RUN_NAME" />
+            <PropertyRef Name="SERIAL_NUM" />
+          </Key>
+          <Property Name="RUN_NAME" Type="varchar2" Nullable="false" MaxLength="20" />
+          <Property Name="FG_CUST_PO" Type="varchar2" MaxLength="30" />
+          <Property Name="SERIAL_NUM" Type="varchar2" Nullable="false" MaxLength="30" />
+          <Property Name="PROD_CD" Type="varchar2" MaxLength="30" />
+          <Property Name="HV" Type="varchar2" />
+          <Property Name="DEPTID" Type="varchar2" MaxLength="10" />
+          <Property Name="STATUS" Type="varchar2" MaxLength="30" />
+          <Property Name="ORDER" Type="varchar2" MaxLength="30" />
+          <Property Name="ORDER_PO" Type="varchar2" MaxLength="30" />
+          <Property Name="ORDER_STATUS" Type="varchar2" MaxLength="30" />
+          <Property Name="ORDER_DT" Type="date" />
+          <Property Name="EXBI_STATUS" Type="varchar2" MaxLength="1" />
+          <Property Name="ORDER_LN" Type="number" />
+          <Property Name="ORDER_PART" Type="varchar2" MaxLength="30" />
+          <Property Name="ORDER_DESCR" Type="varchar2" MaxLength="100" />
+          <Property Name="ORDER_AMT" Type="number" Scale="5" />
+          <Property Name="INVOICE" Type="varchar2" MaxLength="22" />
+          <Property Name="INVOICE_LINE" Type="number" />
+          <Property Name="INVOICE_AMT" Type="number" Precision="14" Scale="2" />
+        </EntityType>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="UtilModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="UtilEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BulkSaleImports" EntityType="UtilModel.BulkSaleImport" />
+          <EntitySet Name="BulkSaleImportInfoes" EntityType="UtilModel.BulkSaleImportInfo" />
+          <EntitySet Name="BulkSaleResults" EntityType="UtilModel.BulkSaleResult" />
+          <EntitySet Name="PS_TO_NS_PARTNOS" EntityType="UtilModel.PS_TO_NS_PARTNO" />
+        </EntityContainer>
+        <EntityType Name="BulkSaleImport">
+          <Key>
+            <PropertyRef Name="RunName" />
+            <PropertyRef Name="SerialNum" />
+          </Key>
+          <Property Type="String" Name="RunName" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustPO" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="SerialNum" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="LockedStr" MaxLength="1" FixedLength="false" Unicode="false" DefaultValue="F" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BulkSaleImportInfo">
+          <Key>
+            <PropertyRef Name="RunName" />
+            <PropertyRef Name="SerialNum" />
+          </Key>
+          <Property Type="String" Name="RunName" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="SerialNum" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustPO" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="VendorID" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ProdCD" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DeptID" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Status" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="Decimal" Name="Cost" Precision="38" Scale="0" />
+          <Property Type="String" Name="LockedStr" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Type="String" Name="ProdDescr" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HV" MaxLength="4000" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="BulkSaleResult">
+          <Key>
+            <PropertyRef Name="RunName" />
+            <PropertyRef Name="SerialNum" />
+          </Key>
+          <Property Type="String" Name="RunName" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustPO" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="SerialNum" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ProdCD" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HV" MaxLength="4000" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DeptID" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Status" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="OrderNo" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="OrderPO" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="OrderStatus" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="OrderDt" />
+          <Property Type="String" Name="ExbiStatus" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Type="Decimal" Name="OrderLine" Precision="38" Scale="0" />
+          <Property Type="String" Name="OrderPart" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="OrderDescr" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="Decimal" Name="OrderAmt" Precision="38" Scale="5" />
+          <Property Type="String" Name="Invoice" MaxLength="22" FixedLength="false" Unicode="false" />
+          <Property Type="Decimal" Name="InvoiceLine" Precision="38" Scale="0" />
+          <Property Type="Decimal" Name="InvoiceAmt" Precision="14" Scale="2" />
+        </EntityType>
+        <EntityType Name="PS_TO_NS_PARTNO">
+          <Key>
+            <PropertyRef Name="INTERNALID" />
+            <PropertyRef Name="NS_NAME" />
+          </Key>
+          <Property Type="String" Name="INTERNALID" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="NS_NAME" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="UtilModelStoreContainer" CdmEntityContainer="UtilEntities">
+          <EntitySetMapping Name="BulkSaleImports">
+            <EntityTypeMapping TypeName="UtilModel.BulkSaleImport">
+              <MappingFragment StoreEntitySet="FG_BULK_SALE_IMPORT">
+                <ScalarProperty Name="LockedStr" ColumnName="FG_LOCKED" />
+                <ScalarProperty Name="SerialNum" ColumnName="FG_SERIAL_NUM" />
+                <ScalarProperty Name="CustPO" ColumnName="FG_CUST_PO" />
+                <ScalarProperty Name="RunName" ColumnName="FG_RUN_NAME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BulkSaleImportInfoes">
+            <EntityTypeMapping TypeName="UtilModel.BulkSaleImportInfo">
+              <MappingFragment StoreEntitySet="FG_BULK_SALE_IMPORT_VW">
+                <ScalarProperty Name="HV" ColumnName="HV" />
+                <ScalarProperty Name="ProdDescr" ColumnName="FG_PROD_DESC" />
+                <ScalarProperty Name="LockedStr" ColumnName="FG_LOCKED" />
+                <ScalarProperty Name="Cost" ColumnName="COST" />
+                <ScalarProperty Name="Status" ColumnName="FG_CUR_INV_STATUS_CD" />
+                <ScalarProperty Name="DeptID" ColumnName="FG_CUR_DEPTID" />
+                <ScalarProperty Name="ProdCD" ColumnName="FG_PROD_CD" />
+                <ScalarProperty Name="VendorID" ColumnName="FG_VENDOR_ID" />
+                <ScalarProperty Name="CustPO" ColumnName="FG_CUST_PO" />
+                <ScalarProperty Name="SerialNum" ColumnName="FG_SERIAL_NUM" />
+                <ScalarProperty Name="RunName" ColumnName="FG_RUN_NAME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BulkSaleResults">
+            <EntityTypeMapping TypeName="UtilModel.BulkSaleResult">
+              <MappingFragment StoreEntitySet="FG_BULK_SALE_RESULT_VW">
+                <ScalarProperty Name="InvoiceAmt" ColumnName="INVOICE_AMT" />
+                <ScalarProperty Name="InvoiceLine" ColumnName="INVOICE_LINE" />
+                <ScalarProperty Name="Invoice" ColumnName="INVOICE" />
+                <ScalarProperty Name="OrderAmt" ColumnName="ORDER_AMT" />
+                <ScalarProperty Name="OrderDescr" ColumnName="ORDER_DESCR" />
+                <ScalarProperty Name="OrderPart" ColumnName="ORDER_PART" />
+                <ScalarProperty Name="OrderLine" ColumnName="ORDER_LN" />
+                <ScalarProperty Name="ExbiStatus" ColumnName="EXBI_STATUS" />
+                <ScalarProperty Name="OrderDt" ColumnName="ORDER_DT" />
+                <ScalarProperty Name="OrderStatus" ColumnName="ORDER_STATUS" />
+                <ScalarProperty Name="OrderPO" ColumnName="ORDER_PO" />
+                <ScalarProperty Name="OrderNo" ColumnName="ORDER" />
+                <ScalarProperty Name="Status" ColumnName="STATUS" />
+                <ScalarProperty Name="DeptID" ColumnName="DEPTID" />
+                <ScalarProperty Name="HV" ColumnName="HV" />
+                <ScalarProperty Name="ProdCD" ColumnName="PROD_CD" />
+                <ScalarProperty Name="SerialNum" ColumnName="SERIAL_NUM" />
+                <ScalarProperty Name="CustPO" ColumnName="FG_CUST_PO" />
+                <ScalarProperty Name="RunName" ColumnName="RUN_NAME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PS_TO_NS_PARTNOS">
+            <EntityTypeMapping TypeName="UtilModel.PS_TO_NS_PARTNO">
+              <MappingFragment StoreEntitySet="PS_TO_NS_PARTNO">
+                <ScalarProperty Name="NS_NAME" ColumnName="NS_NAME" />
+                <ScalarProperty Name="INTERNALID" ColumnName="INTERNALID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="UtilModel" ZoomLevel="85">
+        <EntityTypeShape EntityType="UtilModel.BulkSaleImport" Width="1.75" PointX="0.5" PointY="0.75" Height="1.787985026041667" />
+        <EntityTypeShape EntityType="UtilModel.BulkSaleImportInfo" Width="1.75" PointX="2.75" PointY="0.75" Height="3.1340950520833331" />
+        <EntityTypeShape EntityType="UtilModel.BulkSaleResult" Width="1.875" PointX="5" PointY="0.75" Height="4.6725065104166656" />
+        <EntityTypeShape EntityType="UtilModel.PS_TO_NS_PARTNO" Width="2" PointX="9.25" PointY="1" Height="1.4033821614583317" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

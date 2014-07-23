@@ -1,0 +1,26 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.ID)
+        </div>
+        <div class="display-field">
+           @Html.SpanOrDashAndHiddenFor(model => model.ID)
+        </div>
+          
+        <div class="display-label">
+            @Html.LabelFor(model => model.RunDescription)
+        </div>
+        <div class="display-field">
+            <span class="in-line">
+                @if ((Model.IfNotNull(m => m.RunID) > 0) && Model.IsNotNull(m => m.RunDescription))
+                {
+                <span class="strengthened emphasized">
+                    @Html.ActionLink(Html.DisplayFor(model => model.RunDescription).ToString(), "Jobs", new { id = Model.RunID })
+                </span>
+                } else {
+                    @Html.DisplayOrDashFor(model => model.RunDescription)
+                }
+                @Html.HiddenFor(model => model.RunDescription)
+                @Html.SpanOrDashAndHiddenFor(model => model.RunID)
+            </span>
+        </div>

@@ -1,0 +1,12 @@
+﻿@model CST.Prdn.ViewModels.UserSettingsViewModel
+
+@LocalStr.Default @LocalStr.Run [@Html.DisplayOrDashFor(m => m.DefaultRunDescr)] 
+@if (Model.UserEditable)
+{
+    @Html.ImageLink(imgSrc: Url.Content("~/Content/Images/gearBlack.png"),
+        actionName: "EditSettings",
+        routeValues: new { urlReturn = Request.Url.PathAndQuery },
+        linkHtmlAttributes: new { title = LocalStr.Edit + " " + LocalStr.Settings },
+        imgHtmlAttributes: new { @class="t-button-icon t-button", alt = LocalStr.View + " " + LocalStr.Settings, style = "vertical-align: top" }
+        )
+}

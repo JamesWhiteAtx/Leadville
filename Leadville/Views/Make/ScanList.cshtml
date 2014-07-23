@@ -1,0 +1,72 @@
+﻿@model IEnumerable<CST.Prdn.ViewModels.ScanListViewModel>
+
+<table class="prdn-scan">
+    <tr>
+        <th>
+             @Html.LabelFor(model => model.FirstOrDefault().Value)
+        </th>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().ScanDtTmStr)
+        </th>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().UserLogin)
+        </th>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().JobID)
+        </th>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().CurrentJobStatusStr)
+        </th>
+        <th>
+            @Html.Label(LocalStr.InventoryItem)
+        </th>
+        <th>
+            @Html.LabelFor(model => model.FirstOrDefault().ResultMessage)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr @(((item.InvItemID == null) || (item.JobID == null)) ? "class=error" : "")>
+        <td class="strengthened">
+            @Html.DisplayFor(modelItem => item.Value)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ScanDtTmStr)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserLogin)
+        </td>
+        <td>
+        @if (item.JobID != null)
+        {
+            @Html.TIconActionLink(tIconClass: "t-search", linkText: Html.DisplayFor(modelItem => item.JobID).ToString(), actionName: "ViewJob",
+                routeValues: new { id = item.JobID },
+                htmlAttributes: new { @class = "t-button-bare" })
+               
+        }
+        </td>
+        <td>
+        @if (item.JobID != null)
+        {
+            @Html.TIconActionLink(linkText: Html.DisplayFor(modelItem => item.CurrentJobStatusStr).ToString(), actionName: "ViewJob",
+                routeValues: new { id = item.JobID },
+                htmlAttributes: new { @class = "t-button-bare" })
+               
+        }
+        </td>
+        <td>
+        @if (item.InvItemID != null)
+        {
+            @Html.TIconActionLink(tIconClass: "t-search", linkText: Html.DisplayFor(modelItem => item.SerialNo).ToString(), actionName: "InvItem",
+                          routeValues: new { id = item.SerialNo },
+                htmlAttributes: new { @class = "t-button-bare" })
+               
+        }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ResultMessage)
+        </td>
+    </tr>
+}
+
+</table>

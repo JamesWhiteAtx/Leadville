@@ -1,0 +1,60 @@
+﻿@model CST.Prdn.ViewModels.PrdnJobStatusViewModel
+
+@if (Model.PendingAllowed)
+{
+@Html.EditorFor(model => model.Pending)@Html.LabelFor(model => model.Pending) 	
+}
+@if (Model.ScheduledAllowed)
+{
+@:&nbsp; @Html.EditorFor(model => model.Scheduled)@Html.LabelFor(model => model.Scheduled)
+}
+@if (Model.ProcessingAllowed)
+{
+@:&nbsp; @Html.EditorFor(model => model.Processing)@Html.LabelFor(model => model.Processing)
+}
+@if (Model.CompletedAllowed)
+{
+@:&nbsp; @Html.EditorFor(model => model.Completed)@Html.LabelFor(model => model.Completed)
+}
+@if (Model.CanceledAllowed)
+{
+@:&nbsp; @Html.EditorFor(model => model.Canceled)@Html.LabelFor(model => model.Canceled)
+}
+@*&nbsp; @Html.TIconButton(tIconClass: "t-refresh", caption: "Refresh", id: "btnFilter", htmlAttributes: new { title = LocalStr.Change + " " + LocalStr.Production + " " + LocalStr.Run })*@
+@*@Html.HiddenFor(model => model.StatusListStr)*@
+
+
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    function jobStsFiltStr()
+    {
+        function stsPush(arr, sel) {
+            var chkBx = $("#"+sel);
+            if (chkBx.length > 0) {
+                if (chkBx.is(':checked')) {
+                    arr.push({name:sel,value:true});
+                } else {
+                    arr.push({name:sel,value:false});
+                };
+            };
+            return arr;
+        };
+        var sts = [];
+        sts = stsPush(sts, "@Html.IdFor(m => m.Pending)");
+        sts = stsPush(sts, "@Html.IdFor(m => m.Scheduled)");
+        sts = stsPush(sts, "@Html.IdFor(m => m.Processing)");
+        sts = stsPush(sts, "@Html.IdFor(m => m.Completed)");
+        sts = stsPush(sts, "@Html.IdFor(m => m.Canceled)");
+
+        return  $.param(sts);
+    };
+
+    function jobStsFiltBinding(e) {
+        var chkFilt = jobStsFiltStr();
+        if (!chkFilt) {
+            chkFilt = undefined;
+        };
+        e.data = { statusVals: chkFilt};
+    };
+</text>);}

@@ -1,0 +1,35 @@
+﻿@model CST.Prdn.ViewModels.RequestViewModel
+
+          
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ProcessedDt)
+        </div>
+        <div class="editor-field">
+            <span class="in-line">
+                @Html.SpanOrDashAndHiddenFor(model => model.ProcessedDt)
+                @Html.LabelFor(model => model.ProcessedCstUserID, "By")
+                @Html.SpanOrDashAndHiddenFor(model => model.ProcessedCstUserID)
+            </span>
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ConfirmDt)
+        </div>
+        <div class="editor-field">
+            <span class="in-line">
+                @Html.SpanOrDashAndHiddenFor(model => model.ConfirmDt)
+                @Html.LabelFor(model => model.ConfirmCstUserID, "By")
+                @Html.SpanOrDashAndHiddenFor(model => model.ConfirmCstUserID)
+            </span>
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CancelDt)
+        </div>
+        <div class="editor-field">
+            <span class="in-line">
+                @Html.SpanOrDashAndHiddenFor(model => model.CancelDt)
+                @Html.LabelFor(model => model.CancelCstUserID, "By")
+                @Html.SpanOrDashAndHiddenFor(model => model.CancelCstUserID)
+            </span>
+        </div>

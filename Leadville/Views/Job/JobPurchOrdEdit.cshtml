@@ -1,0 +1,9 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    <div class="editor-label jobPurchOrd">
+        @Html.LabelFor(model => model.PurchaseOrder)
+    </div>
+    <div class="editor-field jobPurchOrd">
+        @Html.EditorFor(model => model.PurchaseOrder)
+        @Html.ValidationMessageFor(model => model.PurchaseOrder)
+    </div>

@@ -1,0 +1,63 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdTypeDescr)
+    </div>
+    <div class="display-field">
+        @Html.DispAndHiddenFor(model => model.ProdTypeCD)
+        @Html.DispAndHiddenFor(model => model.ProdTypeDescr)
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.ProdCD)
+    </div>
+    <div class="editor-field">         
+        @Html.HiddenFor(model => model.ParentProdCD)
+        @Html.EditorFor(model => model.ProdCD)
+        @Html.ValidationMessageFor(model => model.ProdCD)
+
+        @Html.LabelFor(model => model.ProdDescr)
+        @Html.SpanOrDashAndHiddenFor(model => model.ProdDescr)
+
+        <span id="prod-image-set">
+        @if ((Model != null) && (Model.ProdImageInfoSet != null))
+        {
+            @Html.Partial("ProdImageInfoSet", Model.ProdImageInfoSet)
+        }
+        </span>
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdOptions)
+    </div>
+    <div id="prod-options-container" class="display-field">
+        @Html.Partial("CharCompOpts", Model.ProdOptions, new ViewDataDictionary())
+    </div>
+    
+    @Html.Partial("ProdCdLookup")
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    function loadProdInfo(prodLookup) {
+        var prodDescr, optHtml, imgHtml;
+        if (prodLookup) {
+            prntCD = prodLookup.@Html.IdFor(m => m.ParentProdCD);
+            prodDescr = prodLookup.@Html.IdFor(m => m.ProdDescr);
+            optsHtml = prodLookup.OptsPartial;
+            imgHtml = prodLookup.ImgSetPartial;
+        } else {
+            prntCD = "";
+            prodDescr = "";
+            optsHtml = "";
+            imgHtml = "";
+        };
+        $('#@Html.IdFor(m => m.ParentProdCD)').val(prntCD);
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.ProdDescr), prodDescr);
+        $("#prod-options-container").html(optsHtml);
+        $("#prod-image-set").html(imgHtml);
+    };
+
+    if (typeof wireProdCdLookup == "function") { 
+        wireProdCdLookup({ lookup: loadProdInfo });
+    };
+</text>);}

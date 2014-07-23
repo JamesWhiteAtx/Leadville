@@ -1,0 +1,147 @@
+@using System.Configuration;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="SHORTCUT ICON" href="@Url.Content("~/Content/Images/favicon.ico")"/>
+	<title>@ViewBag.Title</title>
+    @(Html.Telerik().StyleSheetRegistrar().DefaultGroup(group => group.Add("telerik.common.css").Add("telerik.Default.css")))
+    <link href="@Url.Content("~/Content/themes/base/jquery.ui.all.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/jquery-bubble-popup-v3.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    @RenderSection("HeadContent", required:false)
+</head>
+
+<body>
+	<div class="page">
+		<div id="header">
+            <div id="title">
+			    <h1>@LocalStr.ApplicationName</h1>
+			</div>
+
+            <div id="logindisplay">
+                @Html.Partial("_LogOnPartial")
+            </div>
+            <div id="topmenu">
+
+            @{var navAuthorization = Telerik.Web.Mvc.Infrastructure.DI.Current.Resolve<Telerik.Web.Mvc.Infrastructure.INavigationItemAuthorization>(); }
+
+			@(Html.Telerik().Menu()
+                .Name("menu")
+                .Items(menu =>
+                {
+                    menu.Add().Text(LocalStr.Home).Action("Index", "Home");
+
+                    menu.Add().Text("Scheduling")
+                        .Items(item =>
+                        {
+                            item.Add().Text("Add Job").Action("NewJob", "Job");
+                            item.Add().Text("Schedule Jobs").Action("Jobs", "Schedule");
+                            item.Add().Text("Production Runs").Action("Runs", "Schedule");
+                            item.Add().Text("Production Listing").Action("PrdnList", "Schedule");
+                            item.Add().Text(LocalStr.Lookup + " " + LocalStr.Job).Action("FindJob", "Schedule");
+                            item.Add().Text(LocalStr.Lookup + " " + LocalStr.InventoryItem).Action("FindItemSerial", "Schedule");
+                            item.Add().Text(LocalStr.Product).Action("Product", "Schedule");
+                            item.Add().Text(LocalStr.Pattern).Action("Pattern", "Schedule");
+                            item.Add().Text(LocalStr.Edit + " " + LocalStr.Settings).Action("EditSettings", "Schedule", routeValues: new { urlReturn = Request.Url.PathAndQuery });
+                            item.Add().Text(LocalStr.ProductionCalendar).Action("Calendar", "Schedule");
+                        });
+                    menu.Add().Text("Requests")
+                        .Items(item =>
+                        {
+                            item.Add().Text("List").Action("List", "Request");
+                            item.Add().Text("Lookup").Action("Lookup", "Request");
+                        });
+
+                    menu.Add().Text(LocalStr.Make)
+                        .Items(item =>
+                        {
+                            item.Add().Text(LocalStr.Job + "s").Action("Jobs", "Make");
+                            item.Add().Text(LocalStr.Scan + " " + LocalStr.SerialNo).Action("Scan", "Make");
+                            item.Add().Text(LocalStr.Run + "s").Action("Runs", "Make");
+                            item.Add().Text(LocalStr.Lookup + " " + LocalStr.Run).Action("FindRun", "Make");
+                            item.Add().Text(LocalStr.Lookup + " " + LocalStr.Order).Action("FindOrder", "Make");
+                            item.Add().Text(LocalStr.Lookup + " " + LocalStr.Scan+"s").Action("LookupScans", "Make");
+                            item.Add().Text(LocalStr.Product).Action("Product", "Make");
+                            item.Add().Text(LocalStr.Pattern).Action("Pattern", "Make");
+                            item.Add().Text(LocalStr.Lookup + " " + LocalStr.InventoryItem).Action("FindItemSerial", "Make");
+                            item.Add().Text(LocalStr.Edit + " " + LocalStr.Settings).Action("EditSettings", "Make", routeValues: new { urlReturn = Request.Url.PathAndQuery });
+                            item.Add().Text(LocalStr.ProductionCalendar).Action("Calendar", "Make");
+                        });
+                    
+                    //menu.Add().Text("Reports").Action("ReportsMenu", "Report");
+                    menu.Add().Text("Maintenance")
+                        .Items(item =>
+                        {
+                            item.Add().Text(LocalStr.ProductionCalendar).Action("Calendar", "Maintenance");
+                            item.Add().Text("Production Types").Action("ProductionTypes", "Maintenance");
+                            item.Add().Text("Production Reasons").Action("Reasons", "Maintenance");
+                            item.Add().Text("Manufacturers").Action("Manufacturers", "Maintenance");
+                            item.Add().Text("Locations").Action("Locations", "Maintenance");
+                            item.Add().Text("Customers").Action("Customers", "Maintenance");
+                            item.Add().Text("Priorities").Action("Priorities", "Maintenance");
+                            item.Add().Text("Attachment Types").Action("AttachmentTypes", "Maintenance");
+                            item.Add().Text("Label Printers").Action("LabelPrinters", "Maintenance");
+                        });
+                    menu.Add().Text("Admin")
+                        .Items(item =>
+                        {
+                            item.Add().Text("Users").Action("Users", "Admin");
+                            item.Add().Text("Add User").Action("AddUser", "Admin");
+                            item.Add().Text("Find User").Action("FindUser", "Admin");
+                            item.Add().Text("Apps").Action("Apps", "Admin");
+                            item.Add().Text("Groups").Action("Groups", "Admin");
+                        });                                    
+                    menu.Add().Text(LocalStr.Account)
+                        .Items(item =>
+                        {
+                            item.Add().Text(LocalStr.LogOff).Action("LogOff", "Account");
+                            item.Add().Text(LocalStr.Change + " " + LocalStr.Language).Action("ChangeLanguage", "Account");
+                            item.Add().Text(LocalStr.Change + " " + LocalStr.Password).Action("ChangePassword", "Account");
+                        });
+                    menu.Add().Text("Utilities")
+                        .Items(item =>
+                        {
+                            item.Add().Text("AutoWidget").Action("AutoWidget", "Util");
+                            item.Add().Text("NS Selector").Action("NSSelector", "Util");
+                            item.Add().Text("Warehouse Transfter").Action("TrnsfrWrhsList", "Util");
+                            item.Add().Text("Bigco Seats").Action("Seats", "Bigco");
+                            item.Add().Text("Upload NetSuite Part Nos").Action("UploadNsPartNos", "Util");
+                        });
+                    menu.Add().Text(LocalStr.About).Action("About", "Home");
+                })
+                .ItemAction(item =>
+                {
+                    bool hasAccessible = true;
+                    foreach (var children in item.Items)
+                    {
+                        hasAccessible = false;
+                        if (children.IsAccessible(navAuthorization, ViewContext))
+                        {
+                            hasAccessible = true;
+                            break;
+                        }
+                    }
+                    item.Visible = hasAccessible;
+                })
+            )
+    		</div>
+		</div>
+
+		<div id="main">
+			@RenderBody()
+			<div id="footer">
+                @RenderSection("FootContent", required:false)
+			</div>
+		</div>
+	</div>
+@(
+Html.Telerik().ScriptRegistrar()
+    .DefaultGroup(group => group
+        .Add("~/Scripts/jquery-ui-1.8.11.js")
+        .Add("~/Scripts/cst.js")
+        .Add("~/Scripts/jquery-bubble-popup-v3.min.js")
+).Globalization(true)
+) 
+</body>
+</html>

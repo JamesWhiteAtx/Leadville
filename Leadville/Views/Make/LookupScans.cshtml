@@ -1,0 +1,41 @@
+﻿@model CST.Prdn.ViewModels.LookupScanViewModel
+
+@{
+    ViewBag.Title = LocalStr.Lookup +" "+ LocalStr.Scan+"s";
+}
+
+<fieldset class="horiz-form horiz-form-narrow">
+    <legend>@LocalStr.Lookup @(LocalStr.Scan)s</legend>
+
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { id="lookScansForm" }))
+    {
+    <table class="horiz-form medium-input">
+    <tr>
+    <td>
+        @Html.LabelFor(model => model.LookupDt)
+        @Html.Telerik().DatePickerFor(model => model.LookupDt) @*.ClientEvents(events => events.OnChange("dateChange"))*@
+        @Html.ClearButtonFor(m => m.LookupDt, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.LookupDt)
+    </td>
+    <td>
+        @Html.LabelFor(model => model.SerialNo)
+        @Html.EditorFor(model => model.SerialNo)
+        @Html.ClearButtonFor(m => m.SerialNo, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.SerialNo)
+    </td>
+    <td>
+        @Html.TIconSubmit(tIconClass: "t-search", caption: LocalStr.Lookup)
+    </td>
+    </tr>
+    </table>
+    }
+</fieldset>
+@if (Model.IsNotNull(m => m.Scans))
+{
+    @Html.Partial("ScanList", Model.Scans)    
+}
+
+@{Html.Telerik().ScriptRegistrar().DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"))
+.OnDocumentReady(@<text>
+    function dateChange(e) { $('#lookScansForm').submit(); }
+</text>);}

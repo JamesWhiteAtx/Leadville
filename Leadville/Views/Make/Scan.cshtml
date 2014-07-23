@@ -1,0 +1,60 @@
+﻿@model CST.Prdn.ViewModels.ScanViewModel
+
+@{
+    ViewBag.Title = LocalStr.Scan +" "+ LocalStr.SerialNo;
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post))
+{
+    <fieldset>
+        <legend>@LocalStr.Scan @LocalStr.SerialNo</legend>
+        
+        @Html.ValidationSummary(true)
+        
+            @if (Model.IsNotNull(m => m.LabelPrinterID))
+            {
+            <div class="right-align">
+                @Html.LabelFor(model => model.PrinterName):  @Html.DispAndHiddenFor(model => model.PrinterName)
+                @Html.HiddenFor(model => model.LabelPrinterID) @Html.HiddenFor(model => model.PrinterHostName) @Html.HiddenFor(model => model.PrinterPort)
+            </div>
+            }
+            else
+            { 
+            <div class="right-align error strengthened">
+                @LocalStr.No @LocalStr.ScanPrinter @LocalStr.Assigned! @Html.ActionLink(linkText: "Assign " + LocalStr.ScanPrinter, actionName: "EditSettings",
+                                    routeValues: new { urlReturn = @Request.Url.AbsoluteUri })
+            </div>
+            }
+        
+        <div>
+             @Html.TextBoxFor(model => model.SerialNo, htmlAttributes: new { autocomplete = "off" })
+             @Html.ValidationMessageFor(model => model.SerialNo)
+        </div>
+
+    </fieldset>
+}
+@if (Model.IsNotNull(m => m.Scans))
+{
+    @Html.Partial("ScanList", Model.Scans)    
+}
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"))
+.OnDocumentReady(@<text>
+
+var controlFocus=false;
+$("#@Html.IdFor(m => m.SerialNo)")
+.focus(function(){
+    $(this).addClass("focused"); 
+    if(!controlFocus) {
+        controlFocus = true;
+        setInterval(function(){
+            var o = $("#@Html.IdFor(m => m.SerialNo)");
+            if (!o.hasClass("focused")) { o.focus(); };
+        }, 200);
+    }
+}).blur(function(){ $(this).removeClass("focused"); });
+
+$("#@Html.IdFor(m => m.SerialNo)").focus();
+
+</text>);}

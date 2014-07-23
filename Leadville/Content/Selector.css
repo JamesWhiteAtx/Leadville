@@ -1,0 +1,57 @@
+﻿.ajax-loading  
+{
+    padding-right: 20px;
+}
+
+#selector-main
+{
+    text-align: left;
+}
+
+#selector-levels
+{
+    margin: 0;
+}
+
+#selector-levels th 
+{
+    min-width: 80px;
+    text-align: left;
+}
+
+div.car-info, div.ptrn-info, #ptrn-main h4 
+{
+    border: 1px solid gray;
+    padding: 3px;
+    text-align: left;
+    overflow: hidden;
+    margin-right: 10px;
+    background-color: White;
+    moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+
+div.ptrn-info, #ptrn-main h4 
+{
+    width: 700px;
+}
+
+#ptrn-main h4 
+{
+    background-color: #f7f7f7;
+}
+
+tr.ptrn-item:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+tr.ptrn-item th 
+{
+    width: 160px;
+}
+
+tr.car-item td span:before, tr.ptrn-item td span:before
+{
+    content:":  ";
+}

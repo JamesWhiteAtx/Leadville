@@ -1,0 +1,53 @@
+﻿@model CST.Prdn.ViewModels.ViewPrdnJobViewModel
+@using CST.Prdn.Data
+
+@{ ViewBag.Title = Model.ViewCaption; }
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(false)
+    <fieldset class="horiz-form medium-input">
+        <legend>@Model.ViewCaption</legend>
+
+        @Html.ValidationSummary(false)
+
+        @Html.Partial("JobHeaderView", Model)
+
+        @Html.Partial("JobSeqView", Model)
+
+        @Html.Partial("JobSerial", Model)
+        
+        @Html.Partial("JobCustView", Model)
+
+        @if (Model.CustID == PrdnDataHelper.PrdnCustIDCST)
+        {
+            @Html.Partial("JobCstReqView", Model)
+        }
+        else
+        { 
+            @Html.Partial("JobPurchOrdView", Model)
+        }
+
+        @Html.Partial("JobOrdView", Model)
+
+        @Html.Partial("JobProdView", Model)
+
+        @Html.Partial("JobWSView", Model)
+
+        @Html.Partial("JobProdOptView", Model)
+        
+        @Html.Partial("JobShipView", Model)
+
+        @Html.Partial("JobStatusView", Model)
+
+        @if (Model.Attacher != null)
+        {
+            @Html.Partial("FileAttacher", Model)
+            @Html.Partial("JobViewButtons", Model)
+        }
+
+        @Html.Partial("JobStatusHistView", Model)
+
+    </fieldset>
+}
+

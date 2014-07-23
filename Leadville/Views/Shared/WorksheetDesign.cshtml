@@ -1,0 +1,175 @@
+﻿@model CST.Prdn.ViewModels.IEditWorksheetOwner
+@using CST.Prdn.ViewModels
+
+    <div id="worksheet-add-menu">
+        @Html.Partial("WorksheetMenu", Model)    
+    </div>
+
+    <div id="worksheet-values">
+        @Html.Partial("Worksheet")
+    </div>
+
+    @Html.Partial("WorksheetScripts")
+    @Html.Partial("UiDialog")
+
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    $("#worksheet-add-menu").css("display", "none");
+    
+    function wsRowsDisplay() {
+        $("#worksheet-opt-rows .ws-elem-hidden").css("display", "none");
+    };
+
+    wsRowsDisplay();
+
+    function wsValsElem()
+    {
+        return $("#worksheet-values");
+    }
+
+    function serializeWSVals()
+    {
+        return wsValsElem().find('input').serialize();
+    }
+
+    $(document).on("click", "#@Html.IdFor(m => m.EditWorksheet.Editable)", function (e) {
+        var srl = serializeWSVals();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("WorksheetPartial", "Worksheet")",
+            data: srl,
+            success: function(data)
+            {   
+                var wsPartial = wsValsElem();
+                wsPartial.empty();
+                wsPartial.html(data);
+                wsRowsDisplay();
+                @*wsPartial.closest("form").valid(); *@
+
+                var chck = $("#@Html.IdFor(m => m.EditWorksheet.Editable)");
+                if (chck.is(':checked')) {
+                    $("#worksheet-add-menu").show();
+                    chck.hide();
+                    $("label[for='@Html.IdFor(m => m.EditWorksheet.Editable)']").hide();
+
+                    wsPartial.closest("div.worksheet-editor").addClass("border-box");
+
+                } else {
+                    $("#worksheet-add-menu").hide();
+                    wsPartial.closest("div.worksheet-editor").removeClass("border-box");
+                };
+
+            }
+        });
+    });
+
+
+    function onWsMenuSelect(e) {
+        e.preventDefault(); //stop default browser behaviour
+
+        var item = $(e.item);
+        var type = item.data("opt-type");
+
+        if (type == "@WSEditOptType.Meta") {
+            wsMenuPickMeta( item.data("meta") );
+        } else if (type == "@WSEditOptType.Component") {
+            wsMenuPickComp(item.data("prod-type"), item.text());
+        }
+
+         var menu = $("#worksheet-t-menu").data("tMenu");
+         var item = $("> li", menu.element)[0];
+         menu.close(item);
+
+        return false;
+    };
+
+    function wsMenuPickMeta(metaType) {
+        $("#@Html.IdFor(m => m.EditWorksheet.MetaType)").val(metaType);
+        worksheetAjaxUpd("@Url.Action("Meta", "Worksheet")");
+    }
+    
+    function worksheetAjaxUpd(url) {
+        var srl = serializeWSVals();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: srl,
+            success: function(data)
+            {   
+                var worksheetRows = $("div#worksheet-rows-partial");
+                worksheetRows.empty();
+                worksheetRows.html(data);
+                wsRowsDisplay();
+            }
+         });
+    }
+
+    function wsMenuPickComp(prodType, descr) {
+        if (getUiDialogID() != prodType) {
+            loadUiDialogComp(prodType, descr);
+        }
+        openUiDialog(descr);
+    }                
+
+    function loadUiDialogComp(prodType, descr) {
+        clearUiDialog();
+        setUiDialogID(prodType);
+        $.getJSON('@Url.Action("_WSCompList", "Worksheet")', { prodType: prodType }, function(result) {
+            $(result).each(function() {
+                var imgAnch = null;
+                if (this.ImageID) {
+                    imgAnch = 
+                        $('<a>')
+                            .attr({ href: "@Url.Action("ViewImage", "Product")/"+this.ImageID , title: descr+" Image", target: "_blank"})
+                            .addClass("image-link-dlg")
+                            .append(
+                                $('<img>').attr({ src: "@Url.Content("~/Content/Images/pencil.gif")", alt: descr+" Image"})
+                            );
+                };
+                addUiDialogRow(
+                    $('<a>')
+                        .attr({ href: '#', title: this.ProdCD})
+                        @*.addClass("uiDialogItem")*@
+                        .data("opt-type", "component")
+                        .data("type-cd", prodType)
+                        .data("type-descr", descr)
+                        .data("opt-cd2", this.ProdCD)
+                        .data("opt-descr", this.Description)
+                        .data("opt-udf", this.UserDefined)
+                        .data("img-count", this.ImageCount)
+                        .text(this.Display + this.ImageCount)
+                        .click(dlgCompPicked)
+                    ,
+                    imgAnch
+                );
+            });
+        });
+    };
+
+    var dlgCompPicked = function(event) {
+        event.preventDefault(); //stop default browser behaviour
+
+        var typeCD = $(this).data("type-cd");
+        var typeDescr = $(this).data("type-descr");
+        var optCD2 = $(this).data("opt-cd2");
+        var optDescr = $(this).data("opt-descr");
+        var optUDF = $(this).data("opt-udf");
+        var imgCount = $(this).data("img-count");
+
+        if ((typeCD) && (optCD2)) {
+            closeUiDialog();
+
+            $("#@Html.IdFor(m => m.EditWorksheet.ActionTypeCD)").val(typeCD);
+            $("#@Html.IdFor(m => m.EditWorksheet.ActionTypeDescr)").val(typeDescr);
+            $("#@Html.IdFor(m => m.EditWorksheet.ActionOptCD2)").val(optCD2);
+            $("#@Html.IdFor(m => m.EditWorksheet.ActionOptDescr)").val(optDescr);
+            $("#@Html.IdFor(m => m.EditWorksheet.ActionOptUDF)").val(optUDF);
+
+            worksheetAjaxUpd("@Url.Action("AddComp", "Worksheet")");
+        }
+        return false;
+    };
+</text>);}

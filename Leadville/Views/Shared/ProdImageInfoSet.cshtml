@@ -1,0 +1,19 @@
+﻿@model IEnumerable<CST.ISIS.Data.ProdImageInfo>
+
+@{
+    foreach (var item in Model)
+    {
+        string srcImg = @Url.ProdImageSetSrcPath(item.ImageSetCD);
+        @*<a href="@Url.Action("ViewImage", "Product", new { id = item.ImageID })"  
+                target="_blank" title="@(item.ProdCD+" "+item.ImageType)" class="image-link">
+            <img src="@Url.Content(srcImg)" alt="@(item.ImageType)"/>
+        </a>*@
+        @Html.ImageLink(imgSrc: Url.Content(srcImg),
+            actionName: "ViewImage",
+            controllerName: "Product",
+            routeValues: new { id = item.ImageID },
+            linkHtmlAttributes: new { target = "_blank", @class = "image-link", data_img_id = item.ImageID, data_img_title = item.ProdCD+" "+item.ImageType },
+            imgHtmlAttributes: new { alt = item.ImageType }
+        )
+    }
+}

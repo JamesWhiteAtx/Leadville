@@ -1,0 +1,78 @@
+﻿@model  CST.Prdn.ViewModels.GroupUsersViewModel
+            
+@using CST.Prdn.ViewModels
+
+@{
+    ViewBag.Title = "Group Users";
+}
+
+<h2>Group Users</h2>
+
+<div>
+    <strong> @Html.LabelFor(m => m.AppName): @Html.ActionLink(linkText: Model.AppCode, actionName: "Groups", routeValues: new {appID = Model.AppID })</strong>
+    @Html.DisplayFor(m => m.AppName)  (@Html.DisplayFor(m => m.AppID))
+    
+</div>
+<div>
+    <strong>@Html.LabelFor(m => m.GroupName): @Html.DisplayFor(m => m.GroupCode)</strong> @Html.DisplayFor(m => m.GroupName) (@Html.DispAndHiddenFor(m => m.GroupID))
+</div>
+
+@(
+ Html.Telerik().Grid<UserLookupViewModel>()
+        .Name("Grid")
+        .DataKeys(dataKeys => dataKeys.Add(p => p.ID))
+        .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.ImageAndText).ImageHtmlAttributes(new { style = "margin-left:0" }))
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax()
+                .Select("_SelectGroupUser", "Admin", new { groupID = Model.GroupID })
+                .Insert("_InsertGroupUser", "Admin", new { groupID = Model.GroupID })
+                //.Update("_SaveUser", "Admin", new { groupID = Model.GroupID })
+                .Delete("_DeleteGroupUser", "Admin")
+                ;
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.ID).Width(50).ReadOnly(); //.ClientTemplate("<span id=" + @Html.SpanPrefixId("ID") + "><#= ID #></span><input id=ID type='hidden' value=0>")
+            columns.Bound(p => p.Login).Width(50).HtmlAttributes(new { @class = "text-input-upper" });
+            columns.Bound(p => p.FullName).Width(100);
+
+            columns.Bound(p => p.ID)
+                .ClientTemplate(
+                    @Html.ActionLink(linkText: "Groups", actionName: "UserGroups", controllerName: "Admin", routeValues: new { userID = "<#= ID #>" },
+                        htmlAttributes: new { @class = "t-button" }).ToString()
+                )
+                .Title("").Width(80).ReadOnly();
+            
+            columns.Command(commands =>
+            {
+                //commands.Edit().ButtonType(GridButtonType.ImageAndText);
+                commands.Delete().ButtonType(GridButtonType.ImageAndText);
+            }).Width(220).Title("Commands");
+        })
+        .Editable(editing => editing.Mode(GridEditMode.PopUp).TemplateName("LookupUser"))
+        .Pageable(settings => settings.Position(GridPagerPosition.Both).PageSize(50))
+        //.Scrollable()
+        .Sortable()
+        .ClientEvents(events => events.OnEdit("onGridEdit"))
+)
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    function onGridEdit(e) {
+        if(typeof wireUserLookups == 'function') { 
+            wireUserLookups(
+                "@Url.Action("_UserNotGroupLookup", "Admin")", 
+                function (term, propId) {
+                    var grp = $("#@Html.IdFor(m => m.GroupID)").val();
+                    var ret = { groupID: grp, term: term, property: propId };
+                    return ret;
+                },
+                $("a.t-grid-insert")
+            );
+        }
+    };
+
+
+</text>);}

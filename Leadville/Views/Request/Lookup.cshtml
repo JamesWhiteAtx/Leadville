@@ -1,0 +1,145 @@
+﻿@model CST.Prdn.ViewModels.RequestLookupViewModel
+
+@{
+    ViewBag.Title = "Lookup Requests";
+}
+
+@using (Html.BeginForm())
+{
+    <div id="descr-div" style="display:none">
+        <h3> @Html.DisplayFor(model => model.CriteriaDescription) </h3>
+    </div>
+    @Html.CheckBoxFor(model => model.DefineCriteria) 
+    @:&nbsp;
+    @Html.LabelFor(model => model.DefineCriteria)
+    <div id="CriteriDefinition">
+        <table class="lookup-form">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.RequestID)
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.RequestID)
+                    @Html.ValidationMessageFor(model => model.RequestID)
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.FromDt)
+                    @Html.EditorFor(model => model.FromDt)
+                    @Html.ValidationMessageFor(model => model.FromDt)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                Statuses
+                </td>
+                <td>
+                    @Html.CheckBoxFor(model => model.AllStauses)
+                    @Html.LabelFor(model => model.AllStauses)
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.ThruDt)
+                    @Html.EditorFor(model => model.ThruDt)
+                    @Html.ValidationMessageFor(model => model.ThruDt)
+                </td>
+            </tr>
+        </table>    
+
+        <div id="status-checks">
+            <table>
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                            @Html.CheckBoxFor(model => model.StatusNew)
+                            @Html.LabelFor(model => model.StatusNew)
+                            &nbsp;
+                            @Html.CheckBoxFor(model => model.StatusProcessing) 
+                            @Html.LabelFor(model => model.StatusProcessing)
+                            &nbsp;
+                            @Html.CheckBoxFor(model => model.StatusConfirmed) 
+                            @Html.LabelFor(model => model.StatusConfirmed)
+                            &nbsp;
+                            @Html.CheckBoxFor(model => model.StatusScheduled) 
+                            @Html.LabelFor(model => model.StatusScheduled)
+                            &nbsp;
+                            @Html.CheckBoxFor(model => model.StatusCanceled)    
+                            @Html.LabelFor(model => model.StatusCanceled)
+                    </td>
+                </tr>
+            </table>    
+        </div>
+
+        <table>
+            <tr>
+                <td></td>
+                <td colspan="3">
+                    <input type="submit" value="Retrieve Data" />
+                </td>
+            </tr>
+        </table>    
+
+    </div>
+}
+
+@Html.Partial("GridList", Model)
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"))
+.OnDocumentReady(@<text>
+
+    var clickPrevent = function (event) {
+        event.preventDefault();
+    }
+
+    var displayDefn = function () {
+        if ($("#@Html.IdFor(m => m.DefineCriteria)").is(":checked")) {
+            $("#descr-div").hide("fast");
+            $("#CriteriDefinition").show("fast");
+
+            @*$("table.requests th a").addClass("disabled");
+            $("table.requests th a").bind("click", clickPrevent);*@
+        }
+        else 
+        {
+            $("#descr-div").show("fast");
+            $("#CriteriDefinition").hide("fast");
+
+           @* $("table.requests th a").removeClass("disabled");
+            $("table.requests th a").unbind("click", clickPrevent);*@
+        }
+    }
+
+    $(document).ready(function () {
+        if ($("#@Html.IdFor(m => m.DefineCriteria)").is(":checked")) {
+        } else {
+            $("#CriteriDefinition").css("display", "none");
+        }
+        if ($("#@Html.IdFor(m => m.AllStauses)").is(":checked")) {
+            $("#status-checks").css("display", "none");
+        }
+
+        // Add onclick handler to checkbox w/id checkme
+        $("#@Html.IdFor(m => m.DefineCriteria)").click(function () {
+            displayDefn();
+        });
+
+        // Add onclick handler to checkbox w/id checkme
+        $("#@Html.IdFor(m => m.AllStauses)").click(function () {
+
+            // If checked
+            if ($("#@Html.IdFor(m => m.AllStauses)").is(":checked")) {
+                //show the hidden div
+                $("#status-checks").hide("fast");
+            }
+            else {
+                //otherwise, hide it
+                $("#status-checks").show("fast");
+            }
+        });
+
+        displayDefn();
+
+    });
+
+</text>);}
+
+

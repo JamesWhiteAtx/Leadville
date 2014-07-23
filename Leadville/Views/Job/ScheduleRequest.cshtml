@@ -1,0 +1,55 @@
+﻿@model CST.Prdn.ViewModels.SchedulePrdnJobViewModel
+@using CST.Prdn.Data
+           
+@{ ViewBag.Title = @Model.ViewCaption; }
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(false)
+    <fieldset class="horiz-form medium-input">
+        <legend>@Model.ViewCaption</legend>
+        
+        @Html.Partial("JobHeaderEdit", Model)
+
+        @Html.Partial("JobSeqEdit", Model)
+
+        @Html.Partial("JobSerial", Model)
+        
+        @Html.Partial("JobCustView", Model)
+
+        @Html.Partial("JobCstReqView", Model)
+
+        @Html.Partial("JobOrdView", Model)
+
+        @Html.Partial("JobProdView", Model)
+
+        @if (Model.ProdTypeCD == PrdnDataHelper.LeatherProdTypeCd)
+        {
+            @Html.Partial("ScheduleReqWSDesign", Model)
+        }
+        else if (Model.ProdTypeCD == PrdnDataHelper.WarrantyProdTypeCd)
+        { 
+            @Html.Partial("JobWorksheetEdit", Model)
+        }
+        
+        @Html.Partial("JobProdOptEdit", Model)
+
+        @if (Model.Attacher != null)
+        {
+            @Html.Partial("FileAttacher", Model)    
+        }
+
+        @Html.Partial("JobShipEdit", Model)
+
+        @Html.Partial("JobStatusEdit", Model)
+
+        @Html.Partial("JobEditButtons", Model)
+
+        @Html.Partial("JobStatusHistView", Model)
+
+    </fieldset>
+}
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"));
+}

@@ -1,0 +1,34 @@
+﻿@model CST.Prdn.BulkSaleImpIModel
+
+@{
+    ViewBag.Title = "Clear Warehouse";
+}
+
+<h2>ClearWrhse</h2>
+
+@using (Html.BeginForm()) {
+<fieldset class="horiz-form">
+    <legend>Are you sure you want to delete ?</legend>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.RunName)
+    </div>
+    <div class="display-field">
+        @Html.DispAndHiddenFor(model => model.RunName)
+    </div>
+    <div class="display-label">
+        @Html.LabelFor(model => model.Count)
+    </div>
+    <div class="display-field">
+        @Html.DispAndHiddenFor(model => model.Count)
+    </div>
+
+    <div>
+        @Html.ValidationSummary(true)
+    </div>
+    <div class='buttonBox'>
+        @Html.TIconSubmit(tIconClass: "t-delete", caption: "Delete")
+        @Html.TIconActionLink(tIconClass: "t-go-back", linkText: "Cancel", actionName: "TrnsfrWrhsList")
+    </div>
+</fieldset>
+}

@@ -1,0 +1,720 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Account" xml:space="preserve">
+    <value>La Cuenta</value>
+  </data>
+  <data name="AccountInformation" xml:space="preserve">
+    <value>Información de La Cuenta</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>Villa de Plomo</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Nombre de Usuario</value>
+  </data>
+  <data name="LogOff" xml:space="preserve">
+    <value>Cerrar Sesión</value>
+  </data>
+  <data name="LogOn" xml:space="preserve">
+    <value>Iniciar Sesión</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>¿Recuerdéme?</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="CurrentLanguage" xml:space="preserve">
+    <value>Lenguaje actual</value>
+  </data>
+  <data name="RequiredError" xml:space="preserve">
+    <value>{0} se requiere.</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Cambiar</value>
+  </data>
+  <data name="Changed" xml:space="preserve">
+    <value>Cambiada</value>
+  </data>
+  <data name="CompareError" xml:space="preserve">
+    <value>'{0}' y '{1}' no coinciden.</value>
+  </data>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Confirmar nueva contraseña</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Contraseña actual</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Principal</value>
+  </data>
+  <data name="HomePage" xml:space="preserve">
+    <value>La Página Principal</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>El Lenguaje</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Nueva contraseña</value>
+  </data>
+  <data name="Page" xml:space="preserve">
+    <value>Página</value>
+  </data>
+  <data name="PassChangeSuccess" xml:space="preserve">
+    <value>Su contraseña se ha modificado correctamente.</value>
+  </data>
+  <data name="PasswordPolicy" xml:space="preserve">
+    <value>Directiva de contraseñas</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="failed" xml:space="preserve">
+    <value>fracasado</value>
+  </data>
+  <data name="MaximumLength" xml:space="preserve">
+    <value>Longitud Máxima</value>
+  </data>
+  <data name="MinimumLength" xml:space="preserve">
+    <value>Longitud Mínima</value>
+  </data>
+  <data name="NumberofDigits" xml:space="preserve">
+    <value>Cantidad de Dígitos</value>
+  </data>
+  <data name="NumberofLowercase" xml:space="preserve">
+    <value>Cantidad de Minúsculas</value>
+  </data>
+  <data name="NumberofSpecialCharacters" xml:space="preserve">
+    <value>Cantidad de Caracteres Especiales</value>
+  </data>
+  <data name="NumberofUppercase" xml:space="preserve">
+    <value>Cantidad de Mayúsculas</value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>o</value>
+  </data>
+  <data name="ResetPasswordMessage" xml:space="preserve">
+    <value>Debe restablecer su contraseña actual. Por favor, introduzca una nueva contraseña.</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="valid" xml:space="preserve">
+    <value>válido</value>
+  </data>
+  <data name="ValidSpecialCharacters" xml:space="preserve">
+    <value>Válido Caracteres Especiales</value>
+  </data>
+  <data name="verbIs" xml:space="preserve">
+    <value>es</value>
+  </data>
+  <data name="verbIsNot" xml:space="preserve">
+    <value>no es</value>
+  </data>
+  <data name="Job" xml:space="preserve">
+    <value>Tarea</value>
+  </data>
+  <data name="Make" xml:space="preserve">
+    <value>Fabricar</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Orden</value>
+  </data>
+  <data name="OrderNo" xml:space="preserve">
+    <value>Orden #</value>
+  </data>
+  <data name="Production" xml:space="preserve">
+    <value>Producción</value>
+  </data>
+  <data name="ProductionOrder" xml:space="preserve">
+    <value>Orden de Producción</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Serie</value>
+  </data>
+  <data name="Lookup" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="RunCount" xml:space="preserve">
+    <value>Cantidad de Series</value>
+  </data>
+  <data name="ShipDate" xml:space="preserve">
+    <value>Fecha de Envío</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filtrar</value>
+  </data>
+  <data name="Insert" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Actualizar</value>
+  </data>
+  <data name="Salvar" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Seleccionar</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Código</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="RunCode" xml:space="preserve">
+    <value>Código de Serie</value>
+  </data>
+  <data name="RunID" xml:space="preserve">
+    <value>ID de Serie</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="TypeCode" xml:space="preserve">
+    <value>Código de Tipo</value>
+  </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>Calendario</value>
+  </data>
+  <data name="Define" xml:space="preserve">
+    <value>Definir</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Mes</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Próximo</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Anterior</value>
+  </data>
+  <data name="ProductionCalendar" xml:space="preserve">
+    <value>Calendario de Producción</value>
+  </data>
+  <data name="ShippingDay" xml:space="preserve">
+    <value>Día de Envío</value>
+  </data>
+  <data name="HasJobs" xml:space="preserve">
+    <value>Tiene Tareas</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="Product" xml:space="preserve">
+    <value>Pieza</value>
+  </data>
+  <data name="ProductType" xml:space="preserve">
+    <value>Tipo de Producto</value>
+  </data>
+  <data name="ProductTypeCode" xml:space="preserve">
+    <value>Código del tipo</value>
+  </data>
+  <data name="ProductionType" xml:space="preserve">
+    <value>Tipo de Producción</value>
+  </data>
+  <data name="ProductionTypeCode" xml:space="preserve">
+    <value>Producción Código Tipo</value>
+  </data>
+  <data name="JobsPageSize" xml:space="preserve">
+    <value>Tareas Tamaño de Página</value>
+  </data>
+  <data name="PageSize" xml:space="preserve">
+    <value>Tamaño de Página</value>
+  </data>
+  <data name="Return" xml:space="preserve">
+    <value>Volver</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Tamaño</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Predeterminado</value>
+  </data>
+  <data name="DefaultRun" xml:space="preserve">
+    <value>Serie Predeterminado</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Actualizar</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Crear</value>
+  </data>
+  <data name="NewRun" xml:space="preserve">
+    <value>Nueva Serie</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Dirección</value>
+  </data>
+  <data name="CustLocation" xml:space="preserve">
+    <value>Sucursal</value>
+  </data>
+  <data name="By" xml:space="preserve">
+    <value>Por</value>
+  </data>
+  <data name="Canceled" xml:space="preserve">
+    <value>Cancelado</value>
+  </data>
+  <data name="CanceledBy" xml:space="preserve">
+    <value>Cancelado por</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Ciudad</value>
+  </data>
+  <data name="SerialNo" xml:space="preserve">
+    <value>C#</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Terminado</value>
+  </data>
+  <data name="CompletedBy" xml:space="preserve">
+    <value>Terminado por</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>País</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Creado</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Creado por</value>
+  </data>
+  <data name="CustID" xml:space="preserve">
+    <value>Cliente ID</value>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Cliente</value>
+  </data>
+  <data name="Decor" xml:space="preserve">
+    <value>Decor</value>
+  </data>
+  <data name="Descr" xml:space="preserve">
+    <value>Descr</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="OrderAmount" xml:space="preserve">
+    <value>Cantidad de La Orden</value>
+  </data>
+  <data name="OrderLine" xml:space="preserve">
+    <value>Línea de La Orden</value>
+  </data>
+  <data name="PackingList" xml:space="preserve">
+    <value>Lista de Embalaje</value>
+  </data>
+  <data name="PackingListNote" xml:space="preserve">
+    <value>Nota de Lista de Embalaje</value>
+  </data>
+  <data name="Pattern" xml:space="preserve">
+    <value>Patrón</value>
+  </data>
+  <data name="Postal" xml:space="preserve">
+    <value>Postal</value>
+  </data>
+  <data name="Prio" xml:space="preserve">
+    <value>Prio</value>
+  </data>
+  <data name="Priority" xml:space="preserve">
+    <value>Prioridad</value>
+  </data>
+  <data name="ProductDefinition" xml:space="preserve">
+    <value>Producto Definición</value>
+  </data>
+  <data name="Request" xml:space="preserve">
+    <value>Petición</value>
+  </data>
+  <data name="RequestID" xml:space="preserve">
+    <value>ID de Petición</value>
+  </data>
+  <data name="Row" xml:space="preserve">
+    <value>Fila</value>
+  </data>
+  <data name="RowDeduction" xml:space="preserve">
+    <value>Fila Deducción</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>Programado</value>
+  </data>
+  <data name="ScheduledBy" xml:space="preserve">
+    <value>Programado por</value>
+  </data>
+  <data name="SeqNo" xml:space="preserve">
+    <value>Sec#</value>
+  </data>
+  <data name="Sequence" xml:space="preserve">
+    <value>Secuencia</value>
+  </data>
+  <data name="Shipped" xml:space="preserve">
+    <value>Transportado</value>
+  </data>
+  <data name="ShippedBy" xml:space="preserve">
+    <value>Transportado por</value>
+  </data>
+  <data name="ShipToCust" xml:space="preserve">
+    <value>Cliente de Envío</value>
+  </data>
+  <data name="ShipToCustID" xml:space="preserve">
+    <value>ID de Envío</value>
+  </data>
+  <data name="ShipToCustName" xml:space="preserve">
+    <value>Nombre de Envío</value>
+  </data>
+  <data name="ShipTypeCD" xml:space="preserve">
+    <value>Tipo de Envío</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Entidade</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Estatus</value>
+  </data>
+  <data name="StatusDate" xml:space="preserve">
+    <value>Fecha de Estatus</value>
+  </data>
+  <data name="Worksheet" xml:space="preserve">
+    <value>Hoja de Trabajo</value>
+  </data>
+  <data name="WorksheetDefinition" xml:space="preserve">
+    <value>Hoja Definición</value>
+  </data>
+  <data name="WorksheetID" xml:space="preserve">
+    <value>ID de Hoja de Trabajo</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="Address1" xml:space="preserve">
+    <value>Dirección1</value>
+  </data>
+  <data name="Address2" xml:space="preserve">
+    <value>Dirección2</value>
+  </data>
+  <data name="Address3" xml:space="preserve">
+    <value>Dirección3</value>
+  </data>
+  <data name="Address4" xml:space="preserve">
+    <value>Dirección4</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="DropShip" xml:space="preserve">
+    <value>Nave de La Gota</value>
+  </data>
+  <data name="EditWorksheet" xml:space="preserve">
+    <value>Editar Hoja de Trabajo</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Schedule" xml:space="preserve">
+    <value>Programar</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Ver</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="and" xml:space="preserve">
+    <value>y</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nuevo</value>
+  </data>
+  <data name="to" xml:space="preserve">
+    <value>a</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pendiente</value>
+  </data>
+  <data name="Attachment" xml:space="preserve">
+    <value>Accesorio</value>
+  </data>
+  <data name="For" xml:space="preserve">
+    <value>Para</value>
+  </data>
+  <data name="AttachAFile" xml:space="preserve">
+    <value>Adjuntar un Archivo</value>
+  </data>
+  <data name="Sorry" xml:space="preserve">
+    <value>Lo Siento</value>
+  </data>
+  <data name="ProductCD" xml:space="preserve">
+    <value>Pieza#</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>de</value>
+  </data>
+  <data name="Thru" xml:space="preserve">
+    <value>a</value>
+  </data>
+  <data name="JobID" xml:space="preserve">
+    <value>Tarea ID</value>
+  </data>
+  <data name="ShipTo" xml:space="preserve">
+    <value>Enviar a</value>
+  </data>
+  <data name="PONo" xml:space="preserve">
+    <value>OP#</value>
+  </data>
+  <data name="Cost" xml:space="preserve">
+    <value>Costo</value>
+  </data>
+  <data name="Ship" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Procesando</value>
+  </data>
+  <data name="Complete" xml:space="preserve">
+    <value>Completar</value>
+  </data>
+  <data name="Processed" xml:space="preserve">
+    <value>Procesado</value>
+  </data>
+  <data name="ProcessedBy" xml:space="preserve">
+    <value>Procesado por</value>
+  </data>
+  <data name="ScheduleNote" xml:space="preserve">
+    <value>Nota de Lista de Programar</value>
+  </data>
+  <data name="Changes" xml:space="preserve">
+    <value>Cambios</value>
+  </data>
+  <data name="Scan" xml:space="preserve">
+    <value>Escanear</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Fecha</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Mensaje</value>
+  </data>
+  <data name="alreadyExistsInInventory" xml:space="preserve">
+    <value>ya existe en el inventario</value>
+  </data>
+  <data name="InventoryItem" xml:space="preserve">
+    <value>Artículos de Inventario</value>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Resulta</value>
+  </data>
+  <data name="Can" xml:space="preserve">
+    <value>Puede</value>
+  </data>
+  <data name="Cannot" xml:space="preserve">
+    <value>No Puede</value>
+  </data>
+  <data name="Printer" xml:space="preserve">
+    <value>Impresora</value>
+  </data>
+  <data name="ScanPrinter" xml:space="preserve">
+    <value>Impresora de Escanear</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Exito</value>
+  </data>
+  <data name="InvItem" xml:space="preserve">
+    <value>Artículo</value>
+  </data>
+  <data name="InvItemDefinition" xml:space="preserve">
+    <value>Artículo Definición</value>
+  </data>
+  <data name="InvItemID" xml:space="preserve">
+    <value>ID de Artículo</value>
+  </data>
+  <data name="Scanned" xml:space="preserve">
+    <value>Escaneado</value>
+  </data>
+  <data name="ScannedSerialNo" xml:space="preserve">
+    <value>Escaneado C#</value>
+  </data>
+  <data name="but" xml:space="preserve">
+    <value>pero</value>
+  </data>
+  <data name="not" xml:space="preserve">
+    <value>no</value>
+  </data>
+  <data name="Printed" xml:space="preserve">
+    <value>Impreso</value>
+  </data>
+  <data name="Assigned" xml:space="preserve">
+    <value>Asignado</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>Etiqueta</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Imprimir</value>
+  </data>
+  <data name="LabelPrinter" xml:space="preserve">
+    <value>Impresora de Etiqueta</value>
+  </data>
+  <data name="PurchaseOrder" xml:space="preserve">
+    <value>Orden de Compra</value>
+  </data>
+  <data name="EditItem" xml:space="preserve">
+    <value>Editar Artículo</value>
+  </data>
+  <data name="Definition" xml:space="preserve">
+    <value>Definición</value>
+  </data>
+  <data name="Option" xml:space="preserve">
+    <value>Opción</value>
+  </data>
+  <data name="doesNotMatch" xml:space="preserve">
+    <value>no está de acuerdo con</value>
+  </data>
+  <data name="another" xml:space="preserve">
+    <value>otra</value>
+  </data>
+  <data name="isAlreadyAssignedTo" xml:space="preserve">
+    <value>ya está asignada a</value>
+  </data>
+</root>

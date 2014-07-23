@@ -1,0 +1,93 @@
+﻿@model CST.Prdn.ViewModels.PrdnOrdListModel
+
+<fieldset>
+    <legend>@LocalStr.Lookup @LocalStr.ProductionOrder</legend>
+    <table>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.PrdnOrdNo)
+            </th>
+            <td class="editor-field">
+                @Html.TextBoxFor(m => m.PrdnOrdNo)
+            </td>
+        </tr>
+    </table>
+</fieldset>
+
+<fieldset id="foundPrdnOrder" style="display: none">
+    <legend>@LocalStr.ProductionOrder</legend>
+    <table>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.PrdnOrdNo)
+            </th>
+            <td class="editor-field strengthened">
+                @Html.SpanAndHiddenFor(m => m.PrdnOrdNo)
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.OrdShipDtStr)
+            </th>
+            <td class="editor-field strengthened">
+                @Html.SpanAndHiddenFor(m => m.OrdShipDtStr)
+            </td>
+        </tr>
+        <tr>
+            <th class="editor-label">
+                @Html.LabelFor(m => m.RunCount)
+            </th>
+            <td class="editor-field strengthened">
+                @Html.SpanAndHiddenFor(m => m.RunCount)
+            </td>
+        </tr>
+    </table>
+</fieldset>
+
+@Html.Partial("PrdnOrdAuto")
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var ordLookCallback = null;
+    var ordLookObj;
+    var ordLookSelector = "#@Html.IdFor(m => m.PrdnOrdNo)";
+
+    function lkupOrdSelect(item) {
+        ordLookObj = item;
+        if (ordLookObj) {
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.PrdnOrdNo), ordLookObj.PrdnOrdNo);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.OrdShipDtStr), ordLookObj.OrdShipDtStr);
+            inputAndSpanValue(@Html.IdSpanIdFor(m => m.RunCount), ordLookObj.RunCount);
+            
+            $("#foundPrdnOrder").show("fast");
+
+            if (typeof ordLookCallback == "function") { 
+                ordLookCallback(item);
+            };
+        } else {
+            clearOrdLookup();
+        };
+    };
+
+    function wirePrdnOrdLookup(options) {
+        ordLookCallback = $(options).prop("select");
+        if (typeof wirePrdnOrdAuto == "function") { 
+            var defaults = {selector: ordLookSelector};
+            var settings = $.extend({}, defaults, options);
+            settings.select = lkupOrdSelect;
+            wirePrdnOrdAuto(settings);
+        };
+    };
+
+    function getPrdnOrdItem() {   
+        return ordLookObj;
+    };
+
+    function clearOrdLookup() {
+        $(ordLookSelector).val("");
+        $("#foundPrdnOrder").hide();
+    };
+
+    $(ordLookSelector).focus();
+
+</text>);}

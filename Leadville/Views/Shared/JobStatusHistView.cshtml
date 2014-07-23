@@ -1,0 +1,74 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    @if (Model.IsNotNull(m => m.CreatedDt))
+    {
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CreatedDt)
+        </div>
+        <div class="editor-field">
+            <span class="in-line">
+                @Html.SpanOrDashAndHiddenFor(model => model.CreatedDt)
+                @Html.LabelFor(model => model.CreatedUserID, LocalStr.By)
+                @Html.HiddenFor(model => model.CreatedUserID)
+                @Html.SpanOrDashAndHiddenFor(model => model.CreatedUserLogin)
+            </span>
+        </div>
+    }
+    @if (Model.IsNotNull(m => m.ScheduledDt))
+    {
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ScheduledDt)
+        </div>
+        <div class="editor-field">
+            <span class="in-line">
+                @Html.SpanOrDashAndHiddenFor(model => model.ScheduledDt)
+                @Html.LabelFor(model => model.ScheduledUserID, LocalStr.By)
+                @Html.HiddenFor(model => model.ScheduledUserID)
+                @Html.SpanOrDashAndHiddenFor(model => model.ScheduledUserLogin)
+            </span>
+        </div>
+    }
+    @if (Model.IsNotNull(m => m.ProcessedDt))
+    {
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ProcessedDt)
+        </div>
+        <div class="editor-field">
+            <span class="in-line">
+                @Html.SpanOrDashAndHiddenFor(model => model.ProcessedDt)
+                @Html.LabelFor(model => model.ProcessedUserID, LocalStr.By)
+                @Html.HiddenFor(model => model.ProcessedUserID)
+                @Html.SpanOrDashAndHiddenFor(model => model.ProcessedUserLogin)
+            </span>
+        </div>
+    }
+    @if (Model.IsNotNull(m => m.CompletedDt))
+    {
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CompletedDt)
+        </div>
+        <div class="editor-field">
+            <span class="in-line">
+                @Html.SpanOrDashAndHiddenFor(model => model.CompletedDt)
+                @Html.LabelFor(model => model.CompletedUserID, LocalStr.By)
+                @Html.HiddenFor(model => model.CompletedUserID)
+                @Html.SpanOrDashAndHiddenFor(model => model.CompletedUserLogin)
+            </span>
+        </div>
+    }
+    @if (Model.IsNotNull(m => m.CanceledDt))
+    {
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CanceledDt)
+        </div>
+        <div class="editor-field">
+            <span class="in-line">
+                @Html.SpanOrDashAndHiddenFor(model => model.CanceledDt)
+                @Html.LabelFor(model => model.CanceledUserID, LocalStr.By)
+                @Html.HiddenFor(model => model.CanceledUserID)
+                @Html.SpanOrDashAndHiddenFor(model => model.CanceledUserLogin)
+            </span>
+        </div>
+    }
+
+

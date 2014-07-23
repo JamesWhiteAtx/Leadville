@@ -1,0 +1,72 @@
+﻿@model CST.Prdn.ViewModels.PrdnOrdRunListModel
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    function mapRunFromModel(item) { 
+        return {
+            value: item.@Html.IdFor(m => m.LkupRunCode)
+            ,label: item.@Html.IdFor(m => m.LkupRunDescr)
+            ,poNo: item.@Html.IdFor(m => m.LkupPrdnOrdNo)
+            ,shipDtStr: item.@Html.IdFor(m => m.LkupShipDtStr)
+            ,runID: item.@Html.IdFor(m => m.LkupPrdnRunID)
+            ,runCode: item.@Html.IdFor(m => m.LkupRunCode)
+            ,runDescr: item.@Html.IdFor(m => m.LkupRunDescr)
+            ,typeCD: item.@Html.IdFor(m => m.LkupPrdnTypeCD)
+            ,typeDescr: item.@Html.IdFor(m => m.LkupPrdnTypeDescr)
+            ,prodTypeCD: item.@Html.IdFor(m => m.LkupProdTypeCD)
+        };
+    };
+
+    function wirePrdnOrdRunAuto(options) {
+        var defaults = {
+            selector: "#@Html.IdFor(m => m.LkupRunCode)",
+            urlEval: "@Url.Action("_PrdnRunLookup2", "Lookup")",
+            parmsFunc: undefined,
+            listPOEval: false,
+            prodTypeEval: undefined,
+            select: undefined,
+            change: undefined,
+            map: mapRunFromModel
+        };
+
+        var settings = $.extend({}, defaults, options);
+        
+        $(settings.selector).autocomplete({
+            source: function (request, response) {
+                var lookupUrl = evalString(settings.urlEval);
+
+                var trimTerm = $.trim(request.term);
+                var parms;
+                if (typeof settings.parmsFunc == "function") { 
+                    parms = settings.parmsFunc(trimTerm);
+                } else {
+                    parms = {
+                        term: trimTerm,
+                        includePrdnOrNos: evalBoolean(settings.listPOEval, false),
+                        prodTypeCD: evalString(settings.prodTypeEval)
+                    };
+                };
+
+                $.ajax({
+                    url: lookupUrl,
+                    dataType: "json",
+                    data: parms,
+                    success: function (data) {
+                        if (!data) { data = []; };
+                        response( $.map(data, settings.map) );
+                    }
+                });
+            }
+            , autoFocus: true
+            , minLength: 3
+            , select: function (event, ui) {
+                if ((ui.item) && (typeof settings.select == "function")) {
+                    settings.select(ui.item);
+                };
+            }
+            , change: settings.change
+        });
+    };    
+
+</text>);}

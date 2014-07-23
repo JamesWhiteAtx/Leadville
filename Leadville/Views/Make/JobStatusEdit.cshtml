@@ -1,0 +1,21 @@
+﻿@model CST.Prdn.ViewModels.UpdMakePrdnJobViewModel
+@using CST.Prdn.Data
+
+<div class="clear-left">
+    <fieldset>
+        <legend>@LocalStr.Status</legend>
+
+        <div class="strengthened larger space-after">
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.New, Model.CanStatusTo(PrdnJobStatus.New))
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Pending, Model.CanStatusTo(PrdnJobStatus.Pending))
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Scheduled, Model.CanStatusTo(PrdnJobStatus.Scheduled))
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Processing, Model.CanStatusTo(PrdnJobStatus.Processing))
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Canceled, Model.CanStatusTo(PrdnJobStatus.Canceled))
+
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Completed, false)
+
+            @Html.ValidationMessageFor(model => model.EditStatus)
+        </div>
+
+    </fieldset>
+</div>

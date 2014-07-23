@@ -1,0 +1,28 @@
+﻿@model CST.Prdn.ViewModels.RequestViewModel
+
+<table>
+    <tr> <td> (@Html.DispAndHiddenFor(model => model.ShipCustID))  @Html.DispAndHiddenFor(model => model.ShipToName) </td> </tr>
+
+    @if ((Model != null) & !String.IsNullOrEmpty(Model.ShipToAddr1))
+    {
+        <tr> <td> @Html.DispAndHiddenFor(model => model.ShipToAddr1) </td> </tr>
+    }
+    @if ((Model != null) & !String.IsNullOrEmpty(Model.ShipToAddr2))
+    {
+        <tr> <td> @Html.DispAndHiddenFor(model => model.ShipToAddr2) </td> </tr>
+    }
+    @if ((Model != null) & !String.IsNullOrEmpty(Model.ShipToAddr3))
+    {
+        <tr> <td> @Html.DispAndHiddenFor(model => model.ShipToAddr3) </td> </tr>
+    }
+    @if ((Model != null) & !String.IsNullOrEmpty(Model.ShipToAddr4))
+    {
+        <tr> <td> @Html.DispAndHiddenFor(model => model.ShipToAddr4) </td> </tr>
+    }
+    <tr> <td> 
+        @Html.DispAndHiddenFor(model => model.ShipToCity),&nbsp; 
+        @Html.DispAndHiddenFor(model => model.ShipToState)&nbsp;
+        @Html.DispAndHiddenFor(model => model.ShipToPostal)&nbsp;
+        @Html.DispAndHiddenFor(model => model.ShipToCountry) 
+    </td> </tr>
+</table>

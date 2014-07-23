@@ -1,0 +1,35 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdTypeDescr)
+    </div>
+    <div class="display-field">
+        @Html.SpanOrDashAndHiddenFor(model => model.ProdTypeCD)
+        @Html.SpanOrDashAndHiddenFor(model => model.ProdTypeDescr)
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdCD)
+    </div>
+    <div class="display-field">
+        @Html.HiddenFor(model => model.ParentProdCD)
+        <span class="strengthened larger">
+        @Html.SpanOrDashAndHiddenFor(model => model.ProdCD)
+        </span>
+        @Html.LabelFor(model => model.ProdDescr):
+        @Html.SpanOrDashAndHiddenFor(model => model.ProdDescr)
+
+        <span id="prod-image-set">
+        @if ((Model != null) && (Model.ProdImageInfoSet != null))
+        {
+            @Html.Partial("ProdImageInfoSet", Model.ProdImageInfoSet)
+        }
+        </span>
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.ProdOptions)
+    </div>
+    <div class="display-field">
+        @Html.Partial("CharCompOpts", Model.ProdOptions, new ViewDataDictionary())
+    </div>

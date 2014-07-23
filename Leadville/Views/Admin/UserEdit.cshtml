@@ -1,0 +1,157 @@
+﻿@model CST.Prdn.ViewModels.UserViewModel
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset class="horiz-form">
+        <legend>User</legend>
+
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Login)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Login)
+            @Html.ValidationMessageFor(model => model.Login)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FirstName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FirstName)
+            @Html.ValidationMessageFor(model => model.FirstName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastName)
+            @Html.ValidationMessageFor(model => model.LastName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EMail)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EMail)
+            @Html.ValidationMessageFor(model => model.EMail)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Phone)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Phone)
+            @Html.ValidationMessageFor(model => model.Phone)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Culture)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.Culture, Model.CultureList, "-- Select " + @Html.DisplayNameFor(model => model.Culture) + " --")
+            @Html.ValidationMessageFor(model => model.Culture)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Active)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Active)
+            @Html.ValidationMessageFor(model => model.Active)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.AlterPassword)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.AlterPassword)
+            @Html.ValidationMessageFor(model => model.AlterPassword)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NewPassword)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.NewPassword)  <button class="t-button" id="genNewPassword">Generate Password</button>
+            @Html.ValidationMessageFor(model => model.NewPassword)
+        </div>
+        <div class="editor-field no-space">
+            <div id="user-pw-str-border" class="no-space">
+                <div id="user-pw-str-bar" class="no-space">
+                </div>
+            </div>
+            <div class="no-space">
+                <span id="user-pw-str-msg">
+                </span>
+            </div>
+        </div>
+        @*<div class="editor-label">
+            @Html.LabelFor(model => model.ConfirmPassword)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ConfirmPassword)
+            @Html.ValidationMessageFor(model => model.ConfirmPassword)
+        </div>*@
+
+        <div id="buttons" class="buttonBox">
+
+            <button class="t-button t-button-icontext" title="Save changes to User">
+                <span class="t-icon t-update"></span>
+                Save
+            </button>
+
+            <a href="@Url.Action(actionName: "Users", controllerName: "Admin")" class="t-button t-button-icontext" title="Cancel User Update">
+                <span class="t-icon t-cancel"></span>
+                Cancel
+            </a>
+
+            <a href="@Url.Action(actionName: "UserGroups", controllerName: "Admin", routeValues: new { userID = Model.ID })" 
+            class="t-button t-button-icontext botton-sep" title="Goto User Groups List">
+                <span class="t-icon t-arrow-next"></span>
+                Groups
+            </a>
+
+        </div>
+
+    </fieldset>
+}
+
+@{Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.password-strength.js"))
+.OnDocumentReady(@<text>
+
+    $("#@Html.IdFor(m => m.Login)").keypress(function(event) {
+        keyPressUpper(event, this);
+    });
+
+    var myPlugin = $("#@Html.IdFor(m => m.NewPassword)")
+        .password_strength("@Url.Action("_PasswordPolicy", "Account")", $("#user-pw-str-border"),  $("#user-pw-str-bar"),  $("#user-pw-str-msg"));
+
+    $('#genNewPassword').click(function(e) {
+        e.preventDefault();
+
+        addLoadingClass( $("#@Html.IdFor(m => m.NewPassword)") );
+        
+        $.ajax({
+            url: '@Url.Action("_GeneratePassword", "Account")',
+            dataType: 'json',
+            success: 
+                function(result) {
+                    $("#@Html.IdFor(m => m.NewPassword)").val(result);
+                    $("#user-pw-str-border").hide("fast");
+                    $("#user-pw-str-msg").hide("fast");
+
+                },
+            complete: function() {
+                removeLoadingClass( $("#@Html.IdFor(m => m.NewPassword)") ); 
+            }
+        });
+        return false;
+    });
+
+
+</text>);}

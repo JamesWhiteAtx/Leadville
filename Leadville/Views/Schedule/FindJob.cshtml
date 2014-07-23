@@ -1,0 +1,70 @@
+﻿@model CST.Prdn.ViewModels.JobLookupModel
+@using CST.Prdn.ViewModels
+@{
+    ViewBag.Title = LocalStr.Lookup + " " + LocalStr.Job;
+}
+
+<h2>@LocalStr.Lookup @LocalStr.Job</h2>
+
+@Html.Partial("FindJobForm")
+
+@(
+ Html.Telerik().Grid<PrdnJobListViewModel>()
+        .Name("findJobGrid")
+        .DataKeys(dataKeys => dataKeys.Add(j => j.JobID))
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax().Select("_JobLookup", "Lookup");
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(r => r.PrdnOrderNo).ClientTemplate( 
+                @Html.ActionLink(linkText: "<#= PrdnOrderNo #>", actionName: "Runs", routeValues: new { id = "<#= PrdnOrderNo #>" }, htmlAttributes: new { title = LocalStr.ProductionOrder } 
+            ).ToString()).Width(80).ReadOnly();
+
+            columns.Bound(r => r.PrdnTypeCD).ClientTemplate(
+                @Html.ActionLink(linkText: "<#= PrdnTypeCD #>", actionName: "Jobs", routeValues: new { id = "<#= RunID #>" }, htmlAttributes: new { title = LocalStr.Run }
+            ).ToString()).Title(LocalStr.Run).Width(60).ReadOnly();            
+
+            columns.Bound(j => j.PrdnShipShortDtStr).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+            columns.Bound(j => j.RunSeqNo).Width(70).ReadOnly();
+            
+            columns.Bound(r => r.SerialNo).ClientTemplate(
+                @Html.ActionLink(linkText: "<#= SerialNo #>", actionName: "Edit", controllerName: "Job",
+                routeValues: new { id = "<#= JobID #>" }, htmlAttributes: new { title = LocalStr.Edit+" "+LocalStr.Job }
+            ).ToString()).ReadOnly();            
+            
+            columns.Bound(r => r.ProdCD).ClientTemplate(
+                @Html.ActionLink(linkText: "<#= ProdCD #>", actionName: "Product", routeValues: new { id = "<#= ProdCD #>" }, htmlAttributes: new { title = LocalStr.Product }
+            ).ToString()).ReadOnly();            
+            
+            columns.Bound(r => r.ProdDescr).ClientTemplate(
+                @Html.ActionLink(linkText: "<#= ProdDescr #>", actionName: "Product", routeValues: new { id = "<#= ProdCD #>" }, htmlAttributes: new { title = LocalStr.Product }
+            ).ToString()).Width(250).ReadOnly().HtmlAttributes(new { @class = "nowrap" });
+
+            columns.Bound(j => j.PatternStr).Width(80);
+            columns.Bound(j => j.ColorStr).Width(100).HtmlAttributes(new { @class = "nowrap" });
+
+            columns.Bound(j => j.StatusDescr).ReadOnly();
+            columns.Bound(j => j.StatusShortDtStr).ReadOnly().HeaderHtmlAttributes(new { @class = "nowrap" }).HtmlAttributes(new { @class = "nowrap" });
+            columns.Bound(j => j.CustCode).Width(80).ReadOnly();
+            columns.Bound(j => j.CustLocation).Width(80).ReadOnly();
+            
+            columns.Bound(r => r.JobID).ClientTemplate(
+                @Html.ActionLink(linkText: "<#= JobID #>", actionName: "Edit", controllerName: "Job",
+                routeValues: new { id = "<#= JobID #>" }, htmlAttributes: new { title = LocalStr.Edit + " " + LocalStr.Job }
+            ).ToString()).ReadOnly();            
+        })
+        .Sortable()
+        .Resizable(resizing => resizing.Columns(true))
+        .Scrollable(s => s.Enabled(true).Height("auto"))
+        .Pageable(settings => settings.Position(GridPagerPosition.Both).PageSize(100))
+        .ClientEvents(events => events.OnDataBinding("findJobBinding").OnLoad("findJobLoad"))
+        .PrefixUrlParameters(false)
+)
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    function findJobBinding(e) { e.data = getFJParmObj();};
+    function findJobLoad(e) { tGridReRefresh(e, "@LocalStr.Lookup @(LocalStr.Job)s", "@LocalStr.Lookup @(LocalStr.Job)s"); };
+</text>);}

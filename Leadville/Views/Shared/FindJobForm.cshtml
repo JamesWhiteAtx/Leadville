@@ -1,0 +1,194 @@
+﻿@model CST.Prdn.ViewModels.JobLookupModel
+@{
+    ViewContext.FormContext = new FormContext();
+}
+
+<form id="findJobForm" action="#">
+<table class="horiz-form medium-input">
+<tr>
+<td>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.CustID)
+    </div>
+    <div class="editor-field">
+        @Html.DropDownListFor(model => model.CustID, Model.CustList, "--")
+        @Html.ClearButtonFor(m => m.CustID, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.CustID)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.CustLocation)
+    </div>
+    <div class="editor-field">
+        @Html.DropDownListFor(model => model.CustLocation, new SelectList(new List<string>()), "--")
+        @Html.ClearButtonFor(m => m.CustLocation, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.CustLocation)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.OrderNo)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.OrderNo)
+        @Html.ClearButtonFor(m => m.OrderNo, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.OrderNo)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.PurchaseOrder)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.PurchaseOrder)
+        @Html.ClearButtonFor(m => m.PurchaseOrder, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.PurchaseOrder)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.CstRequestID)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.CstRequestID)
+        @Html.ClearButtonFor(m => m.CstRequestID, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.CstRequestID)
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.DropShipCustID)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.DropShipCustID)
+        @Html.ClearButtonFor(m => m.DropShipCustID, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.DropShipCustID)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.ProdCD)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.ProdCD)
+        @Html.ClearButtonFor(m => m.ProdCD, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.ProdCD)
+    </div>
+</td>
+<td>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.PrdnOrderNo)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.PrdnOrderNo)
+        @Html.ClearButtonFor(m => m.PrdnOrderNo, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.PrdnOrderNo)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.PrdnTypeID)
+    </div>
+    <div class="editor-field">
+        @Html.DropDownListFor(model => model.PrdnTypeID, Model.PrdnTypes, "--")
+        @Html.ClearButtonFor(m => m.PrdnTypeID, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.PrdnTypeID)
+    </div>
+    <div class="editor-label">
+        @Html.Label(LocalStr.ShipDate)
+    </div>
+    <div class="editor-field">
+        @Html.LabelFor(model => model.FromShipDt)
+        @Html.EditorFor(model => model.FromShipDt)
+        @Html.ClearButtonFor(m => m.FromShipDt, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.FromShipDt)
+        &nbsp;
+        @Html.LabelFor(model => model.ThruShipDt)
+        @Html.EditorFor(model => model.ThruShipDt)
+        @Html.ClearButtonFor(m => m.ThruShipDt, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.ThruShipDt)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.RunSeqNo)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.RunSeqNo)
+        @Html.ClearButtonFor(m => m.RunSeqNo, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.RunSeqNo)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.JobID)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.JobID)
+        @Html.ClearButtonFor(m => m.JobID, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.JobID)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.SerialNo)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.SerialNo)
+        @Html.ClearButtonFor(m => m.SerialNo, htmlAttributes: new { @class = "t-button-bare" })
+        @Html.ValidationMessageFor(model => model.SerialNo)
+    </div>
+</td>
+</tr>
+</table>
+</form>
+
+@Html.Partial("ProdCdAuto")
+@Html.Partial("SerialAuto")
+@Html.Partial("PrdnOrdAuto")
+
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+    if (typeof wireProdCdAuto == "function") { 
+        wireProdCdAuto({ selector: "#@Html.IdFor(m => m.ProdCD)", wireTypeChange: false });
+    };
+    if (typeof wireSerialAuto == "function") { 
+        wireSerialAuto({ selector: "#@Html.IdFor(m => m.SerialNo)", });
+    };
+    if (typeof wirePrdnOrdAuto == "function") { 
+        wirePrdnOrdAuto({ selector: "#@Html.IdFor(m => m.PrdnOrderNo)", });
+    };
+
+    $("#@Html.IdFor(m => m.OrderNo)").autocomplete({
+        source: function (request, response) {
+            var orderTerm = $.trim(request.term);
+            $.ajax({
+                url: '@Url.Action("_CstOrdLineLookup", "Lookup")',
+                dataType: "json",
+                data: { orderNo: orderTerm },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { 
+                            label: item.LookupLabel 
+                            ,value: item.LookupValue    
+                        };
+                    }));
+                }
+            });
+        }
+        , autoFocus: true
+        , minLength: 6
+    });
+
+    function loadFJCustLocs(custId, passedLocId)
+    {
+        loadCustLocs(custId, passedLocId, "@Url.Action("_CustLocations", "Lookup")", "#@Html.IdFor(m => m.CustLocation)", "@Html.DisplayNameFor(model => model.CustLocation)");
+    };
+
+    function getFJParmObj() {
+        var parms = parmObj("?"+$("#findJobForm").serialize());
+        return pruneObj(parms);
+    };
+
+    var custDDL = $("#@Html.IdFor(m => m.CustID)");
+    if (custDDL) {
+        var custId = custDDL.attr('value');
+        if (!custId) {
+            loadFJCustLocs(custId);
+        };
+        custDDL.change(function() 
+        {
+            var custId = $(this).attr('value');
+            loadFJCustLocs(custId);
+        });
+    }
+
+    $("#findJobForm").submit(function(e) {
+        e.preventDefault();
+        return false;
+    });
+</text>);}

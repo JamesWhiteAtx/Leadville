@@ -1,0 +1,505 @@
+﻿@{
+    ViewBag.Title = "NSSelector";
+}
+
+<h2>NSSelector</h2>
+
+<button id='open-selector'>Selector</button>
+
+
+@(Html.Telerik().StyleSheetRegistrar().DefaultGroup(group => group.Add("selector.css")))
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+
+function Selector(container) {
+
+    @*const scriptletUrl = "https://forms.netsuite.com/app/site/hosting/scriptlet.nl";*@
+    const scriptletUrl = "https://forms.sandbox.netsuite.com/app/site/hosting/scriptlet.nl";
+    const compID = "801095";
+
+    var selElem = null;
+    var selLvls = null;
+    var makeElem = null;
+
+    var modelCars = null;
+    var yearCars = null;
+    var bodyCars = null;
+    var trimCars = null;
+
+    function scriptUrl(parmObj) {
+        return scriptletUrl + '?' + $.param(parmObj) + "&jsoncallback=?";
+    };
+
+    function scriptNoUrl(scriptNo, parmObj) {
+        var scritpParm = {script: scriptNo, deploy:1, compid: compID, h: "d8da884e8430a0278dc1"};
+        $.extend(scritpParm, parmObj);
+        return scriptUrl(scritpParm);
+    };
+
+    function selectorUrl(parmObj) {
+        return scriptNoUrl(7, parmObj);
+    };
+
+    function addSelRow(lblTxt, elem2) {
+        //elem1.addClass("selector-item");
+        var newRow = $('<tr>').hide().appendTo( selLvls.find("tbody") );
+        var id = elem2.attr('id');
+        label = $('<label>').attr('for', id).append(lblTxt);
+        newRow.append( $('<th>').append( label ) );
+        if (elem2) {
+            newRow.append( $('<td>').append( elem2 ) );
+        };
+        return newRow;
+    };
+
+    function hideSelRow(elem) {
+        elem.closest("tr").hide(); 
+    };
+    function showSelRow(elem) {
+        elem.closest("tr").show(); 
+    };
+    function selRowViz(elem) {
+        return elem.closest("tr").is(":visible");
+    };
+
+    function setupElemSel(label, id, hideFunc, hideEvent) {
+        var elemSel = $('#'+id);
+        if (elemSel.length < 1) {
+            elemSel = $('<select>').attr('id', id);
+            addSelRow(label, elemSel); 
+        };
+        elemSel.unbind('change.selector');
+        elemSel.empty();
+        if (hideFunc()) {
+            hideSelRow(elemSel);
+            hideEvent();
+        } else {
+            showSelRow(elemSel);
+        }
+        return elemSel;
+    };
+    function addSelOpt(elem, id, text) {
+        elem.append($('<option>', { value: id, text: text }));
+    };
+
+    this.loadMakeList = function() {
+        makeElem.show();
+        makeElem.closest("td").addClass("ajax-loading");
+        var x = selectorUrl({stage:"getmakes"});
+        $.getJSON(selectorUrl({stage:"getmakes"}), function(result) {
+			if(result.success) {
+                addSelOpt(makeElem, '', '-- Select Make --'); 
+
+                $(result.makes).each(function() {
+                    addSelOpt(makeElem, this.id, this.name);  
+                });
+              
+                makeElem.bind('change.selector', function() {
+                    makePicked( $(this).find("option:selected").val() );
+                });
+                makeElem.focus();
+			};
+            makeElem.closest("td").removeClass("ajax-loading");
+		});
+    };
+
+    function makePicked(makeID) {
+        loadModelList(makeID);
+    };
+@*
+    //  arr = jQuery.map(arr, function (a) {      return a + a;    });
+    // {elem, arrFunc, pickedCallback(selected), name, names}
+    function loadOptions(params) {
+        parms.elem.closest("td").addClass("ajax-loading");
+        var items = parms.arrFunc();
+
+		if ((items) && (items.length > 0) ) {
+            addSelOpt(parms.elem, '', '-- Select '+parms.name+' --');
+
+            $(items).each(function() {
+                addSelOpt(parms.elem, this.id, this.name);
+            });
+
+            if (parms.elem.find('option').length == 2) {
+                parms.elem.find('option:eq(1)').attr('selected', 'selected');
+            };
+
+            parms.elem.bind('change.selector', function() {
+                pickedCallback( $(this).find("option:selected").val() );
+            });
+
+            parms.elem.change();
+            parms.elem.focus();
+		} else {
+            addSelOpt(parms.elem, '', '-- No '+(parms.namePlural || parms.name+'s')+' --');
+            pickedCallback('');
+        };
+
+        parms.elem.closest("td").removeClass("ajax-loading");
+    };
+*@
+    function loadModelList(makeID) {
+        modelSel = setupElemSel('Model', 'sel-models', function(){return (!makeID);}, function(){modelPicked();})
+        if (!selRowViz(modelSel)) {
+            return;
+        }
+        modelSel.closest("td").addClass("ajax-loading");
+        $.getJSON( selectorUrl({makeid: escape(makeID), stage: "getmodels"}), function(result) {
+			if ((result.isSuccess) && (result.models) && (result.models.length > 0) ) {
+                addSelOpt(modelSel, '', '-- Select Model --');
+                $(result.models).each(function() {
+                    addSelOpt(modelSel, this.id, this.name);
+                });
+                if (modelSel.find('option').length == 2) {
+                    modelSel.find('option:eq(1)').attr('selected', 'selected');
+                };
+                modelSel.bind('change.selector', function() {
+                    modelPicked(makeID, $(this).find("option:selected").val() );
+                });
+                modelSel.change();
+                modelSel.focus();
+			} else {
+                addSelOpt(modelSel, '', '-- No Models --');
+                modelPicked(makeID, '');
+            };
+            modelSel.closest("td").removeClass("ajax-loading");
+		});
+    };
+
+    function modelPicked(makeID, modelID) {
+        loadModelCars(makeID, modelID, loadYearList);
+    };
+
+    function loadModelCars(makeID, modelID, callback) {
+        modelCars = null;
+        if ((makeID) && (modelID)) {
+            $('#sel-years').closest("td").addClass("ajax-loading");
+            $.getJSON(selectorUrl({makeid: escape(makeID), modelid: escape(modelID), stage: "getcars"}), function(result) {
+                if ((result.isSuccess) && (result.cars) && (result.cars.length > 0) ) {
+                    modelCars = {makeID: makeID, modelID: modelID, cars: result.cars};
+                };
+                $('#sel-years').closest("td").removeClass("ajax-loading");
+                callback(makeID, modelID);
+            });
+        } else {
+            callback();
+        };
+    };
+
+    function loadYearList(makeID, modelID) {
+        yearSel = setupElemSel('Year', 'sel-years', function(){return (!modelID);}, function(){yearPicked();})
+        if (!selRowViz(yearSel)) {
+            return;
+        };
+
+        if ((modelCars) && (modelCars.cars) && (modelCars.cars.length > 0)) {
+            yearSel.closest("td").addClass("ajax-loading");
+            
+            var years = [];
+            var haveYear = [];
+            $.each(modelCars.cars, function() {
+				if(this.years) {
+                    $.each(this.years, function() {
+					    if(!haveYear[this.id]) {
+						    haveYear[this.id] = true;
+						    years.push(this);
+					    };
+                    });
+                };
+			});
+            
+            addSelOpt(yearSel, '', '-- Select Year --');
+			$.each(years.sort(function(a, b) { return b.name - a.name; }), function() {
+                addSelOpt(yearSel, this.id, this.name);
+			});
+            if (yearSel.find('option').length == 2) {
+                yearSel.find('option:eq(1)').attr('selected', 'selected');
+            };
+            yearSel.bind('change.selector', function() {
+                yearPicked(modelCars.makeID, modelCars.modelID, $(this).find("option:selected").val());
+            });
+            yearSel.change();
+            yearSel.focus();
+            yearSel.closest("td").removeClass("ajax-loading");
+        } else {
+            addSelOpt(yearSel, '', '-- No Years --');
+            yearPicked();
+        };
+
+    };
+
+    function filterCars(hasSrcCars, filterFunc, carsObj) {
+        if (hasSrcCars) {
+            var carsArr = filterFunc();
+            carsObj.cars = carsArr;
+            return carsObj;
+        } else {
+            return null;
+        };
+    };
+
+    function yearPicked(makeID, modelID, yearID) {
+        yearCars = filterCars (
+            ((modelCars) && (modelCars.makeID == makeID) && (modelCars.modelID == modelID) && (modelCars.cars) && (modelCars.cars.length > 0)),
+            function() {
+                return $.grep(modelCars.cars, function(car) { 
+                    var found = false;
+                    $(car.years).each(function() {
+                        if (this.id == yearID) {
+                            found = true;
+                            return true;
+                        }
+                    });
+                    return found;
+                });
+            },
+            {makeID: makeID, modelID: modelID, yearID: yearID}
+        );
+        loadBodyList();
+    };
+
+    function loadBodyList() {
+        bodySel = setupElemSel('Body', 'sel-bodys', function(){return ((!yearCars) || (!yearCars.yearID));}, function(){bodyPicked();})
+        if (!selRowViz(bodySel)) {
+            return;
+        };
+
+        if ((yearCars) && (yearCars.cars) && (yearCars.cars.length > 0)) {
+            var bodys = [];
+            var haveBody = [];
+            $.each(yearCars.cars, function() {
+			    if(!haveBody[this.bodyId]) {
+				    haveBody[this.bodyId] = true;
+				    bodys.push(this);
+			    };
+			});
+            
+            addSelOpt(bodySel, '', '-- Select Body --');
+			$.each(bodys.sort(function(a, b) {
+				return a.name - b.name;
+			}), function() {
+                addSelOpt(bodySel, this.bodyId, this.bodyName);
+			});
+            if (bodySel.find('option').length == 2) {
+                bodySel.find('option:eq(1)').attr('selected', 'selected');
+            };
+            bodySel.bind('change.selector', function() {
+                bodyPicked(yearCars.makeID, yearCars.modelID, yearCars.yearID, $(this).find("option:selected").val());
+            });
+            bodySel.change();
+            bodySel.focus();
+            
+        } else {
+            addSelOpt(bodySel, '', '-- No Bodies --');
+            bodyPicked();
+        };
+    };
+
+    function bodyPicked(makeID, modelID, yearID, bodyID) {
+        bodyCars = filterCars(
+            ((yearCars) && (yearCars.makeID == makeID) && (yearCars.modelID == modelID) && (yearCars.yearID == yearID) && (modelCars.cars) && (modelCars.cars.length > 0)), 
+            function() {
+                return $.grep(yearCars.cars, function(car) { 
+                    return (car.bodyId == bodyID);
+                });
+            }, 
+            {makeID: makeID, modelID: modelID, yearID: yearID, bodyID: bodyID}
+        );
+        loadTrimList();
+    };
+
+    function loadTrimList() {
+        trimSel = setupElemSel('Trim Level', 'sel-trims', function(){return ((!bodyCars) || (!bodyCars.bodyID));}, function(){trimPicked();})
+        if (!selRowViz(trimSel)) {
+            return;
+        };
+        if ((bodyCars) && (bodyCars.cars) && (bodyCars.cars.length > 0)) {
+            var trims = [];
+            var haveTrim = [];
+            $.each(bodyCars.cars, function() {
+			    if(!haveTrim[this.trimId]) {
+				    haveTrim[this.trimId] = true;
+				    trims.push(this);
+			    };
+			});
+            addSelOpt(trimSel, '', '-- Select Trim Level --');
+			$.each(trims.sort(function(a, b) {
+				return a.name - b.name;
+			}), function() {
+                addSelOpt(trimSel, this.trimId, this.trimName);
+			});
+            if (trimSel.find('option').length == 2) {
+                trimSel.find('option:eq(1)').attr('selected', 'selected');
+            };
+            trimSel.bind('change.selector', function() {
+                trimPicked(bodyCars.makeID, bodyCars.modelID, bodyCars.yearID, bodyCars.bodyID, $(this).find("option:selected").val());
+            });
+            trimSel.change();
+            trimSel.focus();
+        } else {
+            addSelOpt(bodySel, '', '-- No Trim Levels --');
+            trimPicked();
+        };
+    };
+
+    function trimPicked(makeID, modelID, yearID, bodyID, trimID) {
+        trimCars = null;
+        trimCars = filterCars(
+            ((bodyCars) && (bodyCars.makeID == makeID) && (bodyCars.modelID == modelID) && (bodyCars.yearID == yearID) && (bodyCars.bodyID == bodyID) 
+                && (bodyCars.cars) && (bodyCars.cars.length > 0)), 
+            function() {
+                return $.grep(bodyCars.cars, function(car) { 
+                    return (car.trimId == trimID);
+                });
+            }, 
+            {makeID: makeID, modelID: modelID, yearID: yearID, bodyID: bodyID, trimID: trimID}
+        );
+        displaySelCar();
+    };
+
+    function displaySelCar() {
+        var id = 'car-disp';
+        var carMain = $('#'+id);
+        if (carMain.length < 1) {
+            carMain = $('<div>').appendTo( selElem ).attr('id', id).hide();
+        };
+        carMain.empty();
+        //var title = $('<h4>').appendTo(carMain).append('Car');
+
+        if ((!trimCars) || (!trimCars.trimID)) {
+            carMain.hide();
+            return;
+        };
+        carMain.show();
+
+        $(trimCars.cars).each(function() {
+            var carID = 'car-' + this.id;
+            var carInfo = $('<div>').appendTo( carMain ).attr('id', carID).addClass('car-info');
+            var carItems = $('<table>').appendTo( carInfo ).addClass('car-items').append('<tbody>');
+
+            function addItem(lbl, descr) {
+                var row = $('<tr>').addClass('car-item').appendTo( carItems.find("tbody") );
+                row.append( $('<th>').append( $('<label>').append(lbl) ) );
+                row.append( $('<td>').append( $('<span>').append(descr) ) );
+            };
+            addItem('Name', this.name);
+            addItem('Airbags', this.airbagName);
+            addItem('Rows', this.rowName);
+        });
+
+    };
+
+    function createDialog() {
+        selElem.dialog({ 
+            autoOpen: false,
+		    resizable: true,
+		    height:350,
+            width:350,
+		    modal: true,
+            buttons :  { 
+                "select" : {
+                    text: "@LocalStr.OK",
+                    id: "ok-btn",
+                    click: function(){ $( this ).dialog( "close" ); }   
+                },
+                "cancel" : {
+                    text: "@LocalStr.Cancel",
+                    id: "cancel-btn",
+                    click: function() { $( this ).dialog( "close" ); }
+                } 
+            },
+            open: function (event, ui) {
+                //var okBtn = $(btnPoDlgOkBtnSlctr); 
+                //okBtn.hide(); 
+            }
+
+        });
+    };
+
+    this.openDialog = function() {
+        var isOpn = selElem.dialog("isOpen");
+        if (isOpn == false) {
+           selElem.dialog("open");
+        };
+        makeElem.show();
+        if (makeElem.find('option').length == 0) {
+            this.loadMakeList();
+        };
+
+    };
+
+    // =========================
+    selElem = $('<div>').attr('id', 'selector-main').attr('title', 'selector').hide().appendTo(container);
+    selLvls = $('<table>').attr('id', 'selector-levels').append('<tbody>').appendTo( selElem );
+    
+    makeElem = $('<select>').attr('id', 'sel-lvl-make');
+    addSelRow('Make', makeElem).show(); 
+
+    createDialog();
+   
+
+}; // function Selector()
+
+    //trimCars = {trimID: '75', cars: [{id:'4533'}]};
+    //loadPatternList() ;
+
+    var slctr = new Selector( $('#main') );
+
+    $('#open-selector').click(function(){
+       slctr.openDialog();
+    });
+
+</text>);}
+
+@*
+    function loadPatternList() {
+        var id = 'ptrn-main';
+        var ptrnMain = $('#'+id);
+        if (ptrnMain.length < 1) {
+            ptrnMain = $('<div>').appendTo( selElem ).attr('id', id).hide().append('patterns');
+        };
+        ptrnMain.empty();
+        var title = $('<h4>').appendTo(ptrnMain).append('Patterns');
+        if ((!trimCars) || (!trimCars.trimID)) {
+            ptrnMain.hide();
+            return;
+        };
+        ptrnMain.show();
+
+        title.addClass("ajax-loading");
+
+        var carIds = $.map(trimCars.cars, function(car) { return car.id; });
+
+        $.getJSON(selectorUrl({carIds : carIds, stage: "getpatterns"}), function(result) {
+            if ((result.isSuccess) && (result.patterns) && (result.patterns.length > 0) ) {
+  
+                $(result.patterns).each(function() {
+                    var ptrnID = 'ptrn-' + this.id;
+                    var ptrnInfo = $('<div>').appendTo( ptrnMain ).attr('id', ptrnID).addClass('ptrn-info');
+                    var ptrnItems = $('<table>').appendTo( ptrnInfo ).addClass('ptrn-items').append('<tbody>');
+
+                    function addItem(lbl, descr) {
+                        var row = $('<tr>').addClass('ptrn-item').appendTo( ptrnItems.find("tbody") );
+                        row.append( $('<th>').append( $('<label>').append(lbl) ) );
+                        row.append( $('<td>').append( $('<span>').append(descr) ) );
+                    };
+                    addItem('Pattern', this.name);
+                    addItem('Additional Description', this.patternAdditionalDesc);
+                    addItem('Notes', this.specialNotes);
+                    addItem('Fits Factory Leather?', this.fitsFactoryLthrName);
+                    addItem('Airbag', this.airbagName);
+                    addItem('Rows', this.rows);
+              });
+            } else {
+                ptrnMain.append('no patterns');
+            };
+            title.removeClass("ajax-loading");
+            //callback(makeID, modelID);
+        });
+    };
+
+    function patternPicked() {
+        //ensurePatrnDiv
+    };
+*@

@@ -1,0 +1,20 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+@using CST.Prdn.Data
+       
+       <div class="editor-label">
+            @Html.LabelFor(model => model.CustDisplay)
+        </div>
+        <div class="editor-field">
+            @Html.HiddenFor(model => model.CustID)
+            @Html.HiddenFor(model => model.CustName)
+            @Html.DisplayFor(model => model.CustDisplay)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CustLocDisplay)
+        </div>
+        <div class="editor-field">
+            @Html.HiddenFor(model => model.CustLocation)
+            @Html.HiddenFor(model => model.CustLocName)
+            @Html.DisplayFor(model => model.CustLocDisplay)
+        </div>

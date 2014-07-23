@@ -1,0 +1,58 @@
+﻿@model CST.Prdn.BulkSaleImpIModel
+           
+@{
+    ViewBag.Title = "Upload Warehouse Transfer";
+}
+
+<div class='vert-space-bot'>
+    @Html.TIconActionLink(tIconClass: "t-go-back", linkText: "Back to Warehouse List", actionName: "TrnsfrWrhsList")
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <fieldset class="horiz-form">
+        <legend>Upload Wharehouse Data</legend>
+        @Html.HiddenFor(model => model.Insert)
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RunName)
+        </div>
+        <div class="editor-field">
+            @if (Model.Count > 0)
+            {
+                @Html.DispAndHiddenFor(model => model.RunName)
+            }
+            else
+            {
+                @Html.EditorFor(model => model.RunName)
+            }
+            @Html.ValidationMessageFor(model => model.RunName)
+        </div>
+        @if (Model.Count > 0)
+        {
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Count)
+            </div>
+            <div class="editor-field">
+                @Html.DispAndHiddenFor(model => model.Count)
+            </div>
+        }
+        else
+        { @Html.HiddenFor(model => model.Count) }
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SkipFirstRow)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SkipFirstRow)
+            @Html.ValidationMessageFor(model => model.SkipFirstRow)
+        </div>
+    </fieldset>
+    
+    <label for="file">CSV File [Serial No, Po]: </label>
+    <input type="file" name="uploadedFiles" id="uploadedFiles" />
+    <input type="submit" name="submit" value="Upload Serial Nos" />
+    
+    <div>
+        @Html.ValidationSummary(true)
+    </div>
+    
+}

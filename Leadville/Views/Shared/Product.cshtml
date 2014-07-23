@@ -1,0 +1,18 @@
+﻿@model CST.Prdn.ViewModels.ProductLookupModel
+
+@{
+    ViewBag.Title = LocalStr.Product;
+}
+
+<h2>@LocalStr.Product</h2>
+
+<div class="horiz-form">
+@Html.Partial("ProductLookup")
+</div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    if (typeof wireProductLookup == "function") { 
+        wireProductLookup();
+    };
+</text>);}

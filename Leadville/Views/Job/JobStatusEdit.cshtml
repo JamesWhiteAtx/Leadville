@@ -1,0 +1,19 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+          
+@using CST.Prdn.Data
+    <div class="div-border">
+        <div class="editor-label strengthened">
+            @Html.LabelFor(model => model.EditStatus)
+        </div>
+        <div class="editor-field">
+            <div class="no-space space-after strengthened larger">
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.New, Model.CanStatusTo(PrdnJobStatus.New))
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Pending, Model.CanStatusTo(PrdnJobStatus.Pending))
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Scheduled, Model.CanStatusTo(PrdnJobStatus.Scheduled))
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Processing, Model.CanStatusTo(PrdnJobStatus.Processing))
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Completed, Model.CanStatusTo(PrdnJobStatus.Completed))
+            @Html.JobStatusElementFor(model => model.EditStatus, Model.EditStatus, PrdnJobStatus.Canceled, Model.CanStatusTo(PrdnJobStatus.Canceled))
+            @Html.ValidationMessageFor(model => model.EditStatus)
+            </div>
+        </div>
+    </div>

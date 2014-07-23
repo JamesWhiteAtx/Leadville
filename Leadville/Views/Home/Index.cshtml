@@ -1,0 +1,17 @@
+﻿@model CST.Prdn.ViewModels.IndexModel
+
+@using CST.Prdn.Data
+
+@{
+    ViewBag.Title = LocalStr.HomePage;
+}
+
+<h2>@ViewBag.Message</h2>
+
+
+@if (Model.SettingsModel != null)
+{
+    <div>
+        @Html.Partial("Settings", Model.SettingsModel)
+    </div>
+}

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<CST.Prdn.BulkSaleImpSumModel>
+
+@{
+    ViewBag.Title = "Warehouse Transfer List";
+}
+
+<h2>Warehouse Transfer List</h2>
+
+<div class='vert-space-bot'>
+    @Html.TIconActionLink(tIconClass: "t-add", linkText: "Upload New Warehouse", actionName: "UploadWrhse", htmlAttributes: new { @class = "t-button-bare" })
+</div>
+
+<h4>Uploaded Warehouses</h4>
+
+<table>
+    <tr>
+        <th>
+            
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            <span class="strengthened"> @Html.DisplayFor(modelItem => item.RunName)</span> Count:@Html.DisplayFor(modelItem => item.Count)
+        </td>
+        <td>    
+            @if (item.Locked)
+            {
+                @Html.TIconActionLink(tIconClass: "t-search", linkText: "Results", actionName: "ResultsWrhse", routeValues: new { id = item.RunName }, htmlAttributes: new { @class = "t-button-bare" })
+            }
+            else
+            {
+                @Html.TIconActionLink(tIconClass: "t-edit", linkText: "Edit", actionName: "EditWrhse", routeValues: new { id = item.RunName }, htmlAttributes: new { @class = "t-button-bare" })
+                @Html.TIconActionLink(tIconClass: "t-add", linkText: "Upload", actionName: "UploadWrhse", routeValues: new { id = item.RunName }, htmlAttributes: new { @class = "t-button-bare" })
+                @Html.TIconActionLink(tIconClass: "t-delete", linkText: "CLear", actionName: "ClearWrhse", routeValues: new { id = item.RunName }, htmlAttributes: new { @class = "t-button-bare" })
+            }
+        </td>
+    </tr>
+}
+
+</table>

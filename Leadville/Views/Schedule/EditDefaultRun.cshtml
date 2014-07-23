@@ -1,0 +1,116 @@
+﻿@model CST.Prdn.ViewModels.DefaultRunEditViewModel
+
+@{
+    ViewBag.Title = "Edit Default Run";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset class="horiz-form medium-input">
+        <legend>Default Run</legend>
+
+        @if ( !String.IsNullOrEmpty( Model.IfNotNull(m => m.Message) ) )
+        {
+        <div class="error">       
+            @Html.DispAndHiddenFor(model => model.Message)    
+        </div>
+        }
+        <div class="editor-label">
+            @Html.LabelFor(model => model.UserLogin)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.UserLogin)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DefaultRunID)
+        </div>
+        <div class="editor-field">
+            @Html.SpanOrDashAndHiddenFor(model => model.DefaultRunID)
+            @Html.ValidationMessageFor(model => model.DefaultRunID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DefaultRunDescr)
+        </div>
+        <div class="editor-field">
+            @Html.SpanOrDashAndHiddenFor(model => model.DefaultRunDescr)
+            @Html.ValidationMessageFor(model => model.DefaultRunDescr)
+        </div>
+
+        @if (Model.LookupRunModel != null)
+        {
+            <div class="display-label">
+                @Html.LabelFor(model => Model.LookupRunModel.LookupTerm)
+            </div>
+            <div class="display-field">
+                 @Html.Partial("PrdnRunPick", Model.LookupRunModel)
+            </div>
+        }
+
+        @Html.HiddenFor(model => model.UserID)
+        @Html.HiddenFor(model => model.UrlReturn)
+
+        @if (Model.DefaultRunID != null)
+        {
+            <div>
+                <a href="@Url.Action(actionName: "ClearDefaultRun", controllerName: "Schedule", routeValues: new { urlReturn = @Model.UrlReturn }).ToString()" 
+                    class="t-button t-button-icontext">
+                    <span class="t-icon t-cancel"></span>
+                    Clear Deafult Run
+                </a>
+            </div>
+        }
+
+    </fieldset>
+
+    <div id="buttons">
+        
+        <button class="t-button t-button-icontext" type="submit"><span class="t-icon t-update"></span>Save</button>
+        @{
+            string urlReturn;
+            if (Model.UrlReturn == null)
+            {
+                urlReturn = Url.Action(actionName: "Index", controllerName: "Home");
+            }
+            else
+            {
+                urlReturn = Model.UrlReturn;
+            }
+        }
+        <a href="@urlReturn" class="t-button t-button-icontext">
+            <span class="t-icon t-cancel"></span>
+            Cancel
+        </a>
+
+    </div>
+}
+
+@if (Model.NewRunModel != null)
+{
+    @Html.Partial("NewRunDlg", Model.NewRunModel)
+}
+
+@{ Html.Telerik().ScriptRegistrar()
+.DefaultGroup(group => group.Add("~/Scripts/jquery.validate.min.js").Add("~/Scripts/jquery.validate.unobtrusive.min.js"))
+.OnDocumentReady(@<text>
+
+    var getProdTypeFunc = function() {
+        return '300';
+    };
+
+    var runChangedFunc = function(oldRunID, item) {
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.DefaultRunID), item.runID);
+        inputAndSpanValue(@Html.IdSpanIdFor(m => m.DefaultRunDescr), item.poNo + item.typeCD +' '+ item.typeDescr +' '+ item.shipDt);
+    };
+
+    var createNewRunFunc = function(poNo, poShipDt, typCd) {
+        if (typeof openNewRunWindow == 'function') { 
+            openNewRunWindow(poNo, poShipDt, typCd);
+        }
+    };
+
+    $("#LookupTerm").focus();
+
+</text>); }

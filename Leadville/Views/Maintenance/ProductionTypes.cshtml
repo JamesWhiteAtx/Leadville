@@ -1,0 +1,56 @@
+﻿@using CST.Prdn.ViewModels
+
+@model CST.Prdn.ViewModels.TypesViewModel
+
+@{
+    ViewBag.Title = "Production Types";
+}
+
+<h2>Production Types</h2>
+
+@(
+ Html.Telerik().Grid<PrdnTypeViewModel>()
+        .Name("Grid")
+            .DataKeys(dataKeys => dataKeys.Add(t => t.ID))
+        .ToolBar(commands => commands.Insert().ButtonType(GridButtonType.ImageAndText).ImageHtmlAttributes(new { style = "margin-left:0" }))
+        .DataBinding(dataBinding =>
+        {
+            dataBinding.Ajax()
+                .Select("_SelectPrdnType", "Maintenance")
+                .Insert("_InsertPrdnType", "Maintenance")
+                .Update("_SavePrdnType", "Maintenance")
+                .Delete("_DeletePrdnType", "Maintenance");
+        })
+        .Columns(columns =>
+        {
+            columns.Bound(t => t.ID).Width(50).ReadOnly();
+            columns.Bound(t => t.Code).Width(100).HtmlAttributes(new { @class = "text-input-upper" });
+            columns.Bound(t => t.Name).Width(160);
+            columns.Bound(t => t.Description).Width(180);
+
+            columns.ForeignKey(t => t.ProdTypeCD, Model.ProdTypes).Width(180);
+            columns.ForeignKey(t => t.ReasonID, Model.Reasons).Width(180);
+            columns.ForeignKey(t => t.LocationID, Model.Locations).Width(180);
+
+            columns.Bound(t => t.SortOrder).Width(80);
+            
+            columns.Bound(r => r.Active)
+                .ClientTemplate("<input type='checkbox' disabled='disabled' name='Active' <#= Active? checked='checked' : '' #> />");            
+            
+            columns.Command(commands =>
+            {
+                commands.Edit().ButtonType(GridButtonType.Text);
+                commands.Delete().ButtonType(GridButtonType.ImageAndText);
+            }).Width(220).Title("Commands");
+                               
+        })
+        .Editable(editing => editing.Mode(GridEditMode.InLine))
+        .Pageable()
+        //.Scrollable()
+        .Sortable()
+    )
+
+@{Html.Telerik().ScriptRegistrar().OnDocumentReady(@<text>
+    bindTGridUpper();
+</text>);}
+

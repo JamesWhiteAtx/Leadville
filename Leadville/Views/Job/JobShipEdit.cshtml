@@ -1,0 +1,49 @@
+﻿@model CST.Prdn.ViewModels.EditPrdnJobViewModel
+
+        @Html.Partial("DropShipEdit", Model)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipMethodCD)
+        </div>
+        <div class="editor-field">
+            @if (Model.ShipCodesFunc != null)
+            {
+                @Html.DropDownListFor(model => model.ShipMethodCD, Model.ShipCodesFunc(), "-- Select " + @Html.DisplayNameFor(model => model.ShipMethodCD) + " --")
+            }
+            else
+            {
+                @Html.SpanOrDashAndHiddenFor(model => model.ShipMethodCD)
+            }
+            @Html.ValidationMessageFor(model => model.ShipMethodCD)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PriorityID)
+        </div>
+        <div class="editor-field">
+            @if (Model.JobPrioritiesFunc != null)
+            {
+                @Html.DropDownListFor(model => model.PriorityID, Model.JobPrioritiesFunc(), "-- Select " + @Html.DisplayNameFor(model => model.PriorityID) + " --")
+            }
+            else
+            {
+                @Html.SpanOrDashAndHiddenFor(model => model.PriorityID)
+            }
+            @Html.ValidationMessageFor(model => model.PriorityID)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PackingListNote)
+        </div>
+        <div class="editor-field xtra-wide-input">
+            @Html.EditorFor(model => model.PackingListNote)
+            @Html.ValidationMessageFor(model => model.PackingListNote)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ScheduleNote)
+        </div>
+        <div class="editor-field xtra-wide-input">
+            @Html.EditorFor(model => model.ScheduleNote)
+            @Html.ValidationMessageFor(model => model.ScheduleNote)
+        </div>

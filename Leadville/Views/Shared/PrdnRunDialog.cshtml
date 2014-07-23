@@ -1,0 +1,119 @@
+﻿    <div id="runDlgDiv" title="@LocalStr.Lookup" style="display: none">
+        @Html.Partial("PrdnRunLookup", new CST.Prdn.ViewModels.PrdnOrdRunListModel())
+    </div>
+
+@{Html.Telerik().ScriptRegistrar()
+.OnDocumentReady(@<text>
+    var divRunDlgVar = null;
+    var runDlgOkBtnId = "runDlgOkBtn";
+    var runDlgOkBtnSlctr = "#" + runDlgOkBtnId;
+    var runDlgMkBtnId = "runDlgMkBtn";
+    var runDlgMkBtnSlctr = "#" + runDlgMkBtnId;
+    
+    var runDlgSettings;
+
+    function getDivPoDialogInner() {
+        return $("div#runDlgDiv");
+    }
+
+    function createPrdnPoDialog() {
+        divRunDlgVar = getDivPoDialogInner();
+
+        divRunDlgVar.dialog({ 
+            autoOpen: false,
+		    resizable: true,
+		    height:430,
+            width:400,
+		    modal: true,
+            buttons :  { 
+                "select" : {
+                    text: "@LocalStr.OK",
+                    id: runDlgOkBtnId,
+                    title: "@LocalStr.Select @LocalStr.Run",
+                    click: function(){ 
+                        $( this ).dialog( "close" );
+                        if ( ($.isFunction(getRunItem)) && ($.isFunction(runDlgSettings.pickRun)))
+                        {
+                            runDlgSettings.pickRun(getRunItem());
+                        };
+                    }   
+                },
+                "new" : {
+                    text: "@LocalStr.Create",
+                    title: "@LocalStr.Create @LocalStr.NewRun",
+                    id: runDlgMkBtnId,
+                    click: function(){ 
+                        $( this ).dialog( "close" );
+                        if (($.isFunction(getRunItem)) && ($.isFunction(runDlgSettings.makeRun)))
+                        {
+                            runDlgSettings.makeRun(getRunItem());
+                        };
+                    }   
+                },
+                "cancel" : {
+                    text: "@LocalStr.Cancel",
+                    click: function() { $( this ).dialog( "close" ); }
+                } 
+            },
+            open: function (event, ui) {
+                if (typeof clearPrdnRunLookup == "function") {
+                    clearPrdnRunLookup();
+                };
+                $(runDlgOkBtnSlctr).hide();
+                $(runDlgMkBtnSlctr).hide();
+            }
+
+        });
+    };
+
+    @*createPrdnPoDialog();*@
+
+    function getRunItem()
+    {
+        if (typeof getPrdnRunItem == "function") { 
+            return getPrdnRunItem();
+        };
+    }
+
+    function dlgRunSelect(item) {
+        if ((runDlgSettings.canMake) && (!item.runID)) {
+            $(runDlgMkBtnSlctr).show("fast").focus();
+            $(runDlgOkBtnSlctr).hide();
+        } else {
+            $(runDlgOkBtnSlctr).show("fast").focus();
+            $(runDlgMkBtnSlctr).hide();
+        }
+    };
+
+    function openPrdnRunDialog(options) {
+        var defaults = {
+            pickRun: undefined,
+            makeRun:  undefined,
+            canMake: false,
+            prodTypeEval: undefined,
+            title: "@LocalStr.Lookup"
+        };
+        runDlgSettings = $.extend({}, defaults, options);
+        runDlgSettings.canMake = ($.isFunction(runDlgSettings.makeRun));
+   
+        if (divRunDlgVar == null) {
+
+            if ($.isFunction(wirePrdnRunLookup)) { 
+                wirePrdnRunLookup({ 
+                    select: dlgRunSelect, 
+                    listPOEval: runDlgSettings.canMake,
+                    prodTypeEval: runDlgSettings.prodTypeEval
+                });
+            };
+
+            createPrdnPoDialog();
+
+            if (runDlgSettings.title) {
+                $("span#ui-dialog-title-runDlgDiv").text(runDlgSettings.title);
+            }
+        };
+
+        divRunDlgVar.dialog( "open" );
+    };
+
+</text>);}
